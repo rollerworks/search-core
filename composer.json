@@ -1,0 +1,53 @@
+{
+    "name": "rollerworks/search",
+    "description": "RollerworksSearch provides you with a powerful search system",
+    "keywords": ["rollerworks", "filter", "search"],
+    "homepage": "https://rollerworks.github.io/",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastiaan Stok",
+            "email": "s.stok@rollercapes.net"
+        },
+        {
+            "name": "Community contributions",
+            "homepage": "https://github.com/rollerworks/search/contributors"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "symfony/options-resolver": "^3.3.6 || ^4.0",
+        "symfony/property-access": "^3.3.6 || ^4.0",
+        "symfony/intl": "^3.3.6 || ^4.0",
+        "psr/container": "^1.0.0"
+    },
+    "require-dev": {
+        "moneyphp/money": "^3.0.0",
+        "phpunit/phpunit": "^6.2.4",
+        "symfony/phpunit-bridge": "^3.3.6 || ^4.0",
+        "symfony/var-dumper": "^3.2.1 || ^4.0"
+    },
+    "suggest": {
+        "moneyphp/money": "To use the MoneyType"
+    },
+    "conflict": {
+        "moneyphp/money": "<3.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\": ""
+        },
+        "exclude-from-classmap": ["Test/"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rollerworks\\Component\\Search\\Tests\\": "Tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
+    }
+}
