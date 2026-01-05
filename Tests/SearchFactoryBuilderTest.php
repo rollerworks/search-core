@@ -31,7 +31,6 @@ final class SearchFactoryBuilderTest extends TestCase
     {
         $factory = new \ReflectionClass(GenericSearchFactory::class);
         $this->registry = $factory->getProperty('registry');
-        $this->registry->setAccessible(true);
 
         $this->type = new FooType();
     }

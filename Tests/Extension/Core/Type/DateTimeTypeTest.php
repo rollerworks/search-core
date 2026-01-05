@@ -41,7 +41,7 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         ]);
 
         $outputTime = new \DateTimeImmutable('2010-06-02 03:04:00 Pacific/Tahiti');
-        $outputTime->setTimezone(new \DateTimeZone('America/New_York'));
+        $outputTime = $outputTime->setTimezone(new \DateTimeZone('America/New_York'));
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('2010-06-02T03:04:00-10:00', '2010-06-02T03:04:00-10:00')

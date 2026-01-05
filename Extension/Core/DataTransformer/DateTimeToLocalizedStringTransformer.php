@@ -158,7 +158,7 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
         }
 
         if ($this->outputTimezone !== $this->inputTimezone) {
-            $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
+            $dateTime = $dateTime->setTimezone(new \DateTimeZone($this->inputTimezone));
         }
 
         return $dateTime;

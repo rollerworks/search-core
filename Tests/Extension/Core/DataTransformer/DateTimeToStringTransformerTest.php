@@ -102,7 +102,7 @@ final class DateTimeToStringTransformerTest extends TestCase
 
         $input = new \DateTimeImmutable('2010-02-03 12:05:06 America/New_York');
         $output = $input->format('Y-m-d H:i:s');
-        $input->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
+        $input = $input->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
 
         self::assertEquals($output, $transformer->transform($input));
     }
@@ -144,7 +144,7 @@ final class DateTimeToStringTransformerTest extends TestCase
 
         $output = new \DateTimeImmutable('2010-02-03 16:05:06 Asia/Hong_Kong');
         $input = $output->format('Y-m-d H:i:s');
-        $output->setTimezone(new \DateTimeZone('America/New_York'));
+        $output = $output->setTimezone(new \DateTimeZone('America/New_York'));
 
         $this->assertDateTimeEquals($output, $reverseTransformer->reverseTransform($input));
     }

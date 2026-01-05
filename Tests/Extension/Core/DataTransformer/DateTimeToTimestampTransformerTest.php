@@ -118,7 +118,7 @@ final class DateTimeToTimestampTransformerTest extends TestCase
 
         $output = new \DateTimeImmutable('2010-02-03 04:05:06 America/New_York');
         $input = $output->format('U');
-        $output->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
+        $output = $output->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
 
         self::assertDateTimeEquals($output, $reverseTransformer->reverseTransform($input));
     }

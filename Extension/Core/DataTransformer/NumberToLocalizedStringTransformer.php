@@ -231,7 +231,7 @@ class NumberToLocalizedStringTransformer implements DataTransformer
      */
     protected function castParsedValue($value)
     {
-        if (\is_int($value) && $value === (int) $float = (float) $value) {
+        if (\is_int($value) && (($float = (float) $value) < \PHP_INT_MAX) && $value === (int) $float) {
             return $float;
         }
 
