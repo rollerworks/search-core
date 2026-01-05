@@ -95,7 +95,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
 
     public function createFieldView(FieldConfig $config, FieldSetView $view): SearchFieldView
     {
-        $view = $this->newView($view);
+        $viewObj = $this->newView($view);
         $view->vars = array_merge($view->vars, [
             'name' => $config->getName(),
             'accept_ranges' => $config->supportValueType(Range::class),
@@ -103,7 +103,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
             'accept_pattern_matchers' => $config->supportValueType(PatternMatch::class),
         ]);
 
-        return $view;
+        return $viewObj;
     }
 
     public function buildFieldView(SearchFieldView $view, FieldConfig $config, array $options): void

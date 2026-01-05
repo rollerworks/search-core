@@ -76,7 +76,7 @@ interface ChoiceLoader
     /**
      * Returns whether the values are constant (not dependent of there position).
      *
-     * {@see \Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList::isValuesConstant}
+     * {@see ChoiceList::isValuesConstant}
      */
     public function isValuesConstant(): bool;
 }

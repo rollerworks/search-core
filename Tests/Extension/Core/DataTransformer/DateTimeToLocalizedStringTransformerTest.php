@@ -49,16 +49,6 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
         $this->dateTimeWithoutSeconds = null;
     }
 
-    public static function assertEquals($expected, $actual, string $message = '', float $delta = 0.0, int $maxDepth = 10, bool $canonicalize = false, bool $ignoreCase = false): void
-    {
-        if ($expected instanceof \DateTimeInterface && $actual instanceof \DateTimeInterface) {
-            $expected = $expected->format('c');
-            $actual = $actual->format('c');
-        }
-
-        parent::assertEquals($expected, $actual, $message);
-    }
-
     public static function dataProvider(): iterable
     {
         return [

@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
  *
  * @internal
  */
-final class ArrayChoiceListTest extends AbstractChoiceListTest
+final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
 {
     private $object;
 

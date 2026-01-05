@@ -22,7 +22,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceLoaderTrait;
  *
  * @author Jules Pietri <jules@heahprod.com>
  */
-final class CallbackChoiceLoader implements ChoiceLoader
+class CallbackChoiceLoader implements ChoiceLoader
 {
     use ChoiceLoaderTrait;
 

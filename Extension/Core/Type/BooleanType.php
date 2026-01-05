@@ -24,7 +24,7 @@ final class BooleanType extends AbstractFieldType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('view_label', static function (OptionsResolver $options): void {
+        $resolver->setOptions('view_label', static function (OptionsResolver $options): void {
             $options->setDefaults([
                 'true' => 'yes',
                 'false' => 'no',
@@ -34,7 +34,7 @@ final class BooleanType extends AbstractFieldType
             $options->setAllowedTypes('false', ['string']);
         });
 
-        $resolver->setDefault('norm_label', static function (OptionsResolver $options): void {
+        $resolver->setOptions('norm_label', static function (OptionsResolver $options): void {
             $options->setDefaults([
                 'true' => 'true',
                 'false' => 'false',
@@ -44,7 +44,7 @@ final class BooleanType extends AbstractFieldType
             $options->setAllowedTypes('false', ['string']);
         });
 
-        $resolver->setDefault('view_aliases', static function (OptionsResolver $options, Options $parent): void {
+        $resolver->setOptions('view_aliases', static function (OptionsResolver $options, Options $parent): void {
             $options->setDefaults([
                 'true' => array_unique(['yes', 'y', '1', 1, 'on', 'true', $parent['view_label']['true']], \SORT_REGULAR),
                 'false' => array_unique(['no', 'n', '0', 0, 'off', 'false', $parent['view_label']['false']], \SORT_REGULAR),

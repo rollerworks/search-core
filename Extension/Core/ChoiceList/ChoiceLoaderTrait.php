@@ -60,7 +60,7 @@ trait ChoiceLoaderTrait
     /**
      * Loads a list of choices.
      *
-     * @see \Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader::loadChoiceList
+     * @see Loader\ChoiceLoader::loadChoiceList
      */
     abstract public function loadChoiceList(?callable $value = null): ChoiceList;
 }

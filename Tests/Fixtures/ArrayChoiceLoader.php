@@ -13,20 +13,13 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Fixtures;
 
-/**
- * @internal
- */
-final class CustomerId
+use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\CallbackChoiceLoader;
+
+/** @internal */
+final class ArrayChoiceLoader extends CallbackChoiceLoader
 {
-    private $id;
-
-    public function __construct($id)
+    public function __construct(array $choices = [])
     {
-        $this->id = $id;
-    }
-
-    public function getCustomerId()
-    {
-        return $this->id;
+        parent::__construct(static fn (): array => $choices);
     }
 }

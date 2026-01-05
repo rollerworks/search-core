@@ -15,57 +15,47 @@ namespace Rollerworks\Component\Search\Tests\Field;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
 use Rollerworks\Component\Search\Field\AbstractFieldTypeExtension;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\FieldType;
-use Rollerworks\Component\Search\Field\FieldTypeExtension;
 use Rollerworks\Component\Search\Field\GenericResolvedFieldType;
 use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\FieldSetView;
+use Rollerworks\Component\Search\Tests\Fixtures\Extension\ConfigurableColumnType;
+use Rollerworks\Component\Search\Tests\Fixtures\Extension\FBooType;
+use Rollerworks\Component\Search\Tests\Fixtures\Extension\Foo;
+use Rollerworks\Component\Search\Tests\Fixtures\Extension\Foo1Bar2Type;
+use Rollerworks\Component\Search\Tests\Fixtures\Extension\FooBarHTMLType;
+use Rollerworks\Component\Search\Tests\Fixtures\Extension\FooType;
+use Rollerworks\Component\Search\Tests\Fixtures\Extension\Type;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @internal
+ *
+ * @see \Symfony\Component\Form\Tests\ResolvedFormTypeTest
  */
 final class ResolvedFieldTypeTest extends TestCase
 {
-    /**
-     * @var FieldType&MockObject
-     */
-    private $parentType;
+    /** @var array<string, mixed[]> */
+    private array $calls;
 
-    /**
-     * @var FieldType&MockObject
-     */
-    private $type;
-
-    /**
-     * @var FieldTypeExtension&MockObject
-     */
-    private $extension1;
-
-    /**
-     * @var FieldTypeExtension&MockObject
-     */
-    private $extension2;
-
-    /**
-     * @var GenericResolvedFieldType
-     */
-    private $parentResolvedType;
-
-    /**
-     * @var GenericResolvedFieldType
-     */
-    private $resolvedType;
+    private UsageTrackingParentFieldType $parentType;
+    private UsageTrackingFieldType $type;
+    private UsageTrackingFieldTypeExtension $extension1;
+    private UsageTrackingFieldTypeExtension $extension2;
+    private GenericResolvedFieldType $parentResolvedType;
+    private GenericResolvedFieldType $resolvedType;
 
     protected function setUp(): void
     {
-        $this->parentType = $this->getMockFieldType();
-        $this->type = $this->getMockFieldType();
-        $this->extension1 = $this->getMockFieldTypeExtension();
-        $this->extension2 = $this->getMockFieldTypeExtension();
+        $this->calls = [];
+        $this->parentType = new UsageTrackingParentFieldType($this->calls);
+        $this->type = new UsageTrackingFieldType($this->calls);
+        $this->extension1 = new UsageTrackingFieldTypeExtension($this->calls, ['c' => 'c_default']);
+        $this->extension2 = new UsageTrackingFieldTypeExtension($this->calls, ['d' => 'd_default']);
         $this->parentResolvedType = new GenericResolvedFieldType($this->parentType);
         $this->resolvedType = new GenericResolvedFieldType(
             $this->type,
@@ -77,75 +67,27 @@ final class ResolvedFieldTypeTest extends TestCase
     /** @test */
     public function its_resolved_options_in_correct_order(): void
     {
-        $i = 0;
-
-        $assertIndexAndAddOption = static function ($index, $option, $default) use (&$i) {
-            return static function (OptionsResolver $resolver) use (&$i, $index, $option, $default): void {
-                self::assertEquals($index, $i, 'Executed at index ' . $index);
-
-                ++$i;
-
-                $resolver->setDefaults([$option => $default]);
-            };
-        };
-
-        // First the default options are generated for the super type
-        $this->parentType->expects(self::once())
-            ->method('configureOptions')
-            ->willReturnCallback($assertIndexAndAddOption(0, 'a', 'a_default'))
-        ;
-
-        // The field type itself
-        $this->type->expects(self::once())
-            ->method('configureOptions')
-            ->willReturnCallback($assertIndexAndAddOption(1, 'b', 'b_default'))
-        ;
-
-        // And its extensions
-        $this->extension1->expects(self::once())
-            ->method('configureOptions')
-            ->willReturnCallback($assertIndexAndAddOption(2, 'c', 'c_default'))
-        ;
-
-        $this->extension2->expects(self::once())
-            ->method('configureOptions')
-            ->willReturnCallback($assertIndexAndAddOption(3, 'd', 'd_default'))
-        ;
-
-        $givenOptions = ['a' => 'a_custom', 'c' => 'c_custom'];
-        $resolvedOptions = ['a' => 'a_custom', 'b' => 'b_default', 'c' => 'c_custom', 'd' => 'd_default'];
+        $givenOptions = ['a' => 'a_custom', 'c' => 'c_custom', 'foo' => 'bar'];
+        $resolvedOptions = ['a' => 'a_custom', 'b' => 'b_default', 'c' => 'c_custom', 'd' => 'd_default', 'foo' => 'bar'];
 
         $resolver = $this->resolvedType->getOptionsResolver();
 
-        self::assertEquals($resolvedOptions, $resolver->resolve($givenOptions));
+        $this->assertStructureCalled('configureOptions');
+
+        $this->assertEquals($resolvedOptions, $resolver->resolve($givenOptions));
     }
 
     /** @test */
     public function it_creates_a_field(): void
     {
-        $givenOptions = ['a' => 'a_custom', 'c' => 'c_custom'];
-        $resolvedOptions = ['a' => 'a_custom', 'b' => 'b_default', 'c' => 'c_custom', 'd' => 'd_default'];
-        $optionsResolver = $this->createOptionsResolverMock();
-
-        $this->resolvedType = $this->getMockBuilder(GenericResolvedFieldType::class)
-            ->setConstructorArgs([$this->type, [$this->extension1, $this->extension2], $this->parentResolvedType])
-            ->setMethods(['getOptionsResolver'])
-            ->getMock()
-        ;
-
-        $this->resolvedType->expects(self::once())
-            ->method('getOptionsResolver')
-            ->willReturn($optionsResolver)
-        ;
-
-        $optionsResolver->expects(self::once())
-            ->method('resolve')
-            ->with($givenOptions)
-            ->willReturn($resolvedOptions)
-        ;
+        $givenOptions = ['a' => 'a_custom', 'c' => 'c_custom', 'foo' => 'bar'];
+        $resolvedOptions = ['b' => 'b_default', 'd' => 'd_default', 'a' => 'a_custom', 'c' => 'c_custom', 'foo' => 'bar'];
 
         $field = $this->resolvedType->createField('name', $givenOptions);
 
+        $this->assertStructureCalled('configureOptions');
+
+        self::assertSame('name', $field->getName());
         self::assertSame($this->resolvedType, $field->getType());
         self::assertSame($resolvedOptions, $field->getOptions());
     }
@@ -153,47 +95,12 @@ final class ResolvedFieldTypeTest extends TestCase
     /** @test */
     public function it_builds_the_type(): void
     {
-        $i = 0;
-
-        $assertIndex = static function ($index) use (&$i) {
-            return static function () use (&$i, $index): void {
-                self::assertEquals($index, $i, 'Executed at index ' . $index);
-
-                ++$i;
-            };
-        };
-
         $options = ['a' => 'Foo', 'b' => 'Bar'];
         $field = $this->createFieldMock();
 
-        // First the field is built for the super type
-        $this->parentType->expects(self::once())
-            ->method('buildType')
-            ->with($field, $options)
-            ->willReturnCallback($assertIndex(0))
-        ;
-
-        // Then the type itself
-        $this->type->expects(self::once())
-            ->method('buildType')
-            ->with($field, $options)
-            ->willReturnCallback($assertIndex(1))
-        ;
-
-        // Then its extensions
-        $this->extension1->expects(self::once())
-            ->method('buildType')
-            ->with($field, $options)
-            ->willReturnCallback($assertIndex(2))
-        ;
-
-        $this->extension2->expects(self::once())
-            ->method('buildType')
-            ->with($field, $options)
-            ->willReturnCallback($assertIndex(3))
-        ;
-
         $this->resolvedType->buildType($field, $options);
+
+        $this->assertStructureCalled('buildType');
     }
 
     /** @test */
@@ -208,13 +115,8 @@ final class ResolvedFieldTypeTest extends TestCase
     /** @test */
     public function get_block_prefix(): void
     {
-        $this->type->expects(self::once())
-            ->method('getBlockPrefix')
-            ->willReturn('my_prefix')
-        ;
-
         $resolvedType = new GenericResolvedFieldType($this->type);
-        self::assertSame('my_prefix', $resolvedType->getBlockPrefix());
+        self::assertSame('usage_tracking_field', $resolvedType->getBlockPrefix());
     }
 
     /** @test */
@@ -224,71 +126,41 @@ final class ResolvedFieldTypeTest extends TestCase
         $field = $this->createFieldMock();
         $view = $this->createSearchFieldViewMock();
 
-        $i = 0;
-
-        $assertIndex = static function ($index) use (&$i) {
-            return static function () use (&$i, $index): void {
-                self::assertEquals($index, $i, 'Executed at index ' . $index);
-
-                ++$i;
-            };
-        };
-
-        // First the super type
-        $this->parentType->expects(self::once())
-            ->method('buildView')
-            ->with($view, $field, $options)
-            ->willReturnCallback($assertIndex(0))
-        ;
-
-        // Then the type itself
-        $this->type->expects(self::once())
-            ->method('buildView')
-            ->with($view, $field, $options)
-            ->willReturnCallback($assertIndex(1))
-        ;
-
-        // Then its extensions
-        $this->extension1->expects(self::once())
-            ->method('buildView')
-            ->with($field, $view)
-            ->willReturnCallback($assertIndex(2))
-        ;
-
-        $this->extension2->expects(self::once())
-            ->method('buildView')
-            ->with($field, $view)
-            ->willReturnCallback($assertIndex(3))
-        ;
-
         $this->resolvedType->buildFieldView($view, $field, $options);
+
+        $this->assertStructureCalled('buildView');
+    }
+
+    /** @test */
+    public function it_gets_block_prefix(): void
+    {
+        $resolvedType = new GenericResolvedFieldType(new ConfigurableColumnType());
+
+        self::assertSame('configurable_form_prefix', $resolvedType->getBlockPrefix());
     }
 
     /**
-     * @return FieldType&MockObject
+     * @test
+     * @dataProvider provideTypeClassBlockPrefixTuples
+     *
+     * @param class-string<FieldType> $typeClass
      */
-    private function getMockFieldType(string $typeClass = AbstractFieldType::class)
+    public function it_gets_block_prefix_defaults_to_fqcn_if_no_name(string $typeClass, string $blockPrefix): void
     {
-        return $this->createPartialMock($typeClass, ['configureOptions', 'buildView', 'buildType', 'getBlockPrefix']);
+        $resolvedType = new GenericResolvedFieldType(new $typeClass());
+
+        self::assertSame($blockPrefix, $resolvedType->getBlockPrefix());
     }
 
-    /**
-     * @return AbstractFieldTypeExtension&MockObject
-     */
-    private function getMockFieldTypeExtension()
+    /** @return iterable<array{0: class-string, 1: string}> */
+    public static function provideTypeClassBlockPrefixTuples(): iterable
     {
-        return $this->createPartialMock(AbstractFieldTypeExtension::class, ['getExtendedType', 'configureOptions', 'buildView', 'buildType']);
-    }
-
-    /**
-     * @return OptionsResolver&MockObject
-     */
-    private function createOptionsResolverMock()
-    {
-        return $this->getMockBuilder(OptionsResolver::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
+        yield [FooType::class, 'foo'];
+        yield [Foo::class, 'foo'];
+        yield [Type::class, 'type'];
+        yield [FooBarHTMLType::class, 'foo_bar_html'];
+        yield [Foo1Bar2Type::class, 'foo1_bar2'];
+        yield [FBooType::class, 'f_boo'];
     }
 
     /**
@@ -305,5 +177,114 @@ final class ResolvedFieldTypeTest extends TestCase
     private function createSearchFieldViewMock()
     {
         return $this->createMock(SearchFieldView::class);
+    }
+
+    private function assertStructureCalled(string $name): void
+    {
+        if (! isset($this->calls[$name])) {
+            $this->fail(\sprintf('No call found with name "%s", found: "%s"', $name, implode('", "', array_keys($this->calls))));
+        }
+
+        self::assertSame([$this->parentType, $this->type, $this->extension1, $this->extension2], $this->calls[$name]);
+    }
+}
+
+/** @internal */
+final class UsageTrackingFieldType extends AbstractFieldType
+{
+    use FieldUsageTrackingTrait;
+
+    public function getParent(): string
+    {
+        return UsageTrackingParentFieldType::class;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $this->calls['configureOptions'][] = $this;
+
+        $resolver->setDefault('b', 'b_default');
+        $resolver->setDefined('label');
+        $resolver->setRequired('foo');
+    }
+}
+
+/** @internal */
+final class UsageTrackingParentFieldType extends AbstractFieldType
+{
+    use FieldUsageTrackingTrait;
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $this->calls['configureOptions'][] = $this;
+
+        $resolver->setDefault('a', 'a_default');
+    }
+}
+
+/** @internal */
+final class UsageTrackingFieldTypeExtension extends AbstractFieldTypeExtension
+{
+    use ExtensionUsageTrackingTrait;
+
+    /**
+     * @param mixed[]              $calls
+     * @param array<string, mixed> $defaultOptions
+     */
+    public function __construct(array &$calls, private array $defaultOptions)
+    {
+        $this->calls = &$calls;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $this->calls['configureOptions'][] = $this;
+
+        $resolver->setDefaults($this->defaultOptions);
+    }
+
+    public function getExtendedType(): string
+    {
+        return SearchFieldType::class;
+    }
+}
+
+/** @internal */
+trait FieldUsageTrackingTrait
+{
+    /** @var array<string, array<int, object>> */
+    private array $calls;
+
+    /** @param mixed[] $calls */
+    public function __construct(array &$calls)
+    {
+        $this->calls = &$calls;
+    }
+
+    public function buildType(FieldConfig $config, array $options): void
+    {
+        $this->calls['buildType'][] = $this;
+    }
+
+    public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void
+    {
+        $this->calls['buildView'][] = $this;
+    }
+}
+
+/** @internal */
+trait ExtensionUsageTrackingTrait
+{
+    /** @var array<string, array<int, object>> */
+    private array $calls;
+
+    public function buildType(FieldConfig $builder, array $options): void
+    {
+        $this->calls['buildType'][] = $this;
+    }
+
+    public function buildView(FieldConfig $config, SearchFieldView $view): void
+    {
+        $this->calls['buildView'][] = $this;
     }
 }

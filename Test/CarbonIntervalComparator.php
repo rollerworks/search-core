@@ -42,7 +42,6 @@ final class CarbonIntervalComparator extends Comparator
             $actual,
             $exportedExpected = $exporter->export($expected),
             $exportedActual = $exporter->export($actual),
-            false,
             \sprintf(
                 'Failed asserting that %s matches expected %s.',
                 $exportedActual,
