@@ -17,7 +17,6 @@ use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Exporter\JsonExporter;
 use Rollerworks\Component\Search\Input\JsonInput;
 use Rollerworks\Component\Search\InputProcessor;
-use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 
 /**
  * @internal

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Rollerworks\Component\Search\Test;
+namespace Rollerworks\Component\Search\Tests\Exporter;
 
 use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
@@ -24,6 +24,7 @@ use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchOrder;
+use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -36,7 +37,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  *
- * @internal this class is not covered by the BC promise
+ * @internal
  */
 abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 {
