@@ -32,8 +32,6 @@ use Rollerworks\Component\Search\Value\Range;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
-// TODO Add some tests with empty fields and groups (and they should be able to process)
-
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  *
