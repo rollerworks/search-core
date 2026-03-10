@@ -46,7 +46,7 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
      * @throws TransformationFailedException If the given value is not numeric or
      *                                       if the value can not be transformed
      */
-    public function transform($value): ?string
+    public function transform($value): string
     {
         if ($value === null) {
             return '';
@@ -87,7 +87,7 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
         }
 
         if ($value === 'NaN') {
-            throw new TransformationFailedException('"NaN" is not a valid number');
+            throw new TransformationFailedException('"NaN" is not a valid number.');
         }
 
         if (mb_strpos($value, '∞') !== false) {

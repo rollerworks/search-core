@@ -15,15 +15,12 @@ namespace Rollerworks\Component\Search\Value;
 
 final class Compare implements RequiresComparatorValueHolder
 {
-    private $operator;
-    private $value;
+    private string $operator;
+    private mixed $value;
 
     public const OPERATORS = ['>=', '<=', '<>', '<', '>'];
 
-    /**
-     * @param string $operator
-     */
-    public function __construct($value, $operator)
+    public function __construct(mixed $value, string $operator)
     {
         if (! \in_array($operator, self::OPERATORS, true)) {
             throw new \InvalidArgumentException(

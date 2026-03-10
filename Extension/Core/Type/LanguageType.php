@@ -36,7 +36,7 @@ final class LanguageType extends AbstractFieldType implements ChoiceLoader
         ]);
     }
 
-    public function getParent(): ?string
+    public function getParent(): string
     {
         return ChoiceType::class;
     }

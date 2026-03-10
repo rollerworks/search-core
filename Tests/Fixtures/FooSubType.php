@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\Field\AbstractFieldType;
  */
 final class FooSubType extends AbstractFieldType
 {
-    public function getParent(): ?string
+    public function getParent(): string
     {
         return FooType::class;
     }

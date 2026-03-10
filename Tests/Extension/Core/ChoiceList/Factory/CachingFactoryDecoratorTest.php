@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\ChoiceList\Factory;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\ArrayChoiceList;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\Factory\CachingFactoryDecorator;
@@ -31,11 +30,6 @@ use Rollerworks\Component\Search\Tests\Fixtures\ArrayChoiceLoader;
 final class CachingFactoryDecoratorTest extends TestCase
 {
     use ChoiceListAssertionTrait;
-
-    /**
-     * @var MockObject|null
-     */
-    private $decoratedFactory;
 
     private CachingFactoryDecorator $factory;
 

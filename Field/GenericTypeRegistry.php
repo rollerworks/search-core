@@ -26,14 +26,14 @@ final class GenericTypeRegistry implements TypeRegistry
     /**
      * @var SearchExtension[]
      */
-    private $extensions = [];
+    private array $extensions = [];
 
     /**
      * @var ResolvedFieldType[]
      */
-    private $types = [];
+    private array $types = [];
 
-    private $resolvedTypeFactory;
+    private ResolvedFieldTypeFactory $resolvedTypeFactory;
 
     /**
      * @param SearchExtension[] $extensions
@@ -88,7 +88,7 @@ final class GenericTypeRegistry implements TypeRegistry
 
         try {
             $this->getType($name);
-        } catch (SearchException $e) {
+        } catch (SearchException) {
             return false;
         }
 
@@ -108,15 +108,12 @@ final class GenericTypeRegistry implements TypeRegistry
         $typeExtensions = [];
 
         foreach ($this->extensions as $extension) {
-            $typeExtensions = array_merge(
-                $typeExtensions,
-                $extension->getTypeExtensions($fqcn)
-            );
+            $typeExtensions[] = $extension->getTypeExtensions($fqcn);
         }
 
         return $this->resolvedTypeFactory->createResolvedType(
             $type,
-            $typeExtensions,
+            array_merge(...$typeExtensions),
             $parentType ? $this->getType($parentType) : null
         );
     }

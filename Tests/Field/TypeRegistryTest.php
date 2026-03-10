@@ -53,9 +53,9 @@ final class TypeRegistryTest extends TestCase
         self::assertTrue($registry->hasType(BarType::class)); // auto loaded by FQCN
         self::assertFalse($registry->hasType('text'));
 
-        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(FooType::class));
-        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(FooSubType::class));
-        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(BarType::class));
+        self::assertInstanceOf(FooType::class, $registry->getType(FooType::class)->getInnerType());
+        self::assertInstanceOf(FooSubType::class, $registry->getType(FooSubType::class)->getInnerType());
+        self::assertInstanceOf(BarType::class, $registry->getType(BarType::class)->getInnerType());
     }
 
     /** @test */
@@ -86,9 +86,9 @@ final class TypeRegistryTest extends TestCase
         self::assertTrue($registry->hasType(BarType::class)); // auto loaded by FQCN
         self::assertFalse($registry->hasType('text'));
 
-        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(FooType::class));
-        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(FooSubType::class));
-        self::assertInstanceOf(ResolvedFieldType::class, $registry->getType(BarType::class));
+        self::assertInstanceOf(FooType::class, $registry->getType(FooType::class)->getInnerType());
+        self::assertInstanceOf(FooSubType::class, $registry->getType(FooSubType::class)->getInnerType());
+        self::assertInstanceOf(BarType::class, $registry->getType(BarType::class)->getInnerType());
     }
 
     private function createResolvedTypeMock(FieldType $type): ResolvedFieldType

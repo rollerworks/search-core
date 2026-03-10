@@ -30,7 +30,7 @@ interface ChoiceList
     /**
      * Returns all selectable choices.
      *
-     * @return array The selectable choices indexed by the corresponding values
+     * @return array<array-key, string> The selectable choices indexed by the corresponding values
      */
     public function getChoices(): array;
 
@@ -39,7 +39,7 @@ interface ChoiceList
      *
      * The values are strings that do not contain duplicates.
      *
-     * @return string[]
+     * @return array<int, string>
      */
     public function getValues(): array;
 
@@ -64,7 +64,7 @@ interface ChoiceList
      *         'Undecided' => ['Maybe' => '2'],
      *     ]
      *
-     * @return string[] The choice values
+     * @return array<array-key, string|array<array-key, string>> The choice values
      */
     public function getStructuredValues(): array;
 
@@ -85,8 +85,8 @@ interface ChoiceList
      * In this example, the original key 0 appears twice, once for `true` and
      * once for `null`.
      *
-     * @return int[]|string[] The original choice keys indexed by the
-     *                        corresponding choice values
+     * @return array<array-key, string|int> The original choice keys indexed by the
+     *                                      corresponding choice values
      */
     public function getOriginalKeys(): array;
 
@@ -96,8 +96,8 @@ interface ChoiceList
      * The choices are returned with the same keys and in the same order as the
      * corresponding values in the given array.
      *
-     * @param string[] $values An array of choice values. Non-existing values in
-     *                         this array are ignored
+     * @param array<array-key, string> $values An array of choice values. Non-existing values in
+     *                                         this array are ignored
      */
     public function getChoicesForValues(array $values): array;
 
@@ -110,7 +110,7 @@ interface ChoiceList
      * @param array $choices An array of choices. Non-existing choices in this
      *                       array are ignored
      *
-     * @return string[] An array of choice values
+     * @return array<array-key, string> An array of choice values
      */
     public function getValuesForChoices(array $choices): array;
 

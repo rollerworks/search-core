@@ -19,10 +19,13 @@ use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @internal
+ */
 final class SpyingInputProcessor implements InputProcessor
 {
-    private $config;
-    private $input;
+    private ?ProcessorConfig $config = null;
+    private mixed $input = null;
 
     public static function getCondition(): SearchCondition
     {
@@ -32,7 +35,7 @@ final class SpyingInputProcessor implements InputProcessor
         return new SearchCondition(new FieldSetStub(), $valuesGroup);
     }
 
-    public function process(ProcessorConfig $config, $input): SearchCondition
+    public function process(ProcessorConfig $config, mixed $input): SearchCondition
     {
         $this->config = $config;
         $this->input = $input;
@@ -45,7 +48,7 @@ final class SpyingInputProcessor implements InputProcessor
         return $this->config;
     }
 
-    public function getInput()
+    public function getInput(): mixed
     {
         return $this->input;
     }

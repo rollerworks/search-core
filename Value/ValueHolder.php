@@ -13,6 +13,14 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Value;
 
+/**
+ * ValueHolder is the marker interface for all value-holders.
+ *
+ * Note that all value-holders are considered read-only.
+ *
+ * Do not use this interface directly for any custom implementations
+ * as this is not supported.
+ */
 interface ValueHolder
 {
 }

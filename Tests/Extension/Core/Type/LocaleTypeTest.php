@@ -35,7 +35,7 @@ final class LocaleTypeTest extends SearchIntegrationTestCase
     /** @test */
     public function currencies_are_selectable(): void
     {
-        $field = $field = $this->getFactory()->createField('choice', LocaleType::class);
+        $field = $this->getFactory()->createField('choice', LocaleType::class);
         $field->finalizeConfig();
 
         // NB. Use the ISO value as view-format for easier input.

@@ -40,11 +40,6 @@ final class OrderField implements FieldConfig
     private $options;
 
     /**
-     * @var ValueComparator
-     */
-    private $valueComparator;
-
-    /**
      * @var DataTransformer|null
      */
     private $viewTransformer;
@@ -115,7 +110,7 @@ final class OrderField implements FieldConfig
 
     public function getValueComparator(): ?ValueComparator
     {
-        return $this->valueComparator;
+        return null;
     }
 
     public function setViewTransformer(?DataTransformer $transformer = null): void
@@ -198,5 +193,10 @@ final class OrderField implements FieldConfig
     public function getAttribute(string $name, $default = null)
     {
         return \array_key_exists($name, $this->attributes) ? $this->attributes[$name] : $default;
+    }
+
+    public function finalizeConfig(): void
+    {
+        // Noop
     }
 }

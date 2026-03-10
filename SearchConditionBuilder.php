@@ -42,6 +42,11 @@ final class SearchConditionBuilder
     private $order;
 
     /**
+     * The primary-condition of the search-condition.
+     *
+     * If set to true current level is the primary-condition and prevents
+     * from called the primaryCondition() method at this level.
+     *
      * @var self|true|null
      */
     private $primaryCondition;
@@ -338,11 +343,6 @@ final class SearchConditionBuilder
     }
 
     public function __serialize(): array
-    {
-        throw new \LogicException('Unable serialize a SearchConditionBuilder. Call getSearchCondition() and serialize the SearchCondition itself.');
-    }
-
-    public function __sleep(): array
     {
         throw new \LogicException('Unable serialize a SearchConditionBuilder. Call getSearchCondition() and serialize the SearchCondition itself.');
     }

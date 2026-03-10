@@ -26,19 +26,19 @@ namespace Rollerworks\Component\Search\Extension\Core\ChoiceList;
 class ArrayChoiceList implements ChoiceList
 {
     /**
-     * @var array
+     * @var array<array-key, string>
      */
     protected $choices;
 
     /**
      * The values indexed by the original keys.
      *
-     * @var array
+     * @var array<array-key, string>
      */
     protected $structuredValues;
 
     /**
-     * @var int[]|string[]
+     * @var array<array-key, string>
      */
     protected $originalKeys;
 
@@ -70,7 +70,6 @@ class ArrayChoiceList implements ChoiceList
         }
 
         if ($value === null && $this->castableToString($choices)) {
-            $this->valuesAreConstant = true;
             $value = static fn ($choice) => $choice === false ? '0' : (string) $choice;
         }
 

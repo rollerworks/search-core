@@ -18,6 +18,9 @@ use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
+/**
+ * @internal
+ */
 final class EmptyInputProcessorStub implements InputProcessor
 {
     public function process(ProcessorConfig $config, $input): SearchCondition

@@ -17,9 +17,12 @@ use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\OrderField;
 use Rollerworks\Component\Search\FieldSet;
 
+/**
+ * @internal
+ */
 final class FieldSetStub implements FieldSet
 {
-    public function getSetName(): ?string
+    public function getSetName(): string
     {
         return 'stub';
     }

@@ -46,8 +46,8 @@ final class LazyExtensionTest extends TestCase
         );
 
         self::assertTrue($extension->hasType(TextType::class));
-        self::assertInstanceOf(TextType::class, $extension->getType(TextType::class));
-        self::assertInstanceOf(TextType::class, $extension->getType(TextType::class));
+        self::assertInstanceOf(TextType::class, $type = $extension->getType(TextType::class));
+        self::assertSame($type, $extension->getType(TextType::class));
     }
 
     /** @test */
@@ -81,8 +81,8 @@ final class LazyExtensionTest extends TestCase
         );
 
         self::assertTrue($extension->hasType(TextType::class));
-        self::assertInstanceOf(TextType::class, $extension->getType(TextType::class));
-        self::assertInstanceOf(TextType::class, $extension->getType(TextType::class));
+        self::assertInstanceOf(TextType::class, $type = $extension->getType(TextType::class));
+        self::assertSame($type, $extension->getType(TextType::class));
 
         self::assertSame([$typeExtension1, $typeExtension2], $extension->getTypeExtensions(TextType::class));
         self::assertSame([$typeExtension3], $extension->getTypeExtensions(IntegerType::class));

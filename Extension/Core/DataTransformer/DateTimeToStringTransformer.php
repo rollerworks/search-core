@@ -23,21 +23,16 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  */
 final class DateTimeToStringTransformer extends BaseDateTimeTransformer
 {
-    /**
-     * @var string
-     */
-    private $generateFormat;
+    private string $generateFormat;
 
     /**
      * Format used for parsing strings.
      *
-     * Different than the {@link $generateFormat} because formats for parsing
+     * Different from the {@link $generateFormat} because formats for parsing
      * support additional characters in PHP that are not supported for
      * generating strings.
-     *
-     * @var string
      */
-    private $parseFormat;
+    private string $parseFormat;
 
     /**
      * Transforms a \DateTimeImmutable instance to a string.
@@ -67,40 +62,25 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      * Transforms a DateTime object into a date string with the configured format
      * and timezone.
      *
-     * @param \DateTimeImmutable|null $dateTime
-     *
-     * @return string A value as produced by PHP's date() function
-     *
-     * @throws TransformationFailedException If the given value is not a \DateTimeImmutable
+     * @param \DateTimeImmutable|null $value
      */
-    public function transform($dateTime): string
+    public function transform(mixed $value): string
     {
-        if ($dateTime === null) {
+        if ($value === null) {
             return '';
         }
 
-        if (! $dateTime instanceof \DateTimeImmutable) {
+        if (! $value instanceof \DateTimeImmutable) {
             throw new TransformationFailedException('Expected a \DateTimeImmutable.');
         }
 
-        if (! $dateTime instanceof \DateTimeImmutable) {
-            $dateTime = clone $dateTime;
-        }
-
-        $dateTime = $dateTime->setTimezone(new \DateTimeZone($this->outputTimezone));
-
-        return $dateTime->format($this->generateFormat);
+        return $value->setTimezone(new \DateTimeZone($this->outputTimezone))->format($this->generateFormat);
     }
 
     /**
-     * Transforms a date string in the configured timezone into a DateTime object.
-     *
-     * @param string $value A value as produced by PHP's date() function
-     *
-     * @throws TransformationFailedException If the given value is not a string,
-     *                                       or could not be transformed
+     * Transforms a date string in the configured timezone into a DateTimeImmutable object.
      */
-    public function reverseTransform($value): ?\DateTimeImmutable
+    public function reverseTransform(mixed $value): ?\DateTimeImmutable
     {
         if (empty($value)) {
             return null;

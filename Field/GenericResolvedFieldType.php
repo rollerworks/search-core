@@ -96,7 +96,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
     public function createFieldView(FieldConfig $config, FieldSetView $view): SearchFieldView
     {
         $viewObj = $this->newView($view);
-        $view->vars = array_merge($view->vars, [
+        $viewObj->vars = array_merge($view->vars, [
             'name' => $config->getName(),
             'accept_ranges' => $config->supportValueType(Range::class),
             'accept_compares' => $config->supportValueType(Compare::class),

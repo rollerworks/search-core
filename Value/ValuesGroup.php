@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ValuesGroup implements \Serializable
+class ValuesGroup
 {
     public const GROUP_LOGICAL_OR = 'OR';
     public const GROUP_LOGICAL_AND = 'AND';
@@ -28,12 +28,12 @@ class ValuesGroup implements \Serializable
     /**
      * @var ValuesGroup[]
      */
-    private $groups = [];
+    private array $groups = [];
 
     /**
-     * @var ValuesBag[]
+     * @var array<string, ValuesBag>
      */
-    private $fields = [];
+    private array $fields = [];
 
     /**
      * @var string
@@ -49,7 +49,7 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @return self
+     * @return $this
      */
     public function addGroup(self $group)
     {
@@ -69,16 +69,14 @@ class ValuesGroup implements \Serializable
     public function getGroup(int $index): self
     {
         if (! isset($this->groups[$index])) {
-            throw new InvalidArgumentException(
-                \sprintf('Unable to get none existent group: "%d"', $index)
-            );
+            throw new InvalidArgumentException(\sprintf('Unable to get none existent group: "%d"', $index));
         }
 
         return $this->groups[$index];
     }
 
     /**
-     * @return ValuesGroup[]
+     * @return array<int, ValuesGroup>
      */
     public function getGroups(): array
     {
@@ -86,7 +84,7 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @return self
+     * @return $this
      */
     public function removeGroup(int $index)
     {
@@ -98,7 +96,7 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @return self
+     * @return $this
      */
     public function addField(string $name, ValuesBag $values)
     {
@@ -113,7 +111,7 @@ class ValuesGroup implements \Serializable
     }
 
     /**
-     * @return ValuesBag[]
+     * @return array<string, ValuesBag>
      */
     public function getFields(): array
     {
@@ -126,16 +124,14 @@ class ValuesGroup implements \Serializable
     public function getField(string $name): ValuesBag
     {
         if (! isset($this->fields[$name])) {
-            throw new InvalidArgumentException(
-                \sprintf('Unable to get none existent field: "%s"', $name)
-            );
+            throw new InvalidArgumentException(\sprintf('Unable to get none existent field: "%s"', $name));
         }
 
         return $this->fields[$name];
     }
 
     /**
-     * @return self
+     * @return $this
      */
     public function removeField(string $name)
     {
@@ -173,9 +169,9 @@ class ValuesGroup implements \Serializable
      * This is either one of the following class constants:
      * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
      *
-     * @return self
+     * @return $this
      *
-     * @throws InvalidArgumentException When an unsupported group logical is provided
+     * @throws InvalidArgumentException When an unsupported group-logical is provided
      */
     public function setGroupLogical(string $groupLogical)
     {
@@ -188,6 +184,9 @@ class ValuesGroup implements \Serializable
         return $this;
     }
 
+    /**
+     * @return array{groupLogical: string, groups: ValuesGroup[], fields: array<string, ValuesBag>}
+     */
     public function __serialize(): array
     {
         return [
@@ -197,6 +196,9 @@ class ValuesGroup implements \Serializable
         ];
     }
 
+    /**
+     * @param array{groupLogical: string, groups: ValuesGroup[], fields: array<string, ValuesBag>} $data
+     */
     public function __unserialize(array $data): void
     {
         [
@@ -204,15 +206,5 @@ class ValuesGroup implements \Serializable
             'groups' => $this->groups,
             'fields' => $this->fields,
         ] = $data;
-    }
-
-    public function serialize(): string
-    {
-        return serialize($this->__serialize());
-    }
-
-    public function unserialize($data): void
-    {
-        $this->__unserialize(unserialize($data));
     }
 }

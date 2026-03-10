@@ -43,9 +43,7 @@ final class GenericFieldSetBuilderTest extends TestCase
 
         $factory = $this->prophesize(SearchFactory::class);
         $factory->createField(Argument::cetera())->will(
-            function ($args) use ($test) {
-                \assert(isset($this));
-
+            static function ($args) use ($test) {
                 $type = $test->prophesize(ResolvedFieldType::class);
                 $type->getInnerType()->willReturn(new $args[1]());
 

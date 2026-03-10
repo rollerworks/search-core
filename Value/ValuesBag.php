@@ -18,12 +18,24 @@ namespace Rollerworks\Component\Search\Value;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class ValuesBag implements \Countable, \Serializable
+class ValuesBag implements \Countable
 {
-    private $valuesCount = 0;
-    private $simpleValues = [];
-    private $simpleExcludedValues = [];
-    private $values = [];
+    private int $valuesCount = 0;
+
+    /**
+     * @var array<int, mixed>
+     */
+    private array $simpleValues = [];
+
+    /**
+     * @var array<int, mixed>
+     */
+    private array $simpleExcludedValues = [];
+
+    /**
+     * @var array<class-string<ValueHolder>, ValueHolder[]>
+     */
+    private array $values = [];
 
     public function count(?string $type = null): int
     {
@@ -45,6 +57,9 @@ class ValuesBag implements \Countable, \Serializable
         }
     }
 
+    /**
+     * @return array{simpleValues: array<int, mixed>, simpleExcludedValues: array<int, mixed>, values: array<class-string<ValueHolder>, ValueHolder[]>, valuesCount: int}
+     */
     public function __serialize(): array
     {
         return [
@@ -55,6 +70,9 @@ class ValuesBag implements \Countable, \Serializable
         ];
     }
 
+    /**
+     * @param array{simpleValues: array<int, mixed>, simpleExcludedValues: array<int, mixed>, values: array<class-string<ValueHolder>, ValueHolder[]>, valuesCount: int} $data
+     */
     public function __unserialize(array $data): void
     {
         [
@@ -65,28 +83,20 @@ class ValuesBag implements \Countable, \Serializable
         ] = $data;
     }
 
-    public function serialize(): string
-    {
-        return serialize($this->__serialize());
-    }
-
-    public function unserialize($data): void
-    {
-        $this->__unserialize(unserialize($data));
-    }
-
+    /**
+     * @return mixed[]
+     */
     public function getSimpleValues(): array
     {
         return $this->simpleValues;
     }
 
     /**
-     * @return static
+     * @return $this
      */
-    public function addSimpleValue($value)
+    public function addSimpleValue(mixed $value): static
     {
         $this->simpleValues[] = $value;
-
         ++$this->valuesCount;
 
         return $this;
@@ -98,9 +108,9 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @return static
+     * @return $this
      */
-    public function removeSimpleValue(int $index)
+    public function removeSimpleValue(int $index): static
     {
         if (isset($this->simpleValues[$index])) {
             unset($this->simpleValues[$index]);
@@ -111,15 +121,18 @@ class ValuesBag implements \Countable, \Serializable
         return $this;
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     public function getExcludedSimpleValues(): array
     {
         return $this->simpleExcludedValues;
     }
 
     /**
-     * @return static
+     * @return $this
      */
-    public function addExcludedSimpleValue($value)
+    public function addExcludedSimpleValue($value): static
     {
         $this->simpleExcludedValues[] = $value;
         ++$this->valuesCount;
@@ -135,9 +148,9 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * Remove a simple excluded value by index.
      *
-     * @return static
+     * @return $this
      */
-    public function removeExcludedSimpleValue(int $index)
+    public function removeExcludedSimpleValue(int $index): static
     {
         if (isset($this->simpleExcludedValues[$index])) {
             unset($this->simpleExcludedValues[$index]);
@@ -151,19 +164,21 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * Get all values from a specific type.
      *
-     * @return ValueHolder[]
+     * @template T of ValueHolder
+     *
+     * @param class-string<T> $type
+     *
+     * @return T[]
      */
     public function get(string $type): array
     {
-        if (! isset($this->values[$type])) {
-            return [];
-        }
-
-        return $this->values[$type];
+        return $this->values[$type] ?? [];
     }
 
     /**
-     * Get a single value by type and index.
+     * Check if the bag has values for a specific type.
+     *
+     * @param class-string<ValueHolder> $type
      */
     public function has(string $type): bool
     {
@@ -173,9 +188,9 @@ class ValuesBag implements \Countable, \Serializable
     /**
      * Remove a value by type and index.
      *
-     * @return ValuesBag New ValuesBag object with the referenced values removed
+     * @return $this
      */
-    public function remove(string $type, int $index)
+    public function remove(string $type, int $index): static
     {
         if (isset($this->values[$type][$index])) {
             unset($this->values[$type][$index]);
@@ -187,17 +202,19 @@ class ValuesBag implements \Countable, \Serializable
     }
 
     /**
-     * @return static
+     * @return $this
      */
-    public function add(ValueHolder $value)
+    public function add(ValueHolder $value): static
     {
         $this->values[$value::class][] = $value;
-
         ++$this->valuesCount;
 
         return $this;
     }
 
+    /**
+     * @return array<string, ValueHolder[]>
+     */
     public function all(): array
     {
         return $this->values;

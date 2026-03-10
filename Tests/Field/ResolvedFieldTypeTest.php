@@ -106,10 +106,15 @@ final class ResolvedFieldTypeTest extends TestCase
     /** @test */
     public function create_view(): void
     {
-        $field = $this->createFieldMock();
-        $view = $this->resolvedType->createFieldView($field, new FieldSetView());
+        $rootView = new FieldSetView();
+        $rootView->vars['fieldset'] = 'users';
 
-        self::assertInstanceOf(SearchFieldView::class, $view);
+        $field = $this->createFieldMock();
+        $view = $this->resolvedType->createFieldView($field, $rootView);
+
+        self::assertEquals('name', $view->vars['name']);
+        self::assertEquals('users', $view->vars['fieldset']);
+        self::assertFalse($view->vars['accept_ranges']);
     }
 
     /** @test */
@@ -166,9 +171,14 @@ final class ResolvedFieldTypeTest extends TestCase
     /**
      * @return FieldConfig&MockObject
      */
-    private function createFieldMock()
+    private function createFieldMock(string $name = 'name')
     {
-        return $this->getMockBuilder(FieldConfig::class)->getMock();
+        $mock = $this->getMockBuilder(FieldConfig::class)->getMock();
+        $mock->expects(self::any())->method('getName')->willReturn($name);
+        $mock->expects(self::any())->method('getType')->willReturn($this->resolvedType);
+        $mock->expects(self::any())->method('getOptions')->willReturn([]);
+
+        return $mock;
     }
 
     /**

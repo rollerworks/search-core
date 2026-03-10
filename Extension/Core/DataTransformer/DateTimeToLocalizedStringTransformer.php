@@ -66,26 +66,26 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
     /**
      * Transforms a normalized date into a localized date string/array.
      *
-     * @param \DateTimeImmutable|null $dateTime
+     * @param \DateTimeImmutable|null $value
      *
      * @return string Localized date string
      *
      * @throws TransformationFailedException if the given value is not a \DateTimeImmutable
      *                                       or if the date could not be transformed
      */
-    public function transform($dateTime): string
+    public function transform(mixed $value): string
     {
-        if ($dateTime === null) {
+        if ($value === null) {
             return '';
         }
 
-        if (! $dateTime instanceof \DateTimeImmutable) {
+        if (! $value instanceof \DateTimeImmutable) {
             throw new TransformationFailedException('Expected a \DateTimeImmutable.');
         }
 
-        $value = $this->getIntlDateFormatter()->format($dateTime->getTimestamp());
+        $value = $this->getIntlDateFormatter()->format($value->getTimestamp());
 
-        if (intl_get_error_code() != 0) {
+        if (intl_get_error_code() !== 0) {
             throw new TransformationFailedException(intl_get_error_message(), intl_get_error_code());
         }
 
@@ -101,7 +101,7 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      * @throws TransformationFailedException if the given value is not a string,
      *                                       if the date could not be parsed
      */
-    public function reverseTransform($value): ?\DateTimeImmutable
+    public function reverseTransform(mixed $value): ?\DateTimeImmutable
     {
         if (! \is_string($value)) {
             throw new TransformationFailedException('Expected a string.');

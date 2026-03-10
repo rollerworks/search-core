@@ -21,6 +21,8 @@ use Rollerworks\Component\Search\ValueComparator;
  * The configuration of a SearchField.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @method void finalizeConfig()
  */
 interface FieldConfig
 {

@@ -157,7 +157,7 @@ final class ChoiceType extends AbstractFieldType
         }
 
         // Harden against NULL values
-        $choices = $options['choices'] !== null ? $options['choices'] : [];
+        $choices = $options['choices'] ?? [];
 
         return $this->choiceListFactory->createListFromChoices($choices, $options['choice_value']);
     }

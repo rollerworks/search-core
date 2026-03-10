@@ -83,7 +83,7 @@ final class BirthdayType extends AbstractFieldType
         $resolver->setAllowedTypes('allow_future_date', ['bool']);
     }
 
-    public function getParent(): ?string
+    public function getParent(): string
     {
         return DateType::class;
     }
