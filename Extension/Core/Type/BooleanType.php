@@ -24,6 +24,43 @@ final class BooleanType extends AbstractFieldType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
+        $resolver->setDefault('invalid_message', 'This value is not a valid boolean.');
+
+        // Symfony 6.4 compatiblity
+        if (! method_exists($resolver, 'setOptions')) {
+            $resolver->setDefault('view_label', static function (OptionsResolver $options): void {
+                $options->setDefaults([
+                    'true' => 'yes',
+                    'false' => 'no',
+                ]);
+
+                $options->setAllowedTypes('true', ['string']);
+                $options->setAllowedTypes('false', ['string']);
+            });
+
+            $resolver->setDefault('norm_label', static function (OptionsResolver $options): void {
+                $options->setDefaults([
+                    'true' => 'true',
+                    'false' => 'false',
+                ]);
+
+                $options->setAllowedTypes('true', ['string']);
+                $options->setAllowedTypes('false', ['string']);
+            });
+
+            $resolver->setDefault('view_aliases', static function (OptionsResolver $options, Options $parent): void {
+                $options->setDefaults([
+                    'true' => array_unique(['yes', 'y', '1', 1, 'on', 'true', $parent['view_label']['true']], \SORT_REGULAR),
+                    'false' => array_unique(['no', 'n', '0', 0, 'off', 'false', $parent['view_label']['false']], \SORT_REGULAR),
+                ]);
+
+                $options->setAllowedTypes('true', ['scalar[]']);
+                $options->setAllowedTypes('false', ['scalar[]']);
+            });
+
+            return;
+        }
+
         $resolver->setOptions('view_label', static function (OptionsResolver $options): void {
             $options->setDefaults([
                 'true' => 'yes',
@@ -54,7 +91,7 @@ final class BooleanType extends AbstractFieldType
             $options->setAllowedTypes('false', ['scalar[]']);
         });
 
-        $resolver->setDefault('invalid_message', 'This value is not a valid boolean.');
+
     }
 
     public function buildType(FieldConfig $config, array $options): void
