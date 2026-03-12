@@ -43,13 +43,13 @@ use Symfony\Component\PropertyAccess\PropertyPath;
  */
 final class PropertyAccessDecorator implements ChoiceListFactory
 {
-    private $decoratedFactory;
-    private $propertyAccessor;
+    private readonly PropertyAccessor $propertyAccessor;
 
-    public function __construct(ChoiceListFactory $decoratedFactory, ?PropertyAccessor $propertyAccessor = null)
-    {
-        $this->decoratedFactory = $decoratedFactory;
-        $this->propertyAccessor = $propertyAccessor ?: PropertyAccess::createPropertyAccessor();
+    public function __construct(
+        private readonly ChoiceListFactory $decoratedFactory,
+        ?PropertyAccessor $propertyAccessor = null,
+    ) {
+        $this->propertyAccessor = $propertyAccessor ?? PropertyAccess::createPropertyAccessor();
     }
 
     public function getDecoratedFactory(): ChoiceListFactory

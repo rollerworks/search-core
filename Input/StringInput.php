@@ -136,28 +136,16 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 abstract class StringInput extends AbstractInput
 {
-    /**
-     * @var StructureBuilder|null
-     */
-    protected $structureBuilder;
+    protected ?StructureBuilder $structureBuilder;
+    protected ?StructureBuilder $orderStructureBuilder;
 
-    /**
-     * @var StructureBuilder|null
-     */
-    protected $orderStructureBuilder;
+    /** @var array<string, string> */
+    protected array $fields = [];
 
-    /**
-     * @var string[]
-     */
-    protected $fields = [];
+    /** @var array<string, \Closure> */
+    protected array $valueLexers = [];
 
-    /**
-     * @var \Closure[]
-     */
-    protected $valueLexers = [];
-
-    /** @var StringLexer */
-    private $lexer;
+    private StringLexer $lexer;
 
     public function __construct(?Validator $validator = null)
     {

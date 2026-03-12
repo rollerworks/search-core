@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Extension;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
@@ -75,8 +76,8 @@ final class LazyExtensionTest extends TestCase
                 TextType::class => static fn () => new TextType(),
             ],
             [
-                TextType::class => [$typeExtension1, $typeExtension2],
-                IntegerType::class => [$typeExtension3],
+                TextType::class => ['ext1' => $typeExtension1, 'ext' => $typeExtension2],
+                IntegerType::class => ['ext3' => $typeExtension3],
             ]
         );
 
@@ -116,7 +117,7 @@ final class LazyExtensionTest extends TestCase
         $extension->getTypeExtensions(IntegerType::class);
     }
 
-    public function createTypeExtension(string $type)
+    public function createTypeExtension(string $type): FieldTypeExtension
     {
         $typeExtension = $this->createMock(FieldTypeExtension::class);
         $typeExtension

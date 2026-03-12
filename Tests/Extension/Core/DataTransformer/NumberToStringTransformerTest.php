@@ -151,6 +151,8 @@ final class NumberToStringTransformerTest extends TestCase
     }
 
     /**
+     * @param NumberToStringTransformer::ROUND_* $roundingMode
+     *
      * @dataProvider transformWithRoundingProvider
      *
      * @test
@@ -272,6 +274,8 @@ final class NumberToStringTransformerTest extends TestCase
     }
 
     /**
+     * @param NumberToStringTransformer::ROUND_* $roundingMode
+     *
      * @dataProvider reverseTransformWithRoundingProvider
      *
      * @test

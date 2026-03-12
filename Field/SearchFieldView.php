@@ -23,19 +23,14 @@ class SearchFieldView
     /**
      * The variables assigned to this view.
      *
-     * @var array
+     * @var array<string, mixed>
      */
-    public $vars = [
+    public array $vars = [
         'attr' => [],
     ];
 
-    /**
-     * @var FieldSetView
-     */
-    public $fieldSet;
-
-    public function __construct(FieldSetView $fieldSet)
-    {
-        $this->fieldSet = $fieldSet;
+    public function __construct(
+        public FieldSetView $fieldSet,
+    ) {
     }
 }

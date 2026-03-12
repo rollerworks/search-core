@@ -29,44 +29,21 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class OrderStructureBuilder implements StructureBuilder
 {
-    /** @var FieldSet */
-    private $fieldSet;
+    private readonly FieldSet $fieldSet;
+    private readonly ValuesGroup $valuesGroup;
+    private ?FieldConfig $fieldConfig = null;
+    private ?ValuesBag $valuesBag = null;
+    private ?DataTransformer $inputTransformer;
 
-    /** @var ErrorList */
-    private $errorList;
-
-    /** @var Validator */
-    private $validator;
-
-    /** @var ValuesGroup */
-    private $valuesGroup;
-
-    /** @var ValuesBag|null */
-    private $valuesBag;
-
-    /** @var FieldConfig|null */
-    private $fieldConfig;
-
-    /** @var string */
-    private $path;
-
-    /**
-     * False when not set, null when undetected (lazy loaded).
-     *
-     * @var bool|DataTransformer|null
-     */
-    private $inputTransformer;
-
-    private bool $viewFormat;
-
-    public function __construct(ProcessorConfig $config, Validator $validator, ErrorList $errorList, string $path = '', bool $viewFormat = false)
-    {
+    public function __construct(
+        ProcessorConfig $config,
+        private readonly Validator $validator,
+        private ErrorList $errorList,
+        private readonly string $path = 'order',
+        private readonly bool $viewFormat = false,
+    ) {
         $this->fieldSet = $config->getFieldSet();
-        $this->validator = $validator;
-        $this->path = $path ?: 'order';
-        $this->errorList = $errorList;
         $this->valuesGroup = new ValuesGroup();
-        $this->viewFormat = $viewFormat;
     }
 
     public function getErrors(): ErrorList
@@ -101,14 +78,14 @@ final class OrderStructureBuilder implements StructureBuilder
         }
 
         $this->fieldConfig = $this->fieldSet->get($name);
-        $this->inputTransformer = ($this->viewFormat ? $this->fieldConfig->getViewTransformer() : $this->fieldConfig->getNormTransformer()) ?? false;
+        $this->inputTransformer = ($this->viewFormat ? $this->fieldConfig->getViewTransformer() : $this->fieldConfig->getNormTransformer()) ?? null;
 
         $this->valuesBag = $this->valuesGroup->getField($name);
 
         $this->validator->initializeContext($this->fieldConfig, $this->errorList);
     }
 
-    public function simpleValue($value, string $path): void
+    public function simpleValue(mixed $value, string $path): void
     {
         if ($this->valuesBag === null) {
             throw new \LogicException('Cannot add value to unknown bag');
@@ -127,42 +104,27 @@ final class OrderStructureBuilder implements StructureBuilder
         $this->valuesBag->addSimpleValue($modelVal);
     }
 
-    public function excludedSimpleValue($value, string $path): void
+    public function excludedSimpleValue(mixed $value, string $path): void
     {
         throw OrderStructureException::invalidValue($this->fieldConfig->getName());
     }
 
-    /**
-     * @param array $path [path, lower-path-pattern, upper-path-pattern]
-     */
-    public function rangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
+    public function rangeValue(mixed $lower, mixed $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
     {
         throw OrderStructureException::invalidValue($this->fieldConfig->getName());
     }
 
-    /**
-     * @param array $path [path, lower-path-pattern, upper-path-pattern]
-     */
-    public function excludedRangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
+    public function excludedRangeValue(mixed $lower, mixed $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
     {
         throw OrderStructureException::invalidValue($this->fieldConfig->getName());
     }
 
-    /**
-     * @param string $operator
-     * @param array  $path     [base-path, operator-path, value-path]
-     */
-    public function comparisonValue($operator, $value, array $path): void
+    public function comparisonValue(mixed $operator, mixed $value, array $path): void
     {
         throw OrderStructureException::invalidValue($this->fieldConfig->getName());
     }
 
-    /**
-     * @param string $type
-     * @param string $value
-     * @param array  $path  [base-path, value-path, type-path]
-     */
-    public function patterMatchValue($type, $value, bool $caseInsensitive, array $path): void
+    public function patterMatchValue(mixed $type, mixed $value, bool $caseInsensitive, array $path): void
     {
         throw OrderStructureException::invalidValue($this->fieldConfig->getName());
     }
@@ -186,7 +148,7 @@ final class OrderStructureBuilder implements StructureBuilder
      */
     private function inputToNorm($value, string $path)
     {
-        if ($this->inputTransformer === false) {
+        if ($this->inputTransformer === null) {
             if ($value !== null && ! \is_scalar($value)) {
                 $e = new \RuntimeException(
                     \sprintf(

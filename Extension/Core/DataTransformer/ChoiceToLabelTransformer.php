@@ -23,13 +23,10 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceListView;
  */
 final class ChoiceToLabelTransformer implements DataTransformer
 {
-    private $choiceList;
-    private $choiceListView;
-
-    public function __construct(ChoiceList $choiceList, ChoiceListView $choiceListView)
-    {
-        $this->choiceList = $choiceList;
-        $this->choiceListView = $choiceListView;
+    public function __construct(
+        private readonly ChoiceList $choiceList,
+        private readonly ChoiceListView $choiceListView,
+    ) {
     }
 
     public function transform($choice)

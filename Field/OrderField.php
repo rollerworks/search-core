@@ -24,41 +24,22 @@ use Rollerworks\Component\Search\ValueComparator;
  */
 final class OrderField implements FieldConfig
 {
-    /**
-     * @var string
-     */
-    private $name;
+    private ?DataTransformer $normTransformer = null;
+    private ?DataTransformer $viewTransformer = null;
+
+    /** @var array<string, mixed> */
+    private array $attributes = [];
 
     /**
-     * @var ResolvedFieldType
-     */
-    private $type;
-
-    /**
-     * @var array
-     */
-    private $options;
-
-    /**
-     * @var DataTransformer|null
-     */
-    private $viewTransformer;
-
-    /**
-     * @var DataTransformer|null
-     */
-    private $normTransformer;
-
-    /**
-     * @var array
-     */
-    private $attributes = [];
-
-    /**
+     * @param array<string, mixed> $options
+     *
      * @throws \InvalidArgumentException When the name is invalid
      */
-    public function __construct(string $name, ResolvedFieldType $type, array $options = [])
-    {
+    public function __construct(
+        private readonly string $name,
+        private readonly ResolvedFieldType $type,
+        private readonly array $options = [],
+    ) {
         if (! preg_match('/^@_?[a-zA-Z][a-zA-Z0-9_\-]*$/D', $name)) {
             throw new InvalidArgumentException(
                 \sprintf(
@@ -68,10 +49,6 @@ final class OrderField implements FieldConfig
                 )
             );
         }
-
-        $this->name = $name;
-        $this->type = $type;
-        $this->options = $options;
     }
 
     public static function isOrder(string $name): bool
@@ -94,14 +71,14 @@ final class OrderField implements FieldConfig
         return false;
     }
 
-    public function setValueTypeSupport(string $type, bool $enabled): void
+    public function setValueTypeSupport(string $type, bool $enabled): never
     {
         throw new BadMethodCallException(
             'OrderField does not support supporting custom value types'
         );
     }
 
-    public function setValueComparator(ValueComparator $comparator): void
+    public function setValueComparator(ValueComparator $comparator): never
     {
         throw new BadMethodCallException(
             'OrderField does not support supporting custom value comparator'
@@ -113,9 +90,9 @@ final class OrderField implements FieldConfig
         return null;
     }
 
-    public function setViewTransformer(?DataTransformer $transformer = null): void
+    public function setViewTransformer(?DataTransformer $viewTransformer = null): void
     {
-        $this->viewTransformer = $transformer;
+        $this->viewTransformer = $viewTransformer;
     }
 
     public function getViewTransformer(): ?DataTransformer
@@ -123,9 +100,9 @@ final class OrderField implements FieldConfig
         return $this->viewTransformer;
     }
 
-    public function setNormTransformer(?DataTransformer $transformer = null): void
+    public function setNormTransformer(?DataTransformer $viewTransformer = null): void
     {
-        $this->normTransformer = $transformer;
+        $this->normTransformer = $viewTransformer;
     }
 
     public function getNormTransformer(): ?DataTransformer
@@ -166,7 +143,7 @@ final class OrderField implements FieldConfig
         return $view;
     }
 
-    public function setAttribute(string $name, $value)
+    public function setAttribute(string $name, mixed $value)
     {
         $this->attributes[$name] = $value;
 
@@ -190,7 +167,7 @@ final class OrderField implements FieldConfig
         return \array_key_exists($name, $this->attributes);
     }
 
-    public function getAttribute(string $name, $default = null)
+    public function getAttribute(string $name, mixed $default = null): mixed
     {
         return \array_key_exists($name, $this->attributes) ? $this->attributes[$name] : $default;
     }

@@ -26,18 +26,15 @@ use Rollerworks\Component\Search\InputProcessor;
  */
 final class InputProcessorLoader
 {
-    private $container;
-    private $serviceIds;
-
     /**
-     * @param ContainerInterface $container  A PSR-11 compatible Service locator/container
-     * @param string[]           $serviceIds Format alias to service-id mapping,
-     *                                       eg. 'json' => 'JsonInput-ClassName'
+     * @param ContainerInterface    $container  A PSR-11 compatible Service container
+     * @param array<string, string> $serviceIds Format alias to service-id mapping,
+     *                                          eg. 'json' => 'ServiceId of the container'
      */
-    public function __construct(ContainerInterface $container, array $serviceIds)
-    {
-        $this->container = $container;
-        $this->serviceIds = $serviceIds;
+    public function __construct(
+        private readonly ContainerInterface $container,
+        private readonly array $serviceIds,
+    ) {
     }
 
     /**

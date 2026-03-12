@@ -15,25 +15,21 @@ namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Field\FieldType;
+use Rollerworks\Component\Search\Field\FieldTypeExtension;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class PreloadedExtension implements SearchExtension
+final readonly class PreloadedExtension implements SearchExtension
 {
-    private $types = [];
-    private $typeExtensions = [];
-
     /**
-     * Constructor.
-     *
-     * @param FieldType[] $types          The types that the extension should support
-     * @param array[]     $typeExtensions The type extensions that the extension should support
+     * @param array<string, FieldType>            $types
+     * @param array<string, FieldTypeExtension[]> $typeExtensions ['typeName' => [new MyTypeExtension()]
      */
-    public function __construct(array $types, array $typeExtensions = [])
-    {
-        $this->types = $types;
-        $this->typeExtensions = $typeExtensions;
+    public function __construct(
+        private array $types,
+        private array $typeExtensions = [],
+    ) {
     }
 
     public function getType(string $name): FieldType

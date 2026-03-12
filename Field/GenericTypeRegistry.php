@@ -23,33 +23,23 @@ use Rollerworks\Component\Search\SearchExtension;
  */
 final class GenericTypeRegistry implements TypeRegistry
 {
-    /**
-     * @var SearchExtension[]
-     */
-    private array $extensions = [];
-
-    /**
-     * @var ResolvedFieldType[]
-     */
+    /** @var array<string, ResolvedFieldType> */
     private array $types = [];
-
-    private ResolvedFieldTypeFactory $resolvedTypeFactory;
 
     /**
      * @param SearchExtension[] $extensions
      *
      * @throws UnexpectedTypeException if an extension does not implement SearchExtension
      */
-    public function __construct(array $extensions, ResolvedFieldTypeFactory $resolvedTypeFactory)
-    {
+    public function __construct(
+        private readonly array $extensions,
+        private readonly ResolvedFieldTypeFactory $resolvedTypeFactory,
+    ) {
         foreach ($extensions as $extension) {
             if (! $extension instanceof SearchExtension) {
                 throw new UnexpectedTypeException($extension, SearchExtension::class);
             }
         }
-
-        $this->extensions = $extensions;
-        $this->resolvedTypeFactory = $resolvedTypeFactory;
     }
 
     public function getType(string $name): ResolvedFieldType

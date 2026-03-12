@@ -21,35 +21,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
 final class SearchConditionBuilder
 {
-    /**
-     * @var ValuesGroup
-     */
-    private $valuesGroup;
-
-    /**
-     * @var SearchConditionBuilder|null
-     */
-    private $parent;
-
-    /**
-     * @var FieldSet
-     */
-    private $fieldSet;
-
-    /**
-     * @var ValuesGroup|null
-     */
-    private $order;
-
-    /**
-     * The primary-condition of the search-condition.
-     *
-     * If set to true current level is the primary-condition and prevents
-     * from called the primaryCondition() method at this level.
-     *
-     * @var self|true|null
-     */
-    private $primaryCondition;
+    private ValuesGroup $valuesGroup;
+    private ?ValuesGroup $order = null;
+    private ?self $primaryCondition = null;
 
     /**
      * @param string $logical eg. one of the following ValuesGroup class constants value:
@@ -60,16 +34,16 @@ final class SearchConditionBuilder
         return new self($logical, $fieldSet);
     }
 
-    private function __construct(string $logical, FieldSet $fieldSet, ?self $parent = null)
-    {
+    private function __construct(
+        string $logical,
+        private readonly FieldSet $fieldSet,
+        private readonly ?self $parent = null,
+    ) {
         $this->valuesGroup = new ValuesGroup($logical);
-        $this->parent = $parent;
-        $this->fieldSet = $fieldSet;
     }
 
     /**
-     * @param string $logical eg. one of the following ValuesGroup class constants value:
-     *                        GROUP_LOGICAL_OR or GROUP_LOGICAL_AND
+     * @param ValuesGroup::GROUP_LOGICAL_* $logical
      *
      * @return $this
      */
@@ -94,7 +68,7 @@ final class SearchConditionBuilder
      * ->field('name')
      *   ->addSimpleValue('my value')
      *   ->addSimpleValue('my value 2')
-     * ->end() // return back to the ValuesGroupBuilder or SearchConditionBuilder
+     * ->end() // return to the ValuesGroupBuilder or SearchConditionBuilder
      * ```
      *
      * Or (with primary condition)
@@ -103,17 +77,17 @@ final class SearchConditionBuilder
      * ->order('@name', 'ASC')
      * ->primaryCondition()
      *     ->order('@id', 'DESC')
-     * ->end() // Returns back to the main condition
+     * ->end() // Returns to the main condition
      * ```
      *
-     * @param string $name      The field-name (must be valid known ordering field like @id)
-     * @param string $direction ASC or DESC
+     * @param string                    $name      The field-name (must be a valid known ordering field like "@id")
+     * @param 'asc'|'desc'|'ASC'|'DESC' $direction
      *
      * @return $this
      */
     public function order(string $name, string $direction = 'ASC'): self
     {
-        if ($this->parent && $this->primaryCondition !== true) {
+        if ($this->parent && $this->parent->primaryCondition !== $this) {
             throw new BadMethodCallException('Cannot add ordering at nested levels.');
         }
 
@@ -161,8 +135,8 @@ final class SearchConditionBuilder
      * ->group()
      *     ->field('name')
      *         ->...
-     *     ->end() // return back to the ValuesGroup.
-     * ->end() // return back to the parent ValuesGroup level
+     *     ->end() // return to the ValuesGroup.
+     * ->end() // return to the parent ValuesGroup level
      * ```
      *
      * Note: Groups cannot be altered or removed with the builder after creation.
@@ -182,7 +156,7 @@ final class SearchConditionBuilder
      * Add/expend a field's ValuesBag on 'this' ValuesGroup and returns
      * a ValuesBagBuilder for adding values to the field.
      *
-     * Note. Values must be in the model format, they are not transformed!
+     * Note: Values must be in the model format, they are not transformed!
      *
      * The ValuesBagBuilder is subset of ValuesBag, which provides a developer
      * friendly interface to construct a ValuesBag structure for the field.
@@ -191,7 +165,7 @@ final class SearchConditionBuilder
      * ->field('name')
      *   ->addSimpleValue('my value')
      *   ->addSimpleValue('my value 2')
-     * ->end() // return back to the ValuesGroup level
+     * ->end() // return to the ValuesGroup level
      * ```
      */
     public function field(string $name): ValuesBagBuilder
@@ -217,7 +191,7 @@ final class SearchConditionBuilder
      * Add/overwrites a field's ValuesBag on this ValuesGroup and returns
      * a ValuesBagBuilder for adding values to the field.
      *
-     * Note. Values must be in the model format, they are not transformed!
+     * Note: Values must be in the model format, they are not transformed!
      *
      * The ValuesBagBuilder is subset of ValuesBag, which provides a developer
      * friendly interface to construct a ValuesBag structure for the field.
@@ -226,7 +200,7 @@ final class SearchConditionBuilder
      * ->overwriteField('name')
      *   ->addSimpleValue('my value')
      *   ->addSimpleValue('my value 2')
-     * ->end() // return back to the ValuesGroup level
+     * ->end() // return to the ValuesGroup level
      * ```
      */
     public function overwriteField(string $name): ValuesBagBuilder
@@ -244,7 +218,7 @@ final class SearchConditionBuilder
     }
 
     /**
-     * Close the condition building level (field or group) and return back
+     * Close the condition building level (field or group) and return
      * to the previous builder level.
      */
     public function end(): self
@@ -258,6 +232,8 @@ final class SearchConditionBuilder
      * Note: This will overwrite any existing primary-condition of this builder.
      *
      * @return self A SearchConditionBuilder for the primary-condition structure
+     *
+     * @throws BadMethodCallException when called at a nested level
      */
     public function primaryCondition(): self
     {
@@ -266,8 +242,6 @@ final class SearchConditionBuilder
         }
 
         $builder = new self(ValuesGroup::GROUP_LOGICAL_AND, $this->fieldSet, $this);
-        $builder->primaryCondition = true;
-
         $this->primaryCondition = $builder;
 
         return $builder;
@@ -300,6 +274,12 @@ final class SearchConditionBuilder
         return $searchCondition;
     }
 
+    /**
+     * Normalize the SearchConditionBuilder structure to a ValuesGroup structure
+     * that can be used by the SearchCondition.
+     *
+     * Otherwise the final SearchCondition would contain a SearchConditionBuilder instance.
+     */
     private function normalizeValueGroup(ValuesGroup $currentValuesGroup, ValuesGroup $rootValuesGroup): void
     {
         foreach ($currentValuesGroup->getGroups() as $group) {

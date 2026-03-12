@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Field;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType;
 use Rollerworks\Component\Search\Field\AbstractFieldType;
@@ -168,10 +167,7 @@ final class ResolvedFieldTypeTest extends TestCase
         yield [FBooType::class, 'f_boo'];
     }
 
-    /**
-     * @return FieldConfig&MockObject
-     */
-    private function createFieldMock(string $name = 'name')
+    private function createFieldMock(string $name = 'name'): FieldConfig
     {
         $mock = $this->getMockBuilder(FieldConfig::class)->getMock();
         $mock->expects(self::any())->method('getName')->willReturn($name);
@@ -181,10 +177,7 @@ final class ResolvedFieldTypeTest extends TestCase
         return $mock;
     }
 
-    /**
-     * @return MockObject&SearchFieldView
-     */
-    private function createSearchFieldViewMock()
+    private function createSearchFieldViewMock(): SearchFieldView
     {
         return $this->createMock(SearchFieldView::class);
     }

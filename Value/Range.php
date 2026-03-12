@@ -18,17 +18,12 @@ namespace Rollerworks\Component\Search\Value;
  */
 class Range implements RequiresComparatorValueHolder
 {
-    private mixed $lower;
-    private mixed $upper;
-    private bool $inclusiveLower;
-    private bool $inclusiveUpper;
-
-    public function __construct(mixed $lower, mixed $upper, bool $inclusiveLower = true, bool $inclusiveUpper = true)
-    {
-        $this->lower = $lower;
-        $this->upper = $upper;
-        $this->inclusiveLower = $inclusiveLower;
-        $this->inclusiveUpper = $inclusiveUpper;
+    public function __construct(
+        private readonly mixed $lower,
+        private readonly mixed $upper,
+        private readonly bool $inclusiveLower = true,
+        private readonly bool $inclusiveUpper = true,
+    ) {
     }
 
     public function getLower()

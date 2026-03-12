@@ -27,33 +27,20 @@ use Rollerworks\Component\Search\GenericSearchFactory;
  */
 final class GenericSearchFactoryTest extends TestCase
 {
-    /**
-     * @var MockObject
-     */
-    private $registry;
+    /** @var MockObject&TypeRegistry */
+    private MockObject $registry;
 
-    /**
-     * @var MockObject
-     */
-    private $fieldSetRegistry;
+    /** @var MockObject&FieldConfig */
+    private MockObject $fieldConfig;
 
-    /**
-     * @var GenericSearchFactory
-     */
-    private $factory;
-
-    /**
-     * @var MockObject
-     */
-    private $fieldConfig;
+    private GenericSearchFactory $factory;
 
     protected function setUp(): void
     {
-        $this->fieldSetRegistry = $this->createMock(FieldSetRegistry::class);
         $this->registry = $this->createMock(TypeRegistry::class);
         $this->fieldConfig = $this->createMock(FieldConfig::class);
 
-        $this->factory = new GenericSearchFactory($this->registry, $this->fieldSetRegistry);
+        $this->factory = new GenericSearchFactory($this->registry, $this->createMock(FieldSetRegistry::class));
     }
 
     /** @test */
@@ -88,7 +75,7 @@ final class GenericSearchFactoryTest extends TestCase
         self::assertSame($this->fieldConfig, $this->factory->createField('name', TextType::class, $options));
     }
 
-    private function getMockResolvedType()
+    private function getMockResolvedType(): MockObject
     {
         return $this->getMockBuilder(ResolvedFieldType::class)->getMock();
     }

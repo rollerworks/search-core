@@ -28,10 +28,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 final class DateType extends BaseDateTimeType
 {
     public const DEFAULT_FORMAT = \IntlDateFormatter::MEDIUM;
-
     public const HTML5_FORMAT = 'yyyy-MM-dd';
 
-    private $valueComparator;
+    private DateValueComparator $valueComparator;
 
     public function __construct()
     {

@@ -25,7 +25,7 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class TimeTypeTest extends SearchIntegrationTestCase
 {
-    private $defaultTimezone;
+    private string $defaultTimezone;
 
     protected function setUp(): void
     {

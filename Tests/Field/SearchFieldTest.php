@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Field;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
@@ -30,19 +29,13 @@ use Rollerworks\Component\Search\ValueComparator;
  */
 final class SearchFieldTest extends TestCase
 {
-    /**
-     * @var ResolvedFieldType
-     */
-    private $resolvedType;
+    private ResolvedFieldType $resolvedType;
 
-    /**
-     * @var SearchField
-     */
-    private $field;
+    private SearchField $field;
 
     protected function setUp(): void
     {
-        $this->resolvedType = $this->getMockBuilder(ResolvedFieldType::class)->getMock();
+        $this->resolvedType = $this->createMock(ResolvedFieldType::class);
         $this->field = new SearchField('foobar', $this->resolvedType, ['name' => 'value']);
     }
 
@@ -187,10 +180,7 @@ final class SearchFieldTest extends TestCase
         $this->field->setViewTransformer(null);
     }
 
-    /**
-     * @return DataTransformer|MockObject
-     */
-    private function createTransformerMock()
+    private function createTransformerMock(): DataTransformer
     {
         return $this->getMockBuilder(DataTransformer::class)->getMock();
     }

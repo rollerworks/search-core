@@ -23,21 +23,18 @@ final class StringQueryInput extends StringInput
     public const FIELD_LEXER_OPTION_NAME = 'string_query.value_lexer';
     public const VALUE_EXPORTER_OPTION_NAME = 'string_query.value_export';
 
-    /**
-     * @var callable
-     */
-    private $labelResolver;
+    /** @var callable */
+    private mixed $labelResolver;
 
     /**
      * @param callable|null $labelResolver a callable to resolve the actual label
-     *                                     of the field, receives a
-     *                                     FieldConfigInterface instance.
-     *                                     If null the `label` option value is
-     *                                     used instead
+     *                                     of the field, receives a FieldConfig instance.
+     *                                     When null, the `label` option value is used instead
      */
     public function __construct(?Validator $validator = null, ?callable $labelResolver = null)
     {
         parent::__construct($validator);
+
         $this->labelResolver = $labelResolver ?? static fn (FieldConfig $field) => $field->getOption('label') ?? $field->getName();
     }
 

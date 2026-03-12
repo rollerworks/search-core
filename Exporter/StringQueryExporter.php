@@ -23,7 +23,8 @@ use Rollerworks\Component\Search\FieldSet;
  */
 final class StringQueryExporter extends StringExporter
 {
-    private $labelResolver;
+    /** @var callable */
+    private mixed $labelResolver;
 
     /**
      * @param callable|null $labelResolver a callable to resolve the actual label

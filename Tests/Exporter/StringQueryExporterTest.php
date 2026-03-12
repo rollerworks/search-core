@@ -150,62 +150,62 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
         $this->assertConditionEquals('* @id: desc; @status: asc; name: "value ";', $condition, $this->getInputProcessor(), $config);
     }
 
-    public function provideSingleValuePairTest()
+    public function provideSingleValuePairTest(): string
     {
         return 'name: "value ", -value2, value2-, 10.00, "10,00", hÌ, ٤٤٤٦٥٤٦٠٠, "doctor""who""""", !value3; price: € 12.00, "12,00 $", $ 12.00;';
     }
 
-    public function provideMultipleValuesTest()
+    public function provideMultipleValuesTest(): string
     {
         return 'name: value, value2; date: 12-16-2014;';
     }
 
-    public function providePrivateFieldsTest()
+    public function providePrivateFieldsTest(): string
     {
         return 'name: value, value2; date: 12-16-2014;';
     }
 
-    public function provideRangeValuesTest()
+    public function provideRangeValuesTest(): string
     {
         return 'id: 1 ~ 10, 15 ~ 30, ]100 ~ 200, 310 ~ 400[, !50 ~ 70; date: 12-16-2014 ~ 12-20-2014;';
     }
 
-    public function provideComparisonValuesTest()
+    public function provideComparisonValuesTest(): string
     {
         return 'id: > 1, < 2, <= 5, >= 8; date: >= 12-16-2014;';
     }
 
-    public function provideMatcherValuesTest()
+    public function provideMatcherValuesTest(): string
     {
         return 'name: ~* value, ~i> value2, ~< value3, ~!* value4, ~i!* value5, ~= value9, ~!= value10, ~i= value11, ~i!= value12;';
     }
 
-    public function provideGroupTest()
+    public function provideGroupTest(): string
     {
         return 'name: value, value2; ( name: value3, value4 ); *( name: value8, value10 );';
     }
 
-    public function provideMultipleSubGroupTest()
+    public function provideMultipleSubGroupTest(): string
     {
         return '( name: value, value2 ); ( name: value3, value4 );';
     }
 
-    public function provideNestedGroupTest()
+    public function provideNestedGroupTest(): string
     {
         return '( ( name: value, value2 ) );';
     }
 
-    public function provideEmptyValuesTest()
+    public function provideEmptyValuesTest(): string
     {
         return '';
     }
 
-    public function provideEmptyGroupTest()
+    public function provideEmptyGroupTest(): string
     {
         return '(  );';
     }
 
-    public function provideOrderTest()
+    public function provideOrderTest(): string
     {
         return '@id: desc; @status: asc;';
     }

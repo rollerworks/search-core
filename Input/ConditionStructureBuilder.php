@@ -40,68 +40,47 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 class ConditionStructureBuilder implements StructureBuilder
 {
-    /** @var ErrorList */
-    private $errorList;
+    private readonly FieldSet $fieldSet;
+    private readonly int $maxCount;
+    private readonly int $maxNesting;
+    private readonly int $maxGroups;
 
-    /** @var Validator */
-    private $validator;
+    /** @var array<string, bool> */
+    private array $checkedValueType = [];
 
-    /** @var FieldSet */
-    private $fieldSet;
+    private int $valuesCount = 0;
+    private int $nestingLevel = 0;
 
-    /** @var int */
-    private $maxCount;
-
-    /** @var int */
-    private $maxNesting;
-
-    /** @var int */
-    private $maxGroups;
-
-    /** @var array */
-    private $checkedValueType = [];
-
-    /** @var int */
-    private $valuesCount = 0;
-
-    /** @var int */
-    private $nestingLevel = 0;
-
-    /** @var array */
-    private $path = [];
+    /** @var string[] */
+    private array $path = [];
 
     /**
      * Group count per nesting level.
      *
-     * @var array
+     * @var array<int, int> [group-level => group-count]
      */
-    private $groupsCount = [];
+    private array $groupsCount = [];
 
-    /** @var FieldConfig|null */
-    protected $fieldConfig;
+    protected ?FieldConfig $fieldConfig = null;
 
     /** @var ValuesGroup[] */
-    private $valuesGroupLevels = [];
+    private array $valuesGroupLevels = [];
 
-    /** @var ValuesBag|null */
-    private $valuesBag;
+    private ?ValuesBag $valuesBag = null;
 
-    /**
-     * False when not set, null when undetected (lazy loaded).
-     *
-     * @var bool|DataTransformer|null
-     */
-    protected $inputTransformer;
+    /** False when not set, null when undetected (lazy loaded). */
+    protected DataTransformer | false | null $inputTransformer = null;
 
-    public function __construct(ProcessorConfig $config, Validator $validator, ErrorList $errorList, string $path = '')
-    {
-        $this->validator = $validator;
+    public function __construct(
+        ProcessorConfig $config,
+        private readonly Validator $validator,
+        private ErrorList $errorList,
+        string $path = '',
+    ) {
         $this->fieldSet = $config->getFieldSet();
         $this->maxCount = $config->getMaxValues();
         $this->maxNesting = $config->getMaxNestingLevel();
         $this->maxGroups = $config->getMaxGroups();
-
-        $this->errorList = $errorList;
         $this->valuesGroupLevels[0] = new ValuesGroup();
         $this->path[] = $path;
     }
@@ -111,7 +90,7 @@ class ConditionStructureBuilder implements StructureBuilder
         return $this->errorList;
     }
 
-    public function getCurrentPath()
+    public function getCurrentPath(): array
     {
         return $this->path;
     }
@@ -173,7 +152,7 @@ class ConditionStructureBuilder implements StructureBuilder
         $this->validator->initializeContext($this->fieldConfig, $this->errorList);
     }
 
-    public function simpleValue($value, string $path): void
+    public function simpleValue(mixed $value, string $path): void
     {
         $path = $this->createValuePath($path, 'simpleValue');
         $this->increaseValuesCount($path);
@@ -184,7 +163,7 @@ class ConditionStructureBuilder implements StructureBuilder
         $this->valuesBag->addSimpleValue($modelVal);
     }
 
-    public function excludedSimpleValue($value, string $path): void
+    public function excludedSimpleValue(mixed $value, string $path): void
     {
         $path = $this->createValuePath($path, 'excludedSimpleValue');
         $this->increaseValuesCount($path);
@@ -195,10 +174,7 @@ class ConditionStructureBuilder implements StructureBuilder
         $this->valuesBag->addExcludedSimpleValue($modelVal);
     }
 
-    /**
-     * @param array $path [path, lower-path-pattern, upper-path-pattern]
-     */
-    public function rangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
+    public function rangeValue(mixed $lower, mixed $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
     {
         $path[0] = $this->createValuePath($path[0], Range::class);
 
@@ -216,10 +192,7 @@ class ConditionStructureBuilder implements StructureBuilder
         $this->valuesBag->add($range);
     }
 
-    /**
-     * @param array $path [path, lower-path-pattern, upper-path-pattern]
-     */
-    public function excludedRangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
+    public function excludedRangeValue(mixed $lower, mixed $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
     {
         $path[0] = $this->createValuePath($path[0], ExcludedRange::class);
 
@@ -237,11 +210,7 @@ class ConditionStructureBuilder implements StructureBuilder
         $this->valuesBag->add($range);
     }
 
-    /**
-     * @param mixed|string $operator
-     * @param array        $path     [base-path, operator-path, value-path]
-     */
-    public function comparisonValue($operator, $value, array $path): void
+    public function comparisonValue(mixed $operator, mixed $value, array $path): void
     {
         $path[0] = $this->createValuePath($path[0], Compare::class);
 
@@ -266,12 +235,7 @@ class ConditionStructureBuilder implements StructureBuilder
         $this->valuesBag->add(new Compare($modelVal, $operator));
     }
 
-    /**
-     * @param string $type
-     * @param string $value
-     * @param array  $path  [base-path, value-path, type-path]
-     */
-    public function patterMatchValue($type, $value, bool $caseInsensitive, array $path): void
+    public function patterMatchValue(mixed $type, mixed $value, bool $caseInsensitive, array $path): void
     {
         $path[0] = $this->createValuePath($path[0], PatternMatch::class);
         $valid = true;
@@ -331,7 +295,7 @@ class ConditionStructureBuilder implements StructureBuilder
      * @return mixed returns null when the value is empty or invalid.
      *               Note: When the value is invalid an error is registered
      */
-    protected function inputToNorm($value, string $path)
+    protected function inputToNorm(mixed $value, string $path): mixed
     {
         if ($this->inputTransformer === null) {
             $this->inputTransformer = $this->fieldConfig->getNormTransformer() ?? false;
@@ -375,7 +339,7 @@ class ConditionStructureBuilder implements StructureBuilder
         }
     }
 
-    protected function transformationExceptionToError($e, string $path): ConditionErrorMessage
+    protected function transformationExceptionToError(TransformationFailedException $e, string $path): ConditionErrorMessage
     {
         $invalidMessage = $e->getInvalidMessage();
 

@@ -18,15 +18,15 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 
 final class OrderToLocalizedTransformer implements DataTransformer
 {
-    private array $alias;
-    private array $viewLabel;
-    private string $case;
-
-    public function __construct(array $alias, array $viewLabel, string $case = OrderTransformer::CASE_UPPERCASE)
-    {
-        $this->case = $case;
-        $this->alias = $alias;
-        $this->viewLabel = $viewLabel;
+    /**
+     * @param array<string, string[]> $alias
+     * @param array<string, string>   $viewLabel
+     */
+    public function __construct(
+        private array $alias,
+        private array $viewLabel,
+        private readonly string $case = OrderTransformer::CASE_UPPERCASE,
+    ) {
     }
 
     public function transform($value)

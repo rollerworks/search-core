@@ -21,8 +21,7 @@ use Rollerworks\Component\Search\Value\Compare;
  */
 final class CompareTest extends TestCase
 {
-    /** @var Compare */
-    private $value;
+    private Compare $value;
 
     protected function setUp(): void
     {

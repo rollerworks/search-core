@@ -25,19 +25,12 @@ final class OrderTransformer implements DataTransformer
     public const CASE_UPPERCASE = 'UPPERCASE';
 
     /**
-     * @var array
+     * @param array<string, string[]> $alias
      */
-    private $alias;
-
-    /**
-     * @var string
-     */
-    private $case;
-
-    public function __construct(array $alias, string $case = self::CASE_UPPERCASE)
-    {
-        $this->alias = $alias;
-        $this->case = $case;
+    public function __construct(
+        private array $alias,
+        private readonly string $case = self::CASE_UPPERCASE,
+    ) {
     }
 
     public function transform($value)

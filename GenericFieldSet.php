@@ -24,21 +24,19 @@ use Rollerworks\Component\Search\Field\OrderField;
  */
 final class GenericFieldSet implements FieldSetWithView
 {
-    private $fields = [];
-    private $name;
-    private $viewBuilder;
+    /** @var callable|null */
+    private mixed $viewBuilder;
 
     /**
-     * Constructor.
-     *
-     * @param FieldConfig[] $fields
-     * @param string|null   $name        FQCN of the FieldSet configurator
-     * @param callable      $viewBuilder A callable to finalize the FieldSetView
+     * @param array<string, FieldConfig> $fields
+     * @param string|null                $name        FQCN of the FieldSet configurator
+     * @param callable                   $viewBuilder A callable to finalize the FieldSetView
      */
-    public function __construct(array $fields, ?string $name = null, ?callable $viewBuilder = null)
-    {
-        $this->fields = $fields;
-        $this->name = $name;
+    public function __construct(
+        private readonly array $fields,
+        private readonly ?string $name = null,
+        ?callable $viewBuilder = null,
+    ) {
         $this->viewBuilder = $viewBuilder;
     }
 

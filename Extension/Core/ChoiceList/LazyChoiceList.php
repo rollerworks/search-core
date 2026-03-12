@@ -30,18 +30,13 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
 final class LazyChoiceList implements ChoiceList
 {
     /**
-     * @var ChoiceLoader
-     */
-    private $loader;
-
-    /**
      * The callable creating string values for each choice.
      *
      * If null, choices are simply cast to strings.
      *
      * @var callable|null
      */
-    private $value;
+    private mixed $value;
 
     /**
      * Optionally, a callable can be passed for generating the choice values.
@@ -52,9 +47,10 @@ final class LazyChoiceList implements ChoiceList
      * @param callable|null $value  The callable generating the choice
      *                              values
      */
-    public function __construct(ChoiceLoader $loader, ?callable $value = null)
-    {
-        $this->loader = $loader;
+    public function __construct(
+        private readonly ChoiceLoader $loader,
+        ?callable $value = null,
+    ) {
         $this->value = $value;
     }
 

@@ -23,15 +23,13 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 class SearchCondition
 {
-    private $fieldSet;
-    private $values;
-    private $primaryCondition;
-    private $order;
+    private ?SearchPrimaryCondition $primaryCondition = null;
+    private ?SearchOrder $order = null;
 
-    public function __construct(FieldSet $fieldSet, ValuesGroup $valuesGroup)
-    {
-        $this->fieldSet = $fieldSet;
-        $this->values = $valuesGroup;
+    public function __construct(
+        private readonly FieldSet $fieldSet,
+        private readonly ValuesGroup $values,
+    ) {
     }
 
     public function getFieldSet(): FieldSet

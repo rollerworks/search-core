@@ -30,15 +30,10 @@ use Symfony\Component\PropertyAccess\PropertyPath;
  */
 final class PropertyAccessDecoratorTest extends TestCase
 {
-    /**
-     * @var MockObject|null
-     */
-    private $decoratedFactory;
+    /** @var MockObject&ChoiceListFactory */
+    private MockObject $decoratedFactory;
 
-    /**
-     * @var PropertyAccessDecorator|null
-     */
-    private $factory;
+    private PropertyAccessDecorator $factory;
 
     protected function setUp(): void
     {

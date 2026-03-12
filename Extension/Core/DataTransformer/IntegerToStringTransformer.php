@@ -22,11 +22,17 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 final class IntegerToStringTransformer extends NumberToStringTransformer
 {
     /**
-     * @param int|null $roundingMode One of the ROUND_ constants in this class
+     * @param self::ROUND_* $roundingMode
      */
-    public function __construct(?int $roundingMode = null, bool $grouping = false)
+    public function __construct(?int $roundingMode = self::ROUND_DOWN, bool $grouping = false)
     {
-        parent::__construct(0, $grouping, $roundingMode ?? self::ROUND_DOWN);
+        if ($roundingMode === null) {
+            trigger_deprecation('rollerworks/search', '2.0-BETA13', 'Passing null as the first argument to "%s()" is deprecated, pass IntegerToStringTransformer::ROUND_DOWN instead. This will fail 3.0', __CLASS__);
+
+            $roundingMode = self::ROUND_DOWN;
+        }
+
+        parent::__construct(0, $grouping, $roundingMode);
     }
 
     public function reverseTransform($value): ?int

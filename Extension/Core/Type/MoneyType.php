@@ -32,7 +32,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class MoneyType extends AbstractFieldType
 {
-    private $valueComparator;
+    private MoneyValueComparator $valueComparator;
 
     public function __construct()
     {

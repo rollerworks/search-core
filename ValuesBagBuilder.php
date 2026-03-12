@@ -20,11 +20,9 @@ use Rollerworks\Component\Search\Value\ValuesBag;
  */
 class ValuesBagBuilder extends ValuesBag
 {
-    private $parent;
-
-    public function __construct(SearchConditionBuilder $parent)
-    {
-        $this->parent = $parent;
+    public function __construct(
+        private readonly SearchConditionBuilder $parent,
+    ) {
     }
 
     public function end(): SearchConditionBuilder

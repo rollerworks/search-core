@@ -21,34 +21,15 @@ use Rollerworks\Component\Search\FieldSet;
  */
 class ProcessorConfig
 {
-    /**
-     * @var int
-     */
-    private $maxNestingLevel = 5;
+    private int $maxNestingLevel = 5;
+    private int $maxValues = 100;
+    private int $maxGroups = 10;
+    private int | \DateInterval | null $cacheTTL = null;
+    private ?string $defaultField = null;
 
-    /**
-     * @var int
-     */
-    private $maxValues = 100;
-
-    /**
-     * @var int
-     */
-    private $maxGroups = 10;
-
-    /**
-     * @var FieldSet
-     */
-    private $fieldSet;
-
-    private int|\DateInterval|null $cacheTTL = null;
-
-    /** @var string|null */
-    private $defaultField;
-
-    public function __construct(FieldSet $fieldSet)
-    {
-        $this->fieldSet = $fieldSet;
+    public function __construct(
+        private readonly FieldSet $fieldSet,
+    ) {
     }
 
     public function getFieldSet(): FieldSet
@@ -120,16 +101,18 @@ class ProcessorConfig
     }
 
     /**
+     * @param \DateInterval|int|null $cacheTTL use 0 to disable caching
+     *
      * @return $this
      */
-    public function setCacheTTL(\DateInterval|int|null $cacheTTL): self
+    public function setCacheTTL(\DateInterval | int | null $cacheTTL): self
     {
         $this->cacheTTL = $cacheTTL;
 
         return $this;
     }
 
-    public function getCacheTTL(): \DateInterval|int|null
+    public function getCacheTTL(): \DateInterval | int | null
     {
         return $this->cacheTTL;
     }
@@ -146,7 +129,7 @@ class ProcessorConfig
     /**
      * @return $this
      */
-    public function setDefaultField(string $defaultField): static
+    public function setDefaultField(?string $defaultField): static
     {
         $this->defaultField = $defaultField;
 

@@ -35,6 +35,9 @@ interface ResolvedFieldType
      */
     public function getTypeExtensions(): array;
 
+    /**
+     * @param array<string, mixed> $options
+     */
     public function createField(string $name, array $options = []): FieldConfig;
 
     /**
@@ -52,6 +55,8 @@ interface ResolvedFieldType
 
     /**
      * Configures a SearchFieldView for the type hierarchy.
+     *
+     * @param array<string, mixed> $options
      */
     public function buildFieldView(SearchFieldView $view, FieldConfig $config, array $options): void;
 

@@ -26,25 +26,19 @@ class CallbackChoiceLoader implements ChoiceLoader
 {
     use ChoiceLoaderTrait;
 
-    /**
-     * @var callable
-     */
-    private $callback;
-
-    /**
-     * @var bool
-     */
-    private $valuesAreConstant;
+    /** @var callable */
+    private mixed $callback;
 
     /**
      * @param callable $callback          The callable returning an array of choices
      * @param bool     $valuesAreConstant Indicate whether values are constant
      *                                    (not dependent of there position)
      */
-    public function __construct(callable $callback, bool $valuesAreConstant = false)
-    {
+    public function __construct(
+        callable $callback,
+        private bool $valuesAreConstant = false,
+    ) {
         $this->callback = $callback;
-        $this->valuesAreConstant = $valuesAreConstant;
     }
 
     public function loadChoiceList(?callable $value = null): ChoiceList

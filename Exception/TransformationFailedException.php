@@ -15,23 +15,25 @@ namespace Rollerworks\Component\Search\Exception;
 
 final class TransformationFailedException extends \RuntimeException implements SearchException
 {
-    private $invalidMessage;
-    private $invalidMessageParameters;
-    private mixed $value;
-
-    public function __construct(string $message = '', int $code = 0, ?\Throwable $previous = null, ?string $invalidMessage = null, array $invalidMessageParameters = [], mixed $value = null)
-    {
+    /**
+     * @param array<string, mixed> $invalidMessageParameters
+     */
+    public function __construct(
+        string $message = '',
+        int $code = 0,
+        ?\Throwable $previous = null,
+        private ?string $invalidMessage = null,
+        private array $invalidMessageParameters = [],
+        private readonly mixed $value = null,
+    ) {
         parent::__construct($message, $code, $previous);
-
-        $this->setInvalidMessage($invalidMessage, $invalidMessageParameters);
-        $this->value = $value;
     }
 
     /**
      * Sets the message that will be shown to the user.
      *
-     * @param string|null $invalidMessage           The message or message key
-     * @param array       $invalidMessageParameters Data to be passed into the translator
+     * @param string|null          $invalidMessage           The message or message key
+     * @param array<string, mixed> $invalidMessageParameters Data to be passed into the translator
      */
     public function setInvalidMessage(?string $invalidMessage = null, array $invalidMessageParameters = []): void
     {
@@ -44,6 +46,9 @@ final class TransformationFailedException extends \RuntimeException implements S
         return $this->invalidMessage;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getInvalidMessageParameters(): array
     {
         return $this->invalidMessageParameters;

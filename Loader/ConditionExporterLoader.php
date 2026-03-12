@@ -25,23 +25,20 @@ use Rollerworks\Component\Search\Exporter;
  */
 final class ConditionExporterLoader
 {
-    private $container;
-    private $serviceIds = [];
-
     /**
-     * @param ContainerInterface $container  A PSR-11 compatible Service locator/container
-     * @param array              $serviceIds Format alias to service-id mapping,
-     *                                       eg. 'json' => 'JsonExporter-ClassName'
+     * @param ContainerInterface    $container  A PSR-11 compatible Service locator/container
+     * @param array<string, string> $serviceIds Format alias to service-id mapping,
+     *                                          eg. 'json' => 'service-id'
      */
-    public function __construct(ContainerInterface $container, array $serviceIds)
-    {
-        $this->container = $container;
-        $this->serviceIds = $serviceIds;
+    public function __construct(
+        private readonly ContainerInterface $container,
+        private readonly array $serviceIds,
+    ) {
     }
 
     /**
-     * Create a new ConditionExporterLoader with the build-in ConditionExporters
-     * loadable.
+     * Create a new ConditionExporterLoader with the build-in
+     * ConditionExporter loadable.
      */
     public static function create(): self
     {

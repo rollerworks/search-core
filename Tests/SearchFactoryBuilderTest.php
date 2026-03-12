@@ -23,9 +23,8 @@ use Rollerworks\Component\Search\Tests\Fixtures\FooType;
  */
 final class SearchFactoryBuilderTest extends TestCase
 {
-    /** @var \ReflectionProperty */
-    private $registry;
-    private $type;
+    private \ReflectionProperty $registry;
+    private FooType $type;
 
     protected function setUp(): void
     {

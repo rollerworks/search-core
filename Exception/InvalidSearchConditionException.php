@@ -20,13 +20,13 @@ use Rollerworks\Component\Search\ConditionErrorMessage;
  */
 final class InvalidSearchConditionException extends \InvalidArgumentException implements SearchException
 {
-    private $errors;
-
-    public function __construct(array $errors)
-    {
+    /**
+     * @param ConditionErrorMessage[] $errors
+     */
+    public function __construct(
+        private readonly array $errors,
+    ) {
         parent::__construct('The search-condition contains one or more errors.');
-
-        $this->errors = $errors;
     }
 
     /**

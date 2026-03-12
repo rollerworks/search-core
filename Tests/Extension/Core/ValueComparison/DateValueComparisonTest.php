@@ -21,8 +21,7 @@ use Rollerworks\Component\Search\Extension\Core\ValueComparator\DateValueCompara
  */
 final class DateValueComparisonTest extends TestCase
 {
-    /** @var DateValueComparator */
-    private $comparison;
+    private DateValueComparator $comparison;
 
     protected function setUp(): void
     {

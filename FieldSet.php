@@ -24,21 +24,21 @@ use Rollerworks\Component\Search\Field\FieldConfig;
 interface FieldSet
 {
     /**
-     * Returns the name of the set.
+     * Returns the name of the set (can be empty).
      */
     public function getSetName(): ?string;
 
     /**
      * Returns the field as a {@link FieldConfig} instance.
      *
-     * @throws UnknownFieldException When the field is not registered at this Fieldset
+     * @throws UnknownFieldException When the field is not registered at this FieldSet
      */
     public function get(string $name): FieldConfig;
 
     /**
      * Returns all the registered fields in the set.
      *
-     * @return FieldConfig[] [name] => {FieldConfig instance})
+     * @return array<string, FieldConfig>
      */
     public function all(): array;
 

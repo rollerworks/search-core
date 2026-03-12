@@ -22,21 +22,19 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
  */
 final class ChoiceToValueTransformer implements DataTransformer
 {
-    private $choiceList;
-
-    public function __construct(ChoiceList $choiceList)
-    {
-        $this->choiceList = $choiceList;
+    public function __construct(
+        private readonly ChoiceList $choiceList,
+    ) {
     }
 
-    public function transform($choice)
+    public function transform(mixed $value): mixed
     {
-        $value = $this->choiceList->getValuesForChoices([$choice]);
+        $value = $this->choiceList->getValuesForChoices([$value]);
 
         return (string) current($value);
     }
 
-    public function reverseTransform($value)
+    public function reverseTransform(mixed $value): mixed
     {
         if ($value !== null && ! \is_string($value)) {
             throw new TransformationFailedException('Expected a string or null.');
@@ -46,7 +44,7 @@ final class ChoiceToValueTransformer implements DataTransformer
 
         if (\count($choices) !== 1) {
             if ($value === null || $value === '') {
-                return;
+                return null;
             }
 
             throw new TransformationFailedException(\sprintf('The choice "%s" does not exist or is not unique', $value));

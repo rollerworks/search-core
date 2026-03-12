@@ -16,17 +16,16 @@ namespace Rollerworks\Component\Search\Exception;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class TranslatedArgument implements TranslatableInterface
+final class TranslatedArgument implements TranslatableInterface, \Stringable
 {
-    private string $message;
-    private array $parameters;
-    private ?string $domain;
-
-    public function __construct(string $message, array $parameters = [], ?string $domain = null)
-    {
-        $this->message = $message;
-        $this->parameters = $parameters;
-        $this->domain = $domain;
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    public function __construct(
+        private readonly string $message,
+        private readonly array $parameters = [],
+        private readonly ?string $domain = null,
+    ) {
     }
 
     public function __toString(): string
@@ -39,6 +38,9 @@ final class TranslatedArgument implements TranslatableInterface
         return $this->message;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getParameters(): array
     {
         return $this->parameters;

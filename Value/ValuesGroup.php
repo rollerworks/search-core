@@ -25,33 +25,27 @@ class ValuesGroup
     public const GROUP_LOGICAL_OR = 'OR';
     public const GROUP_LOGICAL_AND = 'AND';
 
-    /**
-     * @var ValuesGroup[]
-     */
+    /** @var ValuesGroup[] */
     private array $groups = [];
 
-    /**
-     * @var array<string, ValuesBag>
-     */
+    /** @var array<string, ValuesBag> */
     private array $fields = [];
 
     /**
-     * @var string
-     */
-    private $groupLogical;
-
-    /**
+     * @param self::GROUP_LOGICAL_* $groupLogical
+     *
      * @throws InvalidArgumentException When no an unsupported group logical is provided
      */
-    public function __construct(string $groupLogical = self::GROUP_LOGICAL_AND)
-    {
+    public function __construct(
+        private string $groupLogical = self::GROUP_LOGICAL_AND,
+    ) {
         $this->setGroupLogical($groupLogical);
     }
 
     /**
      * @return $this
      */
-    public function addGroup(self $group)
+    public function addGroup(self $group): self
     {
         $this->groups[] = $group;
 
@@ -86,7 +80,7 @@ class ValuesGroup
     /**
      * @return $this
      */
-    public function removeGroup(int $index)
+    public function removeGroup(int $index): self
     {
         if (isset($this->groups[$index])) {
             unset($this->groups[$index]);
@@ -133,7 +127,7 @@ class ValuesGroup
     /**
      * @return $this
      */
-    public function removeField(string $name)
+    public function removeField(string $name): self
     {
         if (isset($this->fields[$name])) {
             unset($this->fields[$name]);
@@ -166,14 +160,13 @@ class ValuesGroup
     }
 
     /**
-     * This is either one of the following class constants:
-     * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
+     * @param self::GROUP_LOGICAL_* $groupLogical
      *
      * @return $this
      *
      * @throws InvalidArgumentException When an unsupported group-logical is provided
      */
-    public function setGroupLogical(string $groupLogical)
+    public function setGroupLogical(string $groupLogical): self
     {
         if (! \in_array($groupLogical, [self::GROUP_LOGICAL_OR, self::GROUP_LOGICAL_AND], true)) {
             throw new InvalidArgumentException(\sprintf('Unsupported group logical "%s".', $groupLogical));

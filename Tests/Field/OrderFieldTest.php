@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Field;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
@@ -26,15 +27,10 @@ use Rollerworks\Component\Search\ValueComparator;
  */
 final class OrderFieldTest extends TestCase
 {
-    /**
-     * @var ResolvedFieldType
-     */
-    private $resolvedType;
+    /** @var MockObject&ResolvedFieldType */
+    private MockObject $resolvedType;
 
-    /**
-     * @var OrderField
-     */
-    private $field;
+    private OrderField $field;
 
     protected function setUp(): void
     {

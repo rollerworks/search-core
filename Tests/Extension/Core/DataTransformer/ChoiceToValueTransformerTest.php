@@ -25,15 +25,8 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\ChoiceToValueTra
  */
 final class ChoiceToValueTransformerTest extends TestCase
 {
-    /**
-     * @var ChoiceToValueTransformer|null
-     */
-    private $transformer;
-
-    /**
-     * @var ChoiceToValueTransformer|null
-     */
-    private $transformerWithNull;
+    private ?ChoiceToValueTransformer $transformer;
+    private ?ChoiceToValueTransformer $transformerWithNull;
 
     protected function setUp(): void
     {

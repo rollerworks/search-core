@@ -24,7 +24,7 @@ final class BirthdayValueComparator implements ValueComparator
      * @param \DateTimeImmutable|int $higher
      * @param \DateTimeImmutable|int $lower
      */
-    public function isHigher($higher, $lower, array $options): bool
+    public function isHigher(mixed $higher, mixed $lower, array $options): bool
     {
         if (! \is_object($higher) xor ! \is_object($lower)) {
             return false;
@@ -37,7 +37,7 @@ final class BirthdayValueComparator implements ValueComparator
      * @param \DateTimeImmutable|int $lower
      * @param \DateTimeImmutable|int $higher
      */
-    public function isLower($lower, $higher, array $options): bool
+    public function isLower(mixed $lower, mixed $higher, array $options): bool
     {
         if (! \is_object($higher) xor ! \is_object($lower)) {
             return false;
@@ -50,7 +50,7 @@ final class BirthdayValueComparator implements ValueComparator
      * @param \DateTimeImmutable|int $value
      * @param \DateTimeImmutable|int $nextValue
      */
-    public function isEqual($value, $nextValue, array $options): bool
+    public function isEqual(mixed $value, mixed $nextValue, array $options): bool
     {
         if (! \is_object($value) xor ! \is_object($nextValue)) {
             return false;

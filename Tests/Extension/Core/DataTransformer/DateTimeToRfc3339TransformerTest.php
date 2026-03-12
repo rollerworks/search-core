@@ -22,8 +22,8 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\DateTimeToRfc333
  */
 final class DateTimeToRfc3339TransformerTest extends TestCase
 {
-    protected $dateTime;
-    protected $dateTimeWithoutSeconds;
+    protected ?\DateTimeImmutable $dateTime;
+    protected ?\DateTimeImmutable $dateTimeWithoutSeconds;
 
     protected function setUp(): void
     {

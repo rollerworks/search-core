@@ -31,13 +31,8 @@ final class SearchConditionSerializerTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var SearchConditionSerializer
-     */
-    private $serializer;
-
-    /** @var GenericFieldSet */
-    private $fieldSet;
+    private SearchConditionSerializer $serializer;
+    private GenericFieldSet $fieldSet;
 
     protected function setUp(): void
     {

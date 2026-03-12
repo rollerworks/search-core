@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Field\FieldTypeExtension;
 /**
  * The AbstractExtension can be used as a base class for SearchExtensions.
  *
- * An added bonus for extending this class rather then the implementing the the
+ * A bonus for extending this class rather then the implementing the the
  * {@link SearchExtensionInterface} is that any new methods added the
  * SearchExtensionInterface will not break existing implementations.
  *
@@ -29,11 +29,11 @@ use Rollerworks\Component\Search\Field\FieldTypeExtension;
  */
 abstract class AbstractExtension implements SearchExtension
 {
-    /** @var array<FieldTypeExtension[]>|null */
-    private $typesExtensions;
+    /** @var array<string, FieldType>|null */
+    private ?array $types = null;
 
-    /** @var FieldType[]|null */
-    private $types;
+    /** @var array<string, FieldTypeExtension[]>|null */
+    private ?array $typesExtensions = null;
 
     public function getType(string $name): FieldType
     {
@@ -68,13 +68,13 @@ abstract class AbstractExtension implements SearchExtension
         return isset($this->typesExtensions[$type]);
     }
 
-    public function getTypeExtensions(string $type): array
+    public function getTypeExtensions(string $name): array
     {
         if ($this->typesExtensions === null) {
             $this->initTypesExtensions();
         }
 
-        return $this->typesExtensions[$type] ?? [];
+        return $this->typesExtensions[$name] ?? [];
     }
 
     /**

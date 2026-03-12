@@ -25,15 +25,15 @@ use Psr\Container\ContainerInterface;
  */
 final class ClosureContainer implements ContainerInterface
 {
-    private $factories;
-    private $values = [];
+    /** @var array<string, object> */
+    private array $values = [];
 
     /**
-     * @param array|\Closure[] $factories
+     * @param array<string, \Closure> $factories
      */
-    public function __construct(array $factories)
-    {
-        $this->factories = $factories;
+    public function __construct(
+        private array $factories,
+    ) {
     }
 
     public function has(string $id): bool
@@ -41,15 +41,14 @@ final class ClosureContainer implements ContainerInterface
         return isset($this->factories[$id]);
     }
 
-    public function get(string $id): mixed
+    public function get(string $id): object
     {
         if (! isset($this->factories[$id])) {
             throw new ServiceNotFoundException($id);
         }
 
-        if (true !== $factory = $this->factories[$id]) {
-            $this->factories[$id] = true;
-            $this->values[$id] = $factory();
+        if (! isset($this->values[$id])) {
+            $this->values[$id] = $this->factories[$id]();
         }
 
         return $this->values[$id];

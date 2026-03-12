@@ -26,32 +26,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class GenericResolvedFieldType implements ResolvedFieldType
 {
-    /** @var FieldType */
-    private $innerType;
-
-    /** @var FieldTypeExtension[] */
-    private $typeExtensions;
-
-    /** @var ResolvedFieldType|null */
-    private $parent;
-
-    /** @var OptionsResolver */
-    private $optionsResolver;
+    private ?OptionsResolver $optionsResolver = null;
 
     /**
+     * @param FieldTypeExtension[] $typeExtensions
+     *
      * @throws UnexpectedTypeException When at least one of the given extensions is not an FieldTypeExtension
      */
-    public function __construct(FieldType $innerType, array $typeExtensions = [], ?ResolvedFieldType $parent = null)
-    {
+    public function __construct(
+        private readonly FieldType $innerType,
+        private readonly array $typeExtensions = [],
+        private readonly ?ResolvedFieldType $parent = null,
+    ) {
         foreach ($typeExtensions as $extension) {
             if (! $extension instanceof FieldTypeExtension) {
                 throw new UnexpectedTypeException($extension, FieldTypeExtension::class);
             }
         }
-
-        $this->innerType = $innerType;
-        $this->typeExtensions = $typeExtensions;
-        $this->parent = $parent;
     }
 
     public function getParent(): ?ResolvedFieldType

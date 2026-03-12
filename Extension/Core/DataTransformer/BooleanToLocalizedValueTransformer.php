@@ -18,11 +18,15 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 
 final class BooleanToLocalizedValueTransformer implements DataTransformer
 {
+    /**
+     * @param array<scalar> $trueValues
+     * @param array<scalar> $falseValues
+     */
     public function __construct(
-        private string $trueLabel = 'yes',
-        private string $falseLabel = 'no',
-        private array $trueValues = ['true', '1', 1, 'on', 'yes'],
-        private array $falseValues = ['false', '0', 0, 'off', 'no'],
+        private readonly string $trueLabel = 'yes',
+        private readonly string $falseLabel = 'no',
+        private readonly array $trueValues = ['true', '1', 1, 'on', 'yes'],
+        private readonly array $falseValues = ['false', '0', 0, 'off', 'no'],
     ) {
     }
 

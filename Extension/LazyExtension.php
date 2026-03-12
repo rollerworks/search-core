@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Extension;
 use Psr\Container\ContainerInterface;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Field\FieldType;
+use Rollerworks\Component\Search\Field\FieldTypeExtension;
 use Rollerworks\Component\Search\Loader\ClosureContainer;
 use Rollerworks\Component\Search\SearchExtension;
 
@@ -26,27 +27,20 @@ use Rollerworks\Component\Search\SearchExtension;
  */
 final class LazyExtension implements SearchExtension
 {
-    private $typeContainer;
-
     /**
-     * @var array[]
+     * @param array<string, array<string, FieldTypeExtension>> $typeExtensionServices
      */
-    private $typeExtensionServices = [];
-
-    /**
-     * @param array[] $typeExtensions
-     */
-    public function __construct(ContainerInterface $typeContainer, array $typeExtensions)
-    {
-        $this->typeContainer = $typeContainer;
-        $this->typeExtensionServices = $typeExtensions;
+    public function __construct(
+        private readonly ContainerInterface $typeContainer,
+        private array $typeExtensionServices,
+    ) {
     }
 
     /**
      * Creates a new LazyExtension with easy factories for lazy loading.
      *
-     * @param array   $types          FQCN => \Closure factory
-     * @param array[] $typeExtensions
+     * @param array<string, \Closure>                          $types          FQCN => \Closure factory
+     * @param array<string, array<string, FieldTypeExtension>> $typeExtensions
      */
     public static function create(array $types, array $typeExtensions = []): self
     {

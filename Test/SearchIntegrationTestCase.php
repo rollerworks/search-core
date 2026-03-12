@@ -38,15 +38,8 @@ abstract class SearchIntegrationTestCase extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var SearchFactoryBuilder|null
-     */
-    protected $factoryBuilder;
-
-    /**
-     * @var SearchFactory|null
-     */
-    private $searchFactory;
+    protected SearchFactoryBuilder $factoryBuilder;
+    private ?SearchFactory $searchFactory = null;
 
     protected function setUp(): void
     {

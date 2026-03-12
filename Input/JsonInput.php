@@ -76,15 +76,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class JsonInput extends AbstractInput
 {
-    /**
-     * @var StructureBuilder|null
-     */
-    private $structureBuilder;
-
-    /**
-     * @var StructureBuilder|null
-     */
-    private $orderStructureBuilder;
+    private ?StructureBuilder $structureBuilder = null;
+    private ?StructureBuilder $orderStructureBuilder = null;
 
     public function process(ProcessorConfig $config, $input): SearchCondition
     {

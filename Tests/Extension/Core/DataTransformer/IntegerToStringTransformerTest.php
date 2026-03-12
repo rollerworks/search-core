@@ -163,6 +163,8 @@ final class IntegerToStringTransformerTest extends TestCase
     }
 
     /**
+     * @param IntegerToStringTransformer::ROUND_* $roundingMode
+     *
      * @dataProvider reverseTransformWithRoundingProvider
      *
      * @test

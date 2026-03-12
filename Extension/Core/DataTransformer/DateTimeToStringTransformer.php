@@ -23,7 +23,7 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  */
 final class DateTimeToStringTransformer extends BaseDateTimeTransformer
 {
-    private string $generateFormat;
+    private readonly string $generateFormat;
 
     /**
      * Format used for parsing strings.

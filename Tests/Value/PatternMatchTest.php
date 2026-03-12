@@ -21,8 +21,7 @@ use Rollerworks\Component\Search\Value\PatternMatch;
  */
 final class PatternMatchTest extends TestCase
 {
-    /** @var PatternMatch */
-    private $value;
+    private PatternMatch $value;
 
     protected function setUp(): void
     {

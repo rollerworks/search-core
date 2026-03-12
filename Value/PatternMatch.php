@@ -18,7 +18,7 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class PatternMatch implements ValueHolder
+final readonly class PatternMatch implements ValueHolder
 {
     public const PATTERN_CONTAINS = 'CONTAINS';
     public const PATTERN_STARTS_WITH = 'STARTS_WITH';
@@ -29,24 +29,22 @@ final class PatternMatch implements ValueHolder
     public const PATTERN_EQUALS = 'EQUALS';
     public const PATTERN_NOT_EQUALS = 'NOT_EQUALS';
 
-    private string $value;
-    private string $patternType;
-    private bool $caseInsensitive;
+    private readonly string $patternType;
 
     /**
      * @throws \InvalidArgumentException When the pattern-match type is invalid
      */
-    public function __construct(string $value, string $patternType, bool $caseInsensitive = false)
-    {
-        $typeConst = __CLASS__ . '::PATTERN_' . mb_strtoupper($patternType);
+    public function __construct(
+        private readonly string $value,
+        string $patternType,
+        private readonly bool $caseInsensitive = false,
+    ) {
+        $typeConst = self::class . '::PATTERN_' . mb_strtoupper($patternType);
 
         if (! \defined($typeConst)) {
             throw new InvalidArgumentException(\sprintf('Unknown PatternMatch type "%s".', $patternType));
         }
-
-        $this->value = $value;
         $this->patternType = mb_strtoupper($patternType);
-        $this->caseInsensitive = $caseInsensitive;
     }
 
     public function getValue(): string

@@ -13,23 +13,19 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Value;
 
-final class Compare implements RequiresComparatorValueHolder
+final readonly class Compare implements RequiresComparatorValueHolder
 {
-    private string $operator;
-    private mixed $value;
-
     public const OPERATORS = ['>=', '<=', '<>', '<', '>'];
 
-    public function __construct(mixed $value, string $operator)
-    {
+    public function __construct(
+        private readonly mixed $value,
+        private readonly string $operator,
+    ) {
         if (! \in_array($operator, self::OPERATORS, true)) {
             throw new \InvalidArgumentException(
                 \sprintf('Unknown operator "%s".', $operator)
             );
         }
-
-        $this->value = $value;
-        $this->operator = $operator;
     }
 
     public function getOperator(): string

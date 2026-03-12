@@ -15,8 +15,12 @@ namespace Rollerworks\Component\Search;
 
 class ParameterBag
 {
-    private $parameters = [];
+    /** @var array<string, string> */
+    private array $parameters = [];
 
+    /**
+     * @param array<string, mixed> $parameters
+     */
     public function __construct(array $parameters = [])
     {
         foreach ($parameters as $name => $value) {
@@ -24,7 +28,7 @@ class ParameterBag
         }
     }
 
-    public function setParameter(string $name, $value): void
+    public function setParameter(string $name, mixed $value): void
     {
         $this->parameters['{' . $name . '}'] = $value;
     }

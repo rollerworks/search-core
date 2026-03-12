@@ -610,7 +610,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
                 // No-op
             }
 
-            public function reverseTransform($value): void
+            public function reverseTransform($value): never
             {
                 throw new TransformationFailedException('Error.', 0, null, 'I explicitly refuse the accept this value.', ['value' => $value]);
             }
@@ -618,11 +618,9 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
         $this->factoryBuilder->addTypeExtensions([
             new class($alwaysFailTransformer) extends AbstractFieldTypeExtension {
-                private DataTransformer $transformer;
-
-                public function __construct(DataTransformer $transformer)
-                {
-                    $this->transformer = $transformer;
+                public function __construct(
+                    private readonly DataTransformer $transformer,
+                ) {
                 }
 
                 public function buildType(FieldConfig $builder, array $options): void

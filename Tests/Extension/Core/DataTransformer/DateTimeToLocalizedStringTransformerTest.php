@@ -27,8 +27,8 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
 {
     use assertDateTimeEqualsTrait;
 
-    protected $dateTime;
-    protected $dateTimeWithoutSeconds;
+    protected ?\DateTimeImmutable $dateTime;
+    protected ?\DateTimeImmutable $dateTimeWithoutSeconds;
 
     protected function setUp(): void
     {

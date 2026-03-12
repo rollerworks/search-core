@@ -26,22 +26,15 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader;
  */
 final class LazyChoiceListTest extends TestCase
 {
-    /**
-     * @var LazyChoiceList|null
-     */
-    private $list;
+    private LazyChoiceList $list;
 
-    /**
-     * @var MockObject|null
-     */
-    private $loadedList;
+    /** @var MockObject&ChoiceList */
+    private MockObject $loadedList;
 
-    /**
-     * @var MockObject|null
-     */
-    private $loader;
+    /** @var MockObject&ChoiceLoader */
+    private MockObject $loader;
 
-    private $value;
+    private \Closure $value;
 
     protected function setUp(): void
     {

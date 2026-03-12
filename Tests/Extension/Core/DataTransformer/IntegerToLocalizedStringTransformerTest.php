@@ -82,13 +82,15 @@ final class IntegerToLocalizedStringTransformerTest extends TestCase
     }
 
     /**
+     * @param self::ROUND_* $roundingMode
+     *
      * @dataProvider transformWithRoundingProvider
      *
      * @test
      */
-    public function transform_with_rounding($input, $output, $roundingMode): void
+    public function transform_with_rounding(float $input, string $output, int $roundingMode): void
     {
-        $transformer = new IntegerToLocalizedStringTransformer(null, $roundingMode);
+        $transformer = new IntegerToLocalizedStringTransformer(false, $roundingMode);
 
         self::assertEquals($output, $transformer->transform($input));
     }
@@ -183,13 +185,15 @@ final class IntegerToLocalizedStringTransformerTest extends TestCase
     }
 
     /**
+     * @param self::ROUND_* $roundingMode
+     *
      * @dataProvider reverseTransformWithRoundingProvider
      *
      * @test
      */
-    public function reverse_transform_with_rounding($input, $output, $roundingMode): void
+    public function reverse_transform_with_rounding(string $input, int $output, int $roundingMode): void
     {
-        $transformer = new IntegerToLocalizedStringTransformer(null, $roundingMode);
+        $transformer = new IntegerToLocalizedStringTransformer(false, $roundingMode);
 
         self::assertEquals($output, $transformer->reverseTransform($input));
     }
@@ -219,7 +223,7 @@ final class IntegerToLocalizedStringTransformerTest extends TestCase
      *
      * @test
      */
-    public function reverse_transform_expects_integer($number, $locale): void
+    public function reverse_transform_expects_integer(string $number, string $locale): void
     {
         IntlTestHelper::requireFullIntl($this, '70.1');
 

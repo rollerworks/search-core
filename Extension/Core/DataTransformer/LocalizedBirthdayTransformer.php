@@ -22,15 +22,11 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  */
 final class LocalizedBirthdayTransformer implements DataTransformer
 {
-    private $dateTransformer;
-    private $allowAge;
-    private $allowFutureDate;
-
-    public function __construct(DataTransformer $dateTransformer, bool $allowAge = true, bool $allowFutureDate = false)
-    {
-        $this->dateTransformer = $dateTransformer;
-        $this->allowFutureDate = $allowFutureDate;
-        $this->allowAge = $allowAge;
+    public function __construct(
+        private readonly DataTransformer $dateTransformer,
+        private readonly bool $allowAge = true,
+        private readonly bool $allowFutureDate = false,
+    ) {
     }
 
     public function transform($value)

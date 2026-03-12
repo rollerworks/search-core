@@ -27,7 +27,8 @@ use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
  */
 final class ChoiceTypeTest extends SearchIntegrationTestCase
 {
-    private $choices = [
+    /** @var array<string, string> */
+    private array $choices = [
         'Bernhard' => 'a',
         'Fabien' => 'b',
         'Kris' => 'c',
@@ -35,15 +36,18 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         'Roman' => 'e',
     ];
 
-    private $scalarChoices = [
+    /** @var array<string, bool|string> */
+    private array $scalarChoices = [
         'Yes' => true,
         'No' => false,
         'n/a' => '',
     ];
 
-    private $objectChoices;
+    /** @var array<int, object> */
+    private ?array $objectChoices;
 
-    protected $groupedChoices = [
+    /** @var array<string, array<string, string>> */
+    protected array $groupedChoices = [
         'Symfony' => [
             'Bernhard' => 'a',
             'Fabien' => 'b',
@@ -197,9 +201,9 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ]);
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput($this->objectChoices[2]->name, $this->objectChoices[2]->id)
+            ->withInput($this->objectChoices[2]->name, (string) $this->objectChoices[2]->id)
             ->successfullyTransformsTo($this->objectChoices[2])
-            ->andReverseTransformsTo($this->objectChoices[2]->name, $this->objectChoices[2]->id)
+            ->andReverseTransformsTo($this->objectChoices[2]->name, (string) $this->objectChoices[2]->id)
         ;
     }
 
@@ -215,9 +219,9 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ]);
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput($this->objectChoices[2]->id)
+            ->withInput((string) $this->objectChoices[2]->id)
             ->successfullyTransformsTo($this->objectChoices[2])
-            ->andReverseTransformsTo($this->objectChoices[2]->id)
+            ->andReverseTransformsTo((string) $this->objectChoices[2]->id)
         ;
 
         $field->finalizeConfig();

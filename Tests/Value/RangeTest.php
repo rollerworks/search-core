@@ -21,10 +21,11 @@ use Rollerworks\Component\Search\Value\Range;
  */
 final class RangeTest extends TestCase
 {
+    private Range $value;
+
     /**
-     * @var Range
+     * @test
      */
-    private $value;
 
     /** @test */
     public function it_has_a_lower_value(): void

@@ -24,8 +24,8 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 final class IntegerToLocalizedStringTransformer extends NumberToLocalizedStringTransformer
 {
     /**
-     * @param bool $grouping     Whether thousands should be grouped
-     * @param int  $roundingMode One of the ROUND_ constants in this class
+     * @param bool          $grouping     Whether thousands should be grouped
+     * @param self::ROUND_* $roundingMode One of the ROUND_ constants in this class
      */
     public function __construct(?bool $grouping = false, ?int $roundingMode = self::ROUND_DOWN)
     {
@@ -48,7 +48,7 @@ final class IntegerToLocalizedStringTransformer extends NumberToLocalizedStringT
     /**
      * @internal
      */
-    protected function castParsedValue($value)
+    protected function castParsedValue(float | int $value): float | int
     {
         return $value;
     }

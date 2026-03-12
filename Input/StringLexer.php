@@ -21,34 +21,37 @@ use Rollerworks\Component\Search\Exception\StringLexerException;
 final class StringLexer
 {
     public const FIELD_NAME = '/@?_?(\p{L}[\p{L}\p{N}_-]*)\s*:/Au';
-
     public const PATTERN_MATCH = 'pattern-match';
     public const SIMPLE_VALUE = 'simple-value';
     public const COMPARE = 'compare';
     public const RANGE = 'range';
 
-    private $valueLexers;
-    private $data;
-    private $cursor;
-    private $char;
-    private $lineno;
-    private $col;
-    private $end;
-    private $linenoSnapshot;
-    private $colSnapshot;
-    private $cursorSnapshot;
-    private $charSnapshot;
+    /**
+     * @var array <string, \Closure>
+     */
+    private array $valueLexers;
+
+    private string $data;
+    private int $cursor;
+    private int $char;
+    private int $lineno;
+    private int $col;
+    private int $end;
+    private ?int $linenoSnapshot;
+    private ?int $colSnapshot;
+    private ?int $cursorSnapshot;
+    private ?int $charSnapshot;
 
     /**
      * @internal
      *
-     * @param \Closure[] $fieldLexers
+     * @param array<string, \Closure> $fieldLexers
      */
     public function parse(string $data, array $fieldLexers = []): void
     {
         $this->data = str_replace(["\r\n", "\r"], "\n", $data);
-        $this->valueLexers = $fieldLexers;
         $this->end = mb_strlen($this->data, '8bit');
+        $this->valueLexers = $fieldLexers;
 
         $this->lineno = 1;
         $this->col = 0;
@@ -97,7 +100,7 @@ final class StringLexer
         }
     }
 
-    public function snapshot($force = false): void
+    public function snapshot(bool $force = false): void
     {
         if (! $force && $this->charSnapshot !== null) {
             return;
@@ -167,7 +170,7 @@ final class StringLexer
      *
      * @throws StringLexerException when there no match or there is no further data
      */
-    public function expects(string $data, $expected = null): string
+    public function expects(string $data, array | string | null $expected = null): string
     {
         $match = $this->regexOrSingleChar($data);
 
@@ -186,7 +189,10 @@ final class StringLexer
         return $this->cursor >= $this->end;
     }
 
-    public function createSyntaxException($expected): StringLexerException
+    /**
+     * @param string|string[] $expected
+     */
+    public function createSyntaxException(string | array $expected): StringLexerException
     {
         $expected = (array) $expected;
 
@@ -333,6 +339,8 @@ final class StringLexer
 
     /**
      * @internal
+     *
+     * @return array{bool, string, string, bool} ['lowerInclusive', 'lowerBound', 'upperBound', 'upperInclusive']
      */
     public function rangeValue(string $name): array
     {
@@ -356,6 +364,8 @@ final class StringLexer
 
     /**
      * @internal
+     *
+     * @return array{string, string} ['operator', 'value']
      */
     public function comparisonValue(string $name): array
     {
@@ -370,6 +380,8 @@ final class StringLexer
 
     /**
      * @internal
+     *
+     * @return array{bool, string, string} ['caseInsensitive', 'type', 'value']
      */
     public function patternMatchValue(): array
     {

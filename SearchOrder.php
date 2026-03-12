@@ -21,31 +21,28 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class SearchOrder
 {
-    private $values;
-
-    public function __construct(ValuesGroup $valuesGroup)
-    {
+    public function __construct(
+        private ValuesGroup $valuesGroup,
+    ) {
         if ($valuesGroup->hasGroups()) {
             throw new InvalidArgumentException('A SearchOrder must have a single-level structure. Only fields with single values are accepted.');
         }
-
-        $this->values = $valuesGroup;
     }
 
     public function getValuesGroup(): ValuesGroup
     {
-        return $this->values;
+        return $this->valuesGroup;
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, 'desc'|'asc'>
      */
     public function getFields(): array
     {
         $fields = [];
 
-        foreach ($this->values->getFields() as $fieldName => $valuesBag) {
-            $direction = mb_strtolower(current($valuesBag->getSimpleValues()));
+        foreach ($this->valuesGroup->getFields() as $fieldName => $valuesBag) {
+            $direction = mb_strtolower((string) current($valuesBag->getSimpleValues()));
             \assert($direction === 'desc' || $direction === 'asc');
 
             $fields[$fieldName] = $direction;

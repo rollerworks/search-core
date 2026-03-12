@@ -23,34 +23,25 @@ use Rollerworks\Component\Search\Field\FieldConfig;
  */
 final class GenericFieldSetBuilder implements FieldSetBuilder
 {
-    /**
-     * @var FieldConfig[]
-     */
-    private $fields = [];
+    /** @var array<string, FieldConfig> */
+    private array $fields = [];
 
-    /**
-     * @var array[]
-     */
-    private $unresolvedFields = [];
+    /** @var array<string, array{type: string, options: array}> */
+    private array $unresolvedFields = [];
 
-    /**
-     * @var SearchFactory
-     */
-    private $searchFactory;
-
-    public function __construct(SearchFactory $searchFactory)
-    {
-        $this->searchFactory = $searchFactory;
+    public function __construct(
+        private readonly SearchFactory $searchFactory,
+    ) {
     }
 
-    public function set(FieldConfig $field)
+    public function set(FieldConfig $field): self
     {
         $this->fields[$field->getName()] = $field;
 
         return $this;
     }
 
-    public function add(string $name, string $type, array $options = [])
+    public function add(string $name, string $type, array $options = []): self
     {
         $this->unresolvedFields[$name] = [
             'type' => $type,
@@ -60,7 +51,7 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
         return $this;
     }
 
-    public function remove(string $name)
+    public function remove(string $name): self
     {
         unset($this->fields[$name], $this->unresolvedFields[$name]);
 
@@ -99,18 +90,18 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
         throw new InvalidArgumentException(\sprintf('The field with the name "%s" does not exist.', $name));
     }
 
-    public function getFieldSet(?string $setName = null): FieldSet
+    public function getFieldSet(?string $name = null): FieldSet
     {
-        foreach ($this->unresolvedFields as $name => $field) {
-            $this->fields[$name] = $this->searchFactory->createField(
-                $name,
-                $field['type'],
-                $field['options']
+        foreach ($this->unresolvedFields as $fieldName => $config) {
+            $this->fields[$fieldName] = $this->searchFactory->createField(
+                $fieldName,
+                $config['type'],
+                $config['options']
             );
 
-            unset($this->unresolvedFields[$name]);
+            unset($this->unresolvedFields[$fieldName]);
         }
 
-        return new GenericFieldSet($this->fields, $setName);
+        return new GenericFieldSet($this->fields, $name);
     }
 }

@@ -19,65 +19,35 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Exception\InvalidConfigurationException;
 use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Value\RequiresComparatorValueHolder;
+use Rollerworks\Component\Search\Value\ValueHolder;
 use Rollerworks\Component\Search\ValueComparator;
 
 /**
- * SearchField.
- *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class SearchField implements FieldConfig
 {
-    /**
-     * @var string
-     */
-    private $name;
+    /** @var array<string, mixed> */
+    private array $attributes = [];
+
+    /** @var array<class-string<ValueHolder>, bool> */
+    private array $supportedValueTypes = [];
+
+    private ?ValueComparator $valueComparator = null;
+    private ?DataTransformer $viewTransformer = null;
+    private ?DataTransformer $normTransformer = null;
+    private bool $locked = false;
 
     /**
-     * @var ResolvedFieldType
+     * @param array<string, mixed> $options
+     *
+     * @throws \InvalidArgumentException When the name contains illegal characters
      */
-    private $type;
-
-    /**
-     * @var array
-     */
-    private $options;
-
-    /**
-     * @var array
-     */
-    private $attributes = [];
-
-    /**
-     * @var bool[]
-     */
-    private $supportedValueTypes = [];
-
-    /**
-     * @var ValueComparator
-     */
-    private $valueComparator;
-
-    /**
-     * @var bool
-     */
-    private $locked = false;
-
-    /**
-     * @var DataTransformer|null
-     */
-    private $viewTransformer;
-
-    /**
-     * @var DataTransformer|null
-     */
-    private $normTransformer;
-
-    /**
-     * @throws \InvalidArgumentException When the name is invalid
-     */
-    public function __construct(string $name, ResolvedFieldType $type, array $options = [])
-    {
+    public function __construct(
+        private readonly string $name,
+        private readonly ResolvedFieldType $type,
+        private readonly array $options = [],
+    ) {
         if (! preg_match('/^_?[a-zA-Z][a-zA-Z0-9_\-]*$/D', $name)) {
             throw new InvalidArgumentException(
                 \sprintf(
@@ -87,10 +57,6 @@ class SearchField implements FieldConfig
                 )
             );
         }
-
-        $this->name = $name;
-        $this->type = $type;
-        $this->options = $options;
     }
 
     public function supportValueType(string $type): bool
@@ -99,7 +65,7 @@ class SearchField implements FieldConfig
     }
 
     /**
-     * @throws BadMethodCallException
+     * @throws BadMethodCallException when the setter is called after the config is locked
      */
     public function setValueTypeSupport(string $type, bool $enabled)
     {
@@ -124,6 +90,9 @@ class SearchField implements FieldConfig
         return $this->type;
     }
 
+    /**
+     * @throws BadMethodCallException when the setter is called after the config is locked
+     */
     public function setValueComparator(ValueComparator $comparator)
     {
         if ($this->locked) {
@@ -142,6 +111,9 @@ class SearchField implements FieldConfig
         return $this->valueComparator;
     }
 
+    /**
+     * @throws BadMethodCallException when the setter is called after the config is locked
+     */
     public function setViewTransformer(?DataTransformer $viewTransformer = null)
     {
         if ($this->locked) {
@@ -160,6 +132,9 @@ class SearchField implements FieldConfig
         return $this->viewTransformer;
     }
 
+    /**
+     * @throws BadMethodCallException when the setter is called after the config is locked
+     */
     public function setNormTransformer(?DataTransformer $viewTransformer = null)
     {
         if ($this->locked) {
@@ -234,6 +209,9 @@ class SearchField implements FieldConfig
         return $default;
     }
 
+    /**
+     * @throws BadMethodCallException when the configuration is not locked
+     */
     public function createView(FieldSetView $fieldSet): SearchFieldView
     {
         if (! $this->locked) {
@@ -249,7 +227,10 @@ class SearchField implements FieldConfig
         return $view;
     }
 
-    public function setAttribute(string $name, $value)
+    /**
+     * @throws BadMethodCallException when the setter is called after the config is locked
+     */
+    public function setAttribute(string $name, mixed $value)
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -262,6 +243,9 @@ class SearchField implements FieldConfig
         return $this;
     }
 
+    /**
+     * @throws BadMethodCallException when the setter is called after the config is locked
+     */
     public function setAttributes(array $attributes)
     {
         if ($this->locked) {
@@ -285,7 +269,7 @@ class SearchField implements FieldConfig
         return \array_key_exists($name, $this->attributes);
     }
 
-    public function getAttribute(string $name, $default = null)
+    public function getAttribute(string $name, mixed $default = null): mixed
     {
         return \array_key_exists($name, $this->attributes) ? $this->attributes[$name] : $default;
     }

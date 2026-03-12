@@ -74,27 +74,26 @@ class NumberToLocalizedStringTransformer implements DataTransformer
      */
     public const ROUND_HALF_DOWN = \NumberFormatter::ROUND_HALFDOWN;
 
-    protected $grouping;
-
-    protected $roundingMode;
-
-    private $scale;
-    private $locale;
-
-    public function __construct(?int $scale = null, ?bool $grouping = false, ?int $roundingMode = self::ROUND_HALF_UP, ?string $locale = null)
-    {
+    /**
+     * @param self::ROUND_* $roundingMode
+     */
+    public function __construct(
+        private readonly ?int $scale = null,
+        protected ?bool $grouping = false,
+        protected ?int $roundingMode = self::ROUND_HALF_UP,
+        protected readonly ?string $locale = null,
+    ) {
         if ($grouping === null) {
-            $grouping = false;
+            trigger_deprecation('rollerworks/search', '2.0-BETA13', 'Passing null as 2nd argument to "%s()" is deprecated, pass false instead. This will fail 3.0', __CLASS__);
+
+            $this->grouping = false;
         }
 
         if ($roundingMode === null) {
-            $roundingMode = self::ROUND_HALF_UP;
-        }
+            trigger_deprecation('rollerworks/search', '2.0-BETA13', 'Passing null as 3nd argument to "%s()" is deprecated, pass NumberToLocalizedStringTransformer::ROUND_HALF_UP instead. This will fail 3.0', __CLASS__);
 
-        $this->scale = $scale;
-        $this->grouping = $grouping;
-        $this->roundingMode = $roundingMode;
-        $this->locale = $locale;
+            $this->roundingMode = self::ROUND_HALF_UP;
+        }
     }
 
     /**
@@ -107,7 +106,7 @@ class NumberToLocalizedStringTransformer implements DataTransformer
      * @throws TransformationFailedException if the given value is not numeric
      *                                       or if the value can not be transformed
      */
-    public function transform($value): ?string
+    public function transform(mixed $value): ?string
     {
         if ($value === null) {
             return '';
@@ -138,7 +137,7 @@ class NumberToLocalizedStringTransformer implements DataTransformer
      * @throws TransformationFailedException if the given value is not a string
      *                                       or if the value can not be transformed
      */
-    public function reverseTransform($value)
+    public function reverseTransform(mixed $value): mixed
     {
         if (! \is_string($value)) {
             throw new TransformationFailedException('Expected a string.');
@@ -229,9 +228,11 @@ class NumberToLocalizedStringTransformer implements DataTransformer
     /**
      * @internal
      */
-    protected function castParsedValue($value)
+    protected function castParsedValue(float | int $value): float | int
     {
-        if (\is_int($value) && (($float = (float) $value) < \PHP_INT_MAX) && $value === (int) $float) {
+        $float = (float) $value;
+
+        if (\is_int($value) && $float < \PHP_INT_MAX && $value === (int) $float) {
             return $float;
         }
 
@@ -240,12 +241,8 @@ class NumberToLocalizedStringTransformer implements DataTransformer
 
     /**
      * Rounds a number according to the configured scale and rounding mode.
-     *
-     * @param float|int|string $number A number
-     *
-     * @return float|int The rounded number
      */
-    protected function round($number)
+    protected function round(float | int | string $number): float | int | string
     {
         if ($this->scale !== null && $this->roundingMode !== null) {
             // shift number to maintain the correct scale during rounding

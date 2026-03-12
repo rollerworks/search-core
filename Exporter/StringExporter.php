@@ -32,8 +32,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 abstract class StringExporter extends AbstractExporter
 {
-    /** @var string[] */
-    protected $fields = [];
+    /** @var array<string, string> */
+    protected array $fields = [];
 
     public function exportCondition(SearchCondition $condition): string
     {

@@ -23,7 +23,7 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
  */
 final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
 {
-    private $object;
+    private \stdClass $object;
 
     protected function setUp(): void
     {
@@ -37,11 +37,17 @@ final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
         return new ArrayChoiceList($this->getChoices());
     }
 
-    protected function getChoices()
+    /**
+     * @return mixed[]
+     */
+    protected function getChoices(): array
     {
         return [0, 1, 1.5, '1', 'a', false, true, $this->object, null];
     }
 
+    /**
+     * @return string[]
+     */
     protected function getValues()
     {
         return ['0', '1', '2', '3', '4', '5', '6', '7', '8'];
@@ -50,7 +56,7 @@ final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
     /** @test */
     public function create_choice_list_with_value_callback(): void
     {
-        $callback = static fn ($choice) => ':' . $choice;
+        $callback = static fn ($choice): string => ':' . $choice;
 
         $choiceList = new ArrayChoiceList([2 => 'foo', 7 => 'bar', 10 => 'baz'], $callback);
 

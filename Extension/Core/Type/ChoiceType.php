@@ -34,11 +34,10 @@ use Symfony\Component\PropertyAccess\PropertyPath;
  */
 final class ChoiceType extends AbstractFieldType
 {
-    private $choiceListFactory;
-
-    public function __construct(?ChoiceListFactory $choiceListFactory = null)
-    {
-        $this->choiceListFactory = $choiceListFactory ?? new CachingFactoryDecorator(
+    public function __construct(
+        private ?ChoiceListFactory $choiceListFactory = null,
+    ) {
+        $this->choiceListFactory ??= new CachingFactoryDecorator(
             new PropertyAccessDecorator(
                 new DefaultChoiceListFactory()
             )

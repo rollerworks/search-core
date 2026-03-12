@@ -20,15 +20,10 @@ namespace Rollerworks\Component\Search\Extension\Core\ChoiceList\View;
  */
 class ChoiceGroupView implements \IteratorAggregate
 {
-    /**
-     * @var string
-     */
-    public $label;
+    public string $label;
 
-    /**
-     * @var ChoiceGroupView[]|ChoiceView[]
-     */
-    public $choices;
+    /** @var ChoiceGroupView[]|ChoiceView[] */
+    public array $choices;
 
     /**
      * @param string                         $label   The label of the group

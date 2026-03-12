@@ -26,18 +26,15 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  */
 final class MultiTypeDataTransformer implements DataTransformer
 {
-    /** @var array<class-string,DataTransformer> */
-    private $transformers;
-
     /**
-     * @param array<class-string,DataTransformer> $transformers
+     * @param array<class-string, DataTransformer> $transformers
      */
-    public function __construct(array $transformers)
-    {
-        $this->transformers = $transformers;
+    public function __construct(
+        private readonly array $transformers,
+    ) {
     }
 
-    public function transform($value)
+    public function transform(mixed $value): mixed
     {
         if ($value === null) {
             return '';
@@ -52,7 +49,7 @@ final class MultiTypeDataTransformer implements DataTransformer
         return $this->transformers[$type]->transform($value);
     }
 
-    public function reverseTransform($value)
+    public function reverseTransform(mixed $value): mixed
     {
         $finalException = null;
 

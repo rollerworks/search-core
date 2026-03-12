@@ -25,45 +25,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class ConditionErrorMessage implements TranslatableInterface
+final class ConditionErrorMessage implements TranslatableInterface, \Stringable
 {
-    /**
-     * @var string
-     */
-    public $path;
-
-    /**
-     * @var string
-     */
-    public $message;
-
-    /**
-     * The template for the error message.
-     *
-     * @var string|null
-     */
-    public $messageTemplate;
-
-    /**
-     * The parameters that should be substituted in the message template.
-     *
-     * @var array
-     */
-    public $messageParameters;
-
-    /**
-     * The value for error message pluralization.
-     *
-     * @var int|null
-     */
-    public $messagePluralization;
-
-    public $cause;
-
-    /**
-     * @var string[]
-     */
-    public $translatedParameters = [];
+    /** @var string[] */
+    public array $translatedParameters = [];
 
     public string $translatedDomain = 'validators';
 
@@ -71,26 +36,30 @@ final class ConditionErrorMessage implements TranslatableInterface
      * Any array key in $messageParameters will be used as a placeholder in
      * $messageTemplate.
      *
-     * @param string      $path                 Path of the error, this is dependent
-     *                                          on the values structure
-     * @param string      $message              The translated error message
-     * @param string|null $messageTemplate      The template for the error message
-     * @param array       $messageParameters    The parameters that should be
-     *                                          substituted in the message template
-     * @param int|null    $messagePluralization The value for error message pluralization
-     * @param mixed       $cause                The cause of the error
+     * @param string               $path                 Path of the error, this is dependent
+     *                                                   on the values structure
+     * @param string               $message              The translated error message
+     * @param string|null          $messageTemplate      The template for the error message
+     * @param array<string, mixed> $messageParameters    The parameters that should be
+     *                                                   substituted in the message template
+     * @param int|null             $messagePluralization The value for error message pluralization
+     * @param mixed                $cause                The cause of the error
      */
-    public function __construct(string $path, string $message, ?string $messageTemplate = null, array $messageParameters = [], ?int $messagePluralization = null, $cause = null)
-    {
-        $this->path = $path;
-        $this->message = $message;
-        $this->messageTemplate = $messageTemplate ?: $message;
-        $this->messageParameters = $messageParameters;
-        $this->messagePluralization = $messagePluralization;
-        $this->cause = $cause;
+    public function __construct(
+        public string $path,
+        public string $message,
+        public ?string $messageTemplate = null,
+        public array $messageParameters = [],
+        public ?int $messagePluralization = null,
+        public mixed $cause = null,
+    ) {
+        $this->messageTemplate ??= $this->message;
     }
 
-    public static function withMessageTemplate(string $path, string $messageTemplate, array $messageParameters = [], ?int $messagePluralization = null, $cause = null): self
+    /**
+     * @param array<string, mixed> $messageParameters
+     */
+    public static function withMessageTemplate(string $path, string $messageTemplate, array $messageParameters = [], ?int $messagePluralization = null, mixed $cause = null): self
     {
         return new self(
             $path,
@@ -102,7 +71,7 @@ final class ConditionErrorMessage implements TranslatableInterface
         );
     }
 
-    public static function rawMessage(string $path, string $message, $cause = null): self
+    public static function rawMessage(string $path, string $message, mixed $cause = null): self
     {
         $obj = new self($path, $message, null, [], null, $cause);
         $obj->messageTemplate = null; // Mark as untranslated
@@ -111,8 +80,8 @@ final class ConditionErrorMessage implements TranslatableInterface
     }
 
     /**
-     * @param array $translatedParameters An array of parameter names that need
-     *                                    to be translated prior to there usage
+     * @param string[] $translatedParameters An array of parameter names that need
+     *                                       to be translated prior to there usage
      */
     public function setTranslatedParameters(array $translatedParameters): self
     {
@@ -152,6 +121,11 @@ final class ConditionErrorMessage implements TranslatableInterface
         return $translator->trans($this->messageTemplate, $parameters, $this->translatedDomain, $locale);
     }
 
+    /**
+     * @param array<string, string|int|float|(string|int|float)[]> $messageParameters
+     *
+     * @return array<string, string>
+     */
     private function formatParameters(array $messageParameters): array
     {
         $newParams = [];
@@ -169,7 +143,7 @@ final class ConditionErrorMessage implements TranslatableInterface
         return $newParams;
     }
 
-    private function formatValue($value): string
+    private function formatValue(string | int | float $value): string
     {
         $value = (string) $value;
 

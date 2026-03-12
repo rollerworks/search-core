@@ -23,78 +23,32 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\ChoiceList;
  */
 abstract class AbstractChoiceListTestCase extends TestCase
 {
-    /**
-     * @var ChoiceList
-     */
-    protected $list;
+    protected ChoiceList $list;
 
-    /**
-     * @var array
-     */
-    protected $choices;
+    /** @var array<string, mixed> */
+    protected array $choices;
 
-    /**
-     * @var array
-     */
-    protected $values;
+    /** @var array<string, mixed> */
+    protected array $values;
 
-    /**
-     * @var array
-     */
-    protected $structuredValues;
+    /** @var array<string, mixed> */
+    protected array $structuredValues;
 
-    /**
-     * @var array
-     */
-    protected $keys;
+    /** @var array<string, mixed> */
+    protected array $keys;
 
-    protected $choice1;
-
-    protected $choice2;
-
-    protected $choice3;
-
-    protected $choice4;
-
-    /**
-     * @var string
-     */
-    protected $value1;
-
-    /**
-     * @var string
-     */
-    protected $value2;
-
-    /**
-     * @var string
-     */
-    protected $value3;
-
-    /**
-     * @var string
-     */
-    protected $value4;
-
-    /**
-     * @var string
-     */
-    protected $key1;
-
-    /**
-     * @var string
-     */
-    protected $key2;
-
-    /**
-     * @var string
-     */
-    protected $key3;
-
-    /**
-     * @var string
-     */
-    protected $key4;
+    protected mixed $choice1;
+    protected mixed $choice2;
+    protected mixed $choice3;
+    protected mixed $choice4;
+    protected string $value1;
+    protected string $value2;
+    protected string $value3;
+    protected string $value4;
+    protected string $key1;
+    protected string $key2;
+    protected string $key3;
+    protected string $key4;
 
     protected function setUp(): void
     {

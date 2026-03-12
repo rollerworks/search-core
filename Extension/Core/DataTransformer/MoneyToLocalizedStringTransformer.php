@@ -28,14 +28,14 @@ use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
  */
 final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransformer
 {
-    private $defaultCurrency;
-
+    /** @var array<string, array<string, array{0: string, 1: string}>> ['locale' => ['currency' => ['pattern', 'symbol']] */
     private static $patterns = [];
 
-    public function __construct(string $defaultCurrency, bool $grouping = false)
-    {
-        $this->defaultCurrency = $defaultCurrency;
-        $this->grouping = $grouping;
+    public function __construct(
+        private readonly string $defaultCurrency,
+        bool $grouping = false,
+    ) {
+        parent::__construct(null, $grouping);
     }
 
     /**
@@ -76,7 +76,7 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
      * @throws TransformationFailedException if the given value is not a string
      *                                       or if the value can not be transformed
      */
-    public function reverseTransform($value): ?MoneyValue
+    public function reverseTransform(mixed $value): ?MoneyValue
     {
         if ($value === null || $value === '') {
             return null;

@@ -21,42 +21,16 @@ namespace Rollerworks\Component\Search\Extension\Core\ChoiceList\View;
 class ChoiceView
 {
     /**
-     * The label displayed to humans.
-     *
-     * @var string
+     * @param mixed                $data  The original choice
+     * @param string               $value The view representation of the choice
+     * @param string               $label The label displayed to humans
+     * @param array<string, mixed> $attr  Additional attributes for the HTML tag
      */
-    public $label;
-
-    /**
-     * The view representation of the choice.
-     *
-     * @var string
-     */
-    public $value;
-
-    /**
-     * The original choice value.
-     */
-    public $data;
-
-    /**
-     * Additional attributes for the HTML tag.
-     *
-     * @var array
-     */
-    public $attr;
-
-    /**
-     * @param mixed  $data  The original choice
-     * @param string $value The view representation of the choice
-     * @param string $label The label displayed to humans
-     * @param array  $attr  Additional attributes for the HTML tag
-     */
-    public function __construct($data, string $value, string $label, array $attr = [])
-    {
-        $this->data = $data;
-        $this->value = $value;
-        $this->label = $label;
-        $this->attr = $attr;
+    public function __construct(
+        public mixed $data,
+        public string $value,
+        public string $label,
+        public array $attr = [],
+    ) {
     }
 }

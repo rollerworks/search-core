@@ -27,12 +27,11 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class SearchPrimaryCondition
 {
-    private $values;
-    private $order;
+    private ?SearchOrder $order = null;
 
-    public function __construct(ValuesGroup $valuesGroup)
-    {
-        $this->values = $valuesGroup;
+    public function __construct(
+        private readonly ValuesGroup $values,
+    ) {
     }
 
     public function getValuesGroup(): ValuesGroup

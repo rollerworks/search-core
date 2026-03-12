@@ -22,8 +22,7 @@ use Rollerworks\Component\Search\Input\StringLexer;
  */
 final class StringLexerTest extends TestCase
 {
-    /** @var StringLexer */
-    private $lexer;
+    private StringLexer $lexer;
 
     /** @before */
     public function setUpLexer(): void

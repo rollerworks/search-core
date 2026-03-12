@@ -35,11 +35,8 @@ final class DateTimeType extends BaseDateTimeType
     public const DEFAULT_DATE_FORMAT = \IntlDateFormatter::MEDIUM;
     public const DEFAULT_TIME_FORMAT = \IntlDateFormatter::MEDIUM;
 
-    /** @var DateTimeValueComparator */
-    private $valueComparator;
-
-    /** @var DateTimeIntervalValueComparator */
-    private $valueComparatorInterval;
+    private readonly DateTimeValueComparator $valueComparator;
+    private readonly DateTimeIntervalValueComparator $valueComparatorInterval;
 
     public function __construct()
     {

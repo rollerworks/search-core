@@ -34,8 +34,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ErrorPathTranslator
 {
-    public function __construct(protected TranslatorInterface $translator)
-    {
+    public function __construct(
+        protected TranslatorInterface $translator,
+    ) {
     }
 
     public function translateFromQueryString(string $path): string
@@ -152,25 +153,33 @@ class ErrorPathTranslator
         return ((int) self::getChunk($part)) + 1;
     }
 
-    /** @param array{0: string, 1: string} $part */
+    /**
+     * @param array{0: string, 1: string} $part
+     */
     protected static function getChunk(array $part): string
     {
         return $part[1];
     }
 
-    /** @param array{0: string, 1: string} $part */
+    /**
+     * @param array{0: string, 1: string} $part
+     */
     protected static function isGroup(array $part): bool
     {
         return ctype_digit(self::getChunk($part));
     }
 
-    /** @param array{0: string, 1: string} $part */
+    /**
+     * @param array{0: string, 1: string} $part
+     */
     protected static function isField(array $part): bool
     {
         return ! ctype_digit(self::getChunk($part));
     }
 
-    /** @param array{0: string, 1: string} $part */
+    /**
+     * @param array{0: string, 1: string} $part
+     */
     protected static function getFieldName(array $part): string
     {
         return '"' . self::getChunk($part) . '"';

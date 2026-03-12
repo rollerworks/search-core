@@ -15,6 +15,8 @@ namespace Rollerworks\Component\Search;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @extends \ArrayObject<string|int, ConditionErrorMessage>
  */
 final class ErrorList extends \ArrayObject
 {

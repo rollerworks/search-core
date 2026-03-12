@@ -21,22 +21,12 @@ use Money\Money;
 class MoneyValue
 {
     /**
-     * @var Money
-     */
-    public $value;
-
-    /**
-     * @var bool
-     */
-    public $withCurrency;
-
-    /**
      * @param bool $withCurrency indicate the input was provided with a currency.
      *                           This is only used for exporting
      */
-    public function __construct(Money $value, bool $withCurrency = true)
-    {
-        $this->withCurrency = $withCurrency;
-        $this->value = $value;
+    public function __construct(
+        public readonly Money $value,
+        public readonly bool $withCurrency = true,
+    ) {
     }
 }

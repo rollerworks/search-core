@@ -18,8 +18,10 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 
 final class BooleanToNormValueTransformer implements DataTransformer
 {
-    public function __construct(private string $trueValue = 'true', private string $falseValue = 'false')
-    {
+    public function __construct(
+        private readonly string $trueValue = 'true',
+        private readonly string $falseValue = 'false',
+    ) {
     }
 
     public function transform(mixed $value): mixed

@@ -26,32 +26,12 @@ use Rollerworks\Component\Search\InputProcessor;
  */
 abstract class AbstractInput implements InputProcessor
 {
-    /**
-     * @var ProcessorConfig
-     */
-    protected $config;
+    protected ProcessorConfig $config;
+    protected Validator $validator;
+    protected ErrorList $errors;
 
-    /**
-     * Error messages.
-     *
-     * Must be an ErrorList to allow passing by reference
-     * in the ConditionStructure(ByView)Builder.
-     *
-     * @var ConditionErrorMessage[]|ErrorList
-     */
-    protected $errors;
-
-    /**
-     * Current nesting level.
-     *
-     * @var int
-     */
-    protected $level = 0;
-
-    /**
-     * @var Validator
-     */
-    protected $validator;
+    /** Current nesting level. */
+    protected int $level = 0;
 
     public function __construct(?Validator $validator = null)
     {

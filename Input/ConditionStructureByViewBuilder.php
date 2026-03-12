@@ -21,7 +21,7 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
  */
 final class ConditionStructureByViewBuilder extends ConditionStructureBuilder
 {
-    protected function inputToNorm($value, string $path)
+    protected function inputToNorm(mixed $value, string $path): mixed
     {
         if ($this->inputTransformer === null) {
             $this->inputTransformer = $this->fieldConfig->getViewTransformer() ?? false;

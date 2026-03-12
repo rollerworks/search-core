@@ -22,21 +22,18 @@ class ValuesBag implements \Countable
 {
     private int $valuesCount = 0;
 
-    /**
-     * @var array<int, mixed>
-     */
+    /** @var array<int, mixed> */
     private array $simpleValues = [];
 
-    /**
-     * @var array<int, mixed>
-     */
+    /** @var array<int, mixed> */
     private array $simpleExcludedValues = [];
 
-    /**
-     * @var array<class-string<ValueHolder>, ValueHolder[]>
-     */
+    /** @var array<class-string<ValueHolder>, ValueHolder[]> */
     private array $values = [];
 
+    /**
+     * @param class-string<ValueHolder>|'simpleValues'|'simpleValue'|'simpleExcludedValue'|'simpleExcludedValues'|null $type
+     */
     public function count(?string $type = null): int
     {
         if ($type === null) {
@@ -132,7 +129,7 @@ class ValuesBag implements \Countable
     /**
      * @return $this
      */
-    public function addExcludedSimpleValue($value): static
+    public function addExcludedSimpleValue(mixed $value): static
     {
         $this->simpleExcludedValues[] = $value;
         ++$this->valuesCount;
@@ -187,6 +184,8 @@ class ValuesBag implements \Countable
 
     /**
      * Remove a value by type and index.
+     *
+     * @param class-string<ValueHolder> $type
      *
      * @return $this
      */

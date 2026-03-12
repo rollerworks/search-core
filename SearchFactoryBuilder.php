@@ -24,35 +24,23 @@ use Rollerworks\Component\Search\Field\ResolvedFieldTypeFactory;
  */
 final class SearchFactoryBuilder
 {
-    /**
-     * @var ResolvedFieldTypeFactory|null
-     */
-    private $resolvedTypeFactory;
+    private ?ResolvedFieldTypeFactory $resolvedTypeFactory = null;
+
+    /** @var SearchExtension[] */
+    private array $extensions = [];
+
+    /** @var FieldType[] */
+    private array $types = [];
+
+    /** @var array<string, FieldTypeExtension[]> */
+    private array $typeExtensions = [];
+
+    private ?FieldSetRegistry $fieldSetRegistry = null;
 
     /**
-     * @var SearchExtension[]
-     */
-    private $extensions = [];
-
-    /**
-     * @var FieldType[]
-     */
-    private $types = [];
-
-    /**
-     * @var array
-     */
-    private $typeExtensions = [];
-
-    /**
-     * @var FieldSetRegistry|null
-     */
-    private $fieldSetRegistry;
-
-    /**
-     * Sets the factory for creating ResolvedFieldTypeInterface instances.
+     * Sets the factory for creating {@see ResolvedFieldType} instances.
      *
-     * @return static The builder
+     * @return $this The builder
      */
     public function setResolvedTypeFactory(ResolvedFieldTypeFactory $resolvedTypeFactory)
     {
@@ -74,9 +62,9 @@ final class SearchFactoryBuilder
     /**
      * Adds an extension to be loaded by the factory.
      *
-     * @return static The builder
+     * @return $this The builder
      */
-    public function addExtension(SearchExtension $extension)
+    public function addExtension(SearchExtension $extension): self
     {
         $this->extensions[] = $extension;
 
@@ -88,9 +76,9 @@ final class SearchFactoryBuilder
      *
      * @param SearchExtension[] $extensions
      *
-     * @return static The builder
+     * @return $this The builder
      */
-    public function addExtensions(array $extensions)
+    public function addExtensions(array $extensions): self
     {
         $this->extensions = array_merge($this->extensions, $extensions);
 
@@ -100,9 +88,9 @@ final class SearchFactoryBuilder
     /**
      * Adds a field type to the factory.
      *
-     * @return static The builder
+     * @return $this The builder
      */
-    public function addType(FieldType $type)
+    public function addType(FieldType $type): self
     {
         $this->types[$type::class] = $type;
 
@@ -114,9 +102,9 @@ final class SearchFactoryBuilder
      *
      * @param FieldType[] $types
      *
-     * @return static The builder
+     * @return $this The builder
      */
-    public function addTypes(array $types)
+    public function addTypes(array $types): self
     {
         foreach ($types as $type) {
             $this->types[$type::class] = $type;
@@ -128,9 +116,9 @@ final class SearchFactoryBuilder
     /**
      * Adds a field type extension to the factory.
      *
-     * @return static The builder
+     * @return $this The builder
      */
-    public function addTypeExtension(FieldTypeExtension $typeExtension)
+    public function addTypeExtension(FieldTypeExtension $typeExtension): self
     {
         $this->typeExtensions[$typeExtension->getExtendedType()][] = $typeExtension;
 
@@ -142,9 +130,9 @@ final class SearchFactoryBuilder
      *
      * @param FieldTypeExtension[] $typeExtensions
      *
-     * @return static The builder
+     * @return $this The builder
      */
-    public function addTypeExtensions(array $typeExtensions)
+    public function addTypeExtensions(array $typeExtensions): self
     {
         foreach ($typeExtensions as $typeExtension) {
             $this->typeExtensions[$typeExtension->getExtendedType()][] = $typeExtension;

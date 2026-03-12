@@ -21,6 +21,7 @@ use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\SearchFieldView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\Range;
+use Rollerworks\Component\Search\ValueComparator;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -29,7 +30,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class BirthdayType extends AbstractFieldType
 {
-    private $valueComparator;
+    private ValueComparator $valueComparator;
 
     public function __construct()
     {

@@ -19,19 +19,38 @@ use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Field\FieldConfig;
 
 /**
+ * The FieldTransformationAssertion class provides a fluent interface for
+ * testing field transformations.
+ *
+ * Both inputView and inputNorm are expected be strings, when no
+ * inputNorm is provided the inputView is used as the norm value.
+ *
+ * Example:
+ *
+ * ```
+ * FieldTransformationAssertion::assertThat($field)
+ *      ->withInput('value')
+ *      ->successfullyTransformsTo('transformed-value')
+ *
+ *      // Should be equal to the input (but may vary), and should still transform to the same value.
+ *      ->andReverseTransformsTo('value')
+ *
+ *      // Or to expect a transformation failure:
+ *      ->failsToTransforms(new TransformationFailedException('message'))
+ * ```
+ *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 final class FieldTransformationAssertion
 {
-    private $field;
-    private $inputView;
-    private $inputNorm;
-    private $transformed = false;
-    private $model;
+    private string $inputView;
+    private string $inputNorm;
+    private bool $transformed = false;
+    private mixed $model;
 
-    private function __construct(FieldConfig $field)
-    {
-        $this->field = $field;
+    private function __construct(
+        private readonly FieldConfig $field,
+    ) {
     }
 
     public static function assertThat(FieldConfig $field): self
@@ -39,23 +58,23 @@ final class FieldTransformationAssertion
         return new self($field);
     }
 
-    public function withInput($inputView, $inputNorm = null): self
+    public function withInput(string $inputView, ?string $inputNorm = null): self
     {
         if ($this->transformed) {
             throw new \LogicException('Cannot change input after transformation.');
         }
 
-        $this->inputView = (string) $inputView;
-        $this->inputNorm = $inputNorm === null ? $this->inputView : (string) $inputNorm;
+        $this->inputView = $inputView;
+        $this->inputNorm = $inputNorm ?? $this->inputView;
 
         return $this;
     }
 
-    public function successfullyTransformsTo($model): self
+    public function successfullyTransformsTo(mixed $model): self
     {
         $normValue = $viewValue = null;
 
-        if ($this->inputView === null) {
+        if (! isset($this->inputView)) {
             throw new \LogicException('withInput() must be called first.');
         }
 
@@ -82,7 +101,7 @@ final class FieldTransformationAssertion
 
     public function failsToTransforms(?TransformationFailedException $exceptionForView = null, ?TransformationFailedException $exceptionForModel = null): void
     {
-        if ($this->inputView === null) {
+        if (! isset($this->inputView)) {
             throw new \LogicException('withInput() must be called first.');
         }
 
@@ -115,7 +134,7 @@ final class FieldTransformationAssertion
         }
     }
 
-    public function andReverseTransformsTo($expectedView = null, $expectedNorm = null): void
+    public function andReverseTransformsTo(?string $expectedView = null, ?string $expectedNorm = null): void
     {
         $normValue = $viewValue = null;
 
@@ -139,16 +158,14 @@ final class FieldTransformationAssertion
         Assert::assertEquals($expectedNorm ?? $expectedView, $normValue, 'Norm value does not equal');
     }
 
-    private function viewToModel($value)
+    private function viewToModel(string $value)
     {
-        if (! $transformer = $this->field->getViewTransformer()) {
-            return $value === '' ? null : $value;
-        }
+        $transformer = $this->field->getViewTransformer();
 
-        return $transformer->reverseTransform($value);
+        return $transformer ? $transformer->reverseTransform($value) : ($value === '' ? null : $value);
     }
 
-    private function modelToView($value): string
+    private function modelToView(mixed $value): string
     {
         $transformer = $this->field->getViewTransformer();
 
@@ -161,20 +178,14 @@ final class FieldTransformationAssertion
         return (string) $transformer->transform($value);
     }
 
-    private function normToModel($value)
+    private function normToModel(string $value): mixed
     {
         $transformer = $this->field->getNormTransformer() ?? $this->field->getViewTransformer();
 
-        // Scalar values should be converted to strings to
-        // facilitate differentiation between empty ("") and zero (0).
-        if ($value === null || ! $transformer) {
-            return (string) $value;
-        }
-
-        return $transformer->reverseTransform($value);
+        return ! $transformer ? $value : $transformer->reverseTransform($value);
     }
 
-    private function modelToNorm($value): string
+    private function modelToNorm(mixed $value): string
     {
         $transformer = $this->field->getNormTransformer() ?? $this->field->getViewTransformer();
 

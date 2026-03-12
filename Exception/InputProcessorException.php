@@ -20,28 +20,18 @@ use Rollerworks\Component\Search\ConditionErrorMessage;
  */
 class InputProcessorException extends \InvalidArgumentException implements SearchException
 {
-    /** @var string */
-    public $path = '';
+    public array $translatedParameters = [];
 
-    /** @var string */
-    public $messageTemplate;
-
-    /** @var array */
-    public $messageParameters;
-
-    /** @var array */
-    public $translatedParameters = [];
-
-    /** @var int|null */
-    public $plural;
-
-    public function __construct(string $path, string $messageTemplate, array $messageParameters = [], ?int $plural = null, ?\Exception $previous = null)
-    {
-        $this->path = $path;
-        $this->messageTemplate = $messageTemplate;
-        $this->messageParameters = $messageParameters;
-        $this->plural = $plural;
-
+    /**
+     * @param array<string, mixed> $messageParameters
+     */
+    public function __construct(
+        public string $path,
+        public string $messageTemplate,
+        public array $messageParameters = [],
+        public ?int $plural = null,
+        ?\Exception $previous = null,
+    ) {
         parent::__construct(strtr($messageTemplate, $this->formatParameters($messageParameters)), 0, $previous);
     }
 
@@ -66,8 +56,8 @@ class InputProcessorException extends \InvalidArgumentException implements Searc
      * This helps with the translating of normalized types to
      * a localized format.
      *
-     * @param array $translatedParameters An array of parameter names that need
-     *                                    to be translated prior to their usage
+     * @param string[] $translatedParameters An array of parameter names that need
+     *                                       to be translated prior to their usage
      */
     protected function setTranslatedParameters(array $translatedParameters): self
     {
@@ -93,7 +83,7 @@ class InputProcessorException extends \InvalidArgumentException implements Searc
         return $newParams;
     }
 
-    private function formatValue($value): string
+    private function formatValue(string | int | float $value): string
     {
         $value = (string) $value;
 

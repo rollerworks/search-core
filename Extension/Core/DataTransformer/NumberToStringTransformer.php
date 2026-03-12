@@ -57,7 +57,7 @@ class NumberToStringTransformer extends NumberToLocalizedStringTransformer
      * @throws TransformationFailedException If the given value is not a string
      *                                       or if the value can not be transformed
      */
-    public function reverseTransform($value)
+    public function reverseTransform(mixed $value): int | float | null
     {
         if (! \is_scalar($value)) {
             throw new TransformationFailedException('Expected a scalar.');

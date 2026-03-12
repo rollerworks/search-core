@@ -22,7 +22,7 @@ use Rollerworks\Component\Search\Exception\InvalidArgumentException;
  */
 abstract class BaseDateTimeTransformer implements DataTransformer
 {
-    /** @var array */
+    /** @var int[] */
     protected static $formats = [
         \IntlDateFormatter::NONE,
         \IntlDateFormatter::FULL,
@@ -31,11 +31,8 @@ abstract class BaseDateTimeTransformer implements DataTransformer
         \IntlDateFormatter::SHORT,
     ];
 
-    /** @var string */
-    protected $inputTimezone;
-
-    /** @var string */
-    protected $outputTimezone;
+    protected string $inputTimezone;
+    protected string $outputTimezone;
 
     /**
      * @throws InvalidArgumentException if a timezone is not valid

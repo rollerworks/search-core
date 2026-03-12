@@ -29,7 +29,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class NumberType extends AbstractFieldType
 {
-    private $valueComparator;
+    private NumberValueComparator $valueComparator;
 
     public function __construct()
     {

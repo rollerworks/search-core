@@ -30,9 +30,9 @@ use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
  */
 final class MoneyToStringTransformer implements DataTransformer
 {
-    private $defaultCurrency;
-    private $moneyParser;
-    private $formatter;
+    private Currency $defaultCurrency;
+    private DecimalMoneyParser $moneyParser;
+    private DecimalMoneyFormatter $formatter;
 
     public function __construct(string $defaultCurrency)
     {
@@ -47,7 +47,7 @@ final class MoneyToStringTransformer implements DataTransformer
      * @throws TransformationFailedException If the given value is not numeric or
      *                                       if the value can not be transformed
      */
-    public function transform($value): ?string
+    public function transform($value): string
     {
         if ($value === null) {
             return '';
@@ -57,7 +57,7 @@ final class MoneyToStringTransformer implements DataTransformer
             throw new TransformationFailedException('Expected a MoneyValue object.');
         }
 
-        if (! $this->formatter) {
+        if (! isset($this->formatter)) {
             $this->formatter = new DecimalMoneyFormatter(new ISOCurrencies());
         }
 
@@ -104,7 +104,7 @@ final class MoneyToStringTransformer implements DataTransformer
             $currency = $this->defaultCurrency;
         }
 
-        if (! $this->moneyParser) {
+        if (! isset($this->moneyParser)) {
             $this->moneyParser = new DecimalMoneyParser(new ISOCurrencies());
         }
 

@@ -24,8 +24,7 @@ use Rollerworks\Component\Search\Extension\Core\ValueComparator\MoneyValueCompar
  */
 final class MoneyValueComparisonTest extends TestCase
 {
-    /** @var MoneyValueComparator */
-    private $comparison;
+    private MoneyValueComparator $comparison;
 
     protected function setUp(): void
     {

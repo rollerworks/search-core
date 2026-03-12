@@ -22,21 +22,21 @@ use Rollerworks\Component\Search\Field\FieldConfig;
 interface FieldSetBuilder
 {
     /**
-     * @param string $name    Name of search field
-     * @param string $type    The FQCN of the type
-     * @param array  $options Array of options for building the field
+     * @param string               $name    Name of search field
+     * @param string               $type    The FQCN of the type
+     * @param array<string, mixed> $options Array of options for building the field
      *
-     * @return static The builder
+     * @return $this
      */
     public function add(string $name, string $type, array $options = []);
 
     /**
-     * @return static The builder
+     * @return $this
      */
     public function set(FieldConfig $field);
 
     /**
-     * @return static The builder
+     * @return $this
      *
      * @throws BadMethodCallException When the FieldSet has been already turned into a FieldSet instance
      */

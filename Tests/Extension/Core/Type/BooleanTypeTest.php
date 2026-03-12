@@ -28,7 +28,7 @@ final class BooleanTypeTest extends SearchIntegrationTestCase
         $field = $this->getFactory()->createField('active', BooleanType::class);
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput(null)
+            ->withInput('')
             ->successfullyTransformsTo(null)
             ->andReverseTransformsTo('')
         ;
@@ -50,12 +50,6 @@ final class BooleanTypeTest extends SearchIntegrationTestCase
             ->successfullyTransformsTo(false)
             ->andReverseTransformsTo('no', 'false')
         ;
-
-        FieldTransformationAssertion::assertThat($field)
-            ->withInput('false', false)
-            ->successfullyTransformsTo(false)
-            ->andReverseTransformsTo('no', 'false')
-        ;
     }
 
     /** @test */
@@ -65,12 +59,6 @@ final class BooleanTypeTest extends SearchIntegrationTestCase
             'view_label' => ['true' => 'ja', 'false' => 'nee'],
             'norm_label' => ['true' => 'yes', 'false' => 'no'],
         ]);
-
-        FieldTransformationAssertion::assertThat($field)
-            ->withInput(null)
-            ->successfullyTransformsTo(null)
-            ->andReverseTransformsTo('')
-        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('ja', 'yes')

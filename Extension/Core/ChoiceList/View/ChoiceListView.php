@@ -25,37 +25,27 @@ namespace Rollerworks\Component\Search\Extension\Core\ChoiceList\View;
  */
 class ChoiceListView
 {
-    /**
-     * The choices.
-     *
-     * @var ChoiceGroupView[]|ChoiceView[]
-     */
-    public $choices;
+    /** @var ChoiceGroupView[]|ChoiceView[] */
+    public array $choices = [];
 
-    /**
-     * The preferred choices.
-     *
-     * @var ChoiceGroupView[]|ChoiceView[]
-     */
-    public $preferredChoices;
+    /** @var ChoiceGroupView[]|ChoiceView[] */
+    public array $preferredChoices = [];
 
     /**
      * All the choices (without grouping).
      *
      * @var ChoiceView[]|null
      */
-    public $choicesByLabel;
+    public ?array $choicesByLabel = null;
 
     /**
      * Label by the choice-value.
      *
      * @var string[]
      */
-    public $labelsByValue;
+    public array $labelsByValue = [];
 
     /**
-     * Creates a new choice list view.
-     *
      * @param ChoiceGroupView[]|ChoiceView[] $choices          The choice views
      * @param ChoiceGroupView[]|ChoiceView[] $preferredChoices the preferred
      *                                                         choice views

@@ -23,15 +23,12 @@ use Symfony\Component\OptionsResolver\Exception\ExceptionInterface;
  */
 final class GenericSearchFactory implements SearchFactory
 {
-    private $registry;
-    private $fieldSetRegistry;
-    private $serializer;
-
-    public function __construct(TypeRegistry $registry, FieldSetRegistry $fieldSetRegistry)
-    {
-        $this->registry = $registry;
-        $this->fieldSetRegistry = $fieldSetRegistry;
-        $this->serializer = new SearchConditionSerializer($this);
+    public function __construct(
+        private readonly TypeRegistry $registry,
+        private readonly FieldSetRegistry $fieldSetRegistry,
+        private ?SearchConditionSerializer $serializer = null,
+    ) {
+        $this->serializer ??= new SearchConditionSerializer($this);
     }
 
     public function createFieldSet($configurator): FieldSet
@@ -62,6 +59,11 @@ final class GenericSearchFactory implements SearchFactory
         return $field;
     }
 
+    /**
+     * @param array{type: string, type_options?: array<string, mixed>} $options
+     *
+     * @return array<string, mixed>
+     */
     private function createOptionsForOrderField(string $name, array $options): array
     {
         $type = $this->registry->getType($options['type']);

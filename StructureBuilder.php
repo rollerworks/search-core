@@ -19,6 +19,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  * Works as a wrapper around the ValuesGroup, and ValuesBag transforming
  * input while ensuring restrictions are honored.
  *
+ * @psalm-type ErrorPath = array{0: string, 1: string, 2: string}
+ *
  * @internal
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -27,7 +29,10 @@ interface StructureBuilder
 {
     public function getErrors(): ErrorList;
 
-    public function getCurrentPath();
+    /**
+     * @return string|string[]
+     */
+    public function getCurrentPath(): string | array;
 
     public function getRootGroup(): ValuesGroup;
 
@@ -37,32 +42,29 @@ interface StructureBuilder
 
     public function field(string $name, string $path): void;
 
-    public function simpleValue($value, string $path): void;
+    public function simpleValue(mixed $value, string $path): void;
 
-    public function excludedSimpleValue($value, string $path): void;
-
-    /**
-     * @param array $path [path, lower-path-pattern, upper-path-pattern]
-     */
-    public function rangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void;
+    public function excludedSimpleValue(mixed $value, string $path): void;
 
     /**
-     * @param array $path [path, lower-path-pattern, upper-path-pattern]
+     * @param ErrorPath $path [path, lower-path-pattern, upper-path-pattern]
      */
-    public function excludedRangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void;
+    public function rangeValue(mixed $lower, mixed $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void;
 
     /**
-     * @param string $operator
-     * @param array  $path     [base-path, operator-path, value-path]
+     * @param ErrorPath $path [path, lower-path-pattern, upper-path-pattern]
      */
-    public function comparisonValue($operator, $value, array $path): void;
+    public function excludedRangeValue(mixed $lower, mixed $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void;
 
     /**
-     * @param string $type
-     * @param string $value
-     * @param array  $path  [base-path, value-path, type-path]
+     * @param ErrorPath $path [base-path, operator-path, value-path]
      */
-    public function patterMatchValue($type, $value, bool $caseInsensitive, array $path): void;
+    public function comparisonValue(mixed $operator, mixed $value, array $path): void;
+
+    /**
+     * @param ErrorPath $path [base-path, value-path, type-path]
+     */
+    public function patterMatchValue(mixed $type, mixed $value, bool $caseInsensitive, array $path): void;
 
     public function endValues();
 }

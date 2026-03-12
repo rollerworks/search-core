@@ -20,17 +20,11 @@ use Rollerworks\Component\Search\Field\SearchFieldView;
  */
 class FieldSetView
 {
-    /**
-     * The variables assigned to this view.
-     *
-     * @var array
-     */
-    public $vars = [
+    /** The variables assigned to this view. */
+    public array $vars = [
         'attr' => [],
     ];
 
-    /**
-     * @var SearchFieldView[]
-     */
-    public $fields;
+    /** @var SearchFieldView[] */
+    public array $fields;
 }

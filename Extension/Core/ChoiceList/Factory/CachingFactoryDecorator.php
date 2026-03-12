@@ -24,24 +24,15 @@ use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceListView;
  */
 final class CachingFactoryDecorator implements ChoiceListFactory
 {
-    /**
-     * @var ChoiceListFactory
-     */
-    private $decoratedFactory;
+    /** @var ChoiceList[] */
+    private array $lists = [];
 
-    /**
-     * @var ChoiceList[]
-     */
-    private $lists = [];
+    /** @var ChoiceListView[] */
+    private array $views = [];
 
-    /**
-     * @var ChoiceListView[]
-     */
-    private $views = [];
-
-    public function __construct(ChoiceListFactory $decoratedFactory)
-    {
-        $this->decoratedFactory = $decoratedFactory;
+    public function __construct(
+        private readonly ChoiceListFactory $decoratedFactory,
+    ) {
     }
 
     public function getDecoratedFactory(): ChoiceListFactory
