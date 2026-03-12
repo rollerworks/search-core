@@ -132,7 +132,7 @@ final class ConditionErrorMessage implements TranslatableInterface, \Stringable
 
         foreach ($messageParameters as $name => $value) {
             if (\is_array($value)) {
-                $value = implode(', ', array_map([$this, 'formatValue'], $value));
+                $value = implode(', ', array_map($this->formatValue(...), $value));
             } else {
                 $value = $this->formatValue($value);
             }

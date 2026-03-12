@@ -94,7 +94,7 @@ abstract class SearchIntegrationTestCase extends TestCase
         try {
             // First try the "simple" method, it's possible this fails due to index mismatches.
             self::assertEquals($expectedCondition, $actualCondition);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // No need for custom implementations here.
             // The reindexValuesGroup can be used for custom implementations (when needed).
             $actualCondition = new SearchCondition(
@@ -181,7 +181,7 @@ abstract class SearchIntegrationTestCase extends TestCase
             }
 
             // use array_merge to renumber indexes and prevent mismatches.
-            foreach ($valuesBag->all() as $type => $values) {
+            foreach ($valuesBag->all() as $values) {
                 foreach (array_merge([], $values) as $value) {
                     $newValuesBag->add($value);
                 }
@@ -216,6 +216,8 @@ abstract class SearchIntegrationTestCase extends TestCase
      */
     protected static function detectSystemException(\Exception $exception): void
     {
+        trigger_deprecation('rollerworks/search', '2.0-BETA13', 'The "%s()" method is deprecated, use a proper catch type instead.', __METHOD__);
+
         if (! $exception instanceof SearchException) {
             throw $exception;
         }

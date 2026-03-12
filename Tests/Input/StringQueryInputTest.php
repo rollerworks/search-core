@@ -118,6 +118,15 @@ final class StringQueryInputTest extends InputProcessorTestCase
         $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 
+    public static function provideAliasedFieldsTests(): iterable
+    {
+        return [
+            ['first-name: value1; first-name: value, value2;'],
+            ['first-name: value, value2;'],
+            ['value, value2;'],
+        ];
+    }
+
     /** @test */
     public function it_expects_a_string_input(): void
     {
@@ -329,6 +338,12 @@ final class StringQueryInputTest extends InputProcessorTestCase
         $this->assertConditionContainsErrors($input, $config, [$error]);
     }
 
+    public static function provideNestedOrderClauseTests(): iterable
+    {
+        yield ['(@id: asc;)'];
+        yield ['((@id: asc;))'];
+    }
+
     /**
      * @test
      *
@@ -342,10 +357,14 @@ final class StringQueryInputTest extends InputProcessorTestCase
         $this->assertConditionContainsErrors($input, $config, [$error]);
     }
 
-    public static function provideNestedOrderClauseTests(): iterable
+    public static function provideInvalidOrderClauseValueTests(): iterable
     {
-        yield ['(@id: asc;)'];
-        yield ['((@id: asc;))'];
+        yield 'multiple values' => ['@id: desc, asc;'];
+        yield 'negated value' => ['@id: !desc;'];
+        yield 'range' => ['@id: 1 ~ 12;'];
+        yield 'negated range' => ['@id: !1 ~ 12;'];
+        yield 'comparison' => ['@id: >1;'];
+        yield 'pattern' => ['@id: ~> desc;'];
     }
 
     public static function provideEmptyInputTests(): iterable
@@ -434,15 +453,6 @@ final class StringQueryInputTest extends InputProcessorTestCase
             ['((name: value, value2;))'],
             ['((name: value, value2))'],
             ['((value, value2))'],
-        ];
-    }
-
-    public static function provideAliasedFieldsTests(): iterable
-    {
-        return [
-            ['first-name: value1; first-name: value, value2;'],
-            ['first-name: value, value2;'],
-            ['value, value2;'],
         ];
     }
 
@@ -544,15 +554,5 @@ final class StringQueryInputTest extends InputProcessorTestCase
             ['(date: 1;)', [new ConditionErrorMessage('[0][date][0]', 'This value is not valid.')]],
             ['((((((date: 1;))))))', [new ConditionErrorMessage('[0][0][0][0][0][0][date][0]', 'This value is not valid.')]],
         ];
-    }
-
-    public static function provideInvalidOrderClauseValueTests(): iterable
-    {
-        yield 'multiple values' => ['@id: desc, asc;'];
-        yield 'negated value' => ['@id: !desc;'];
-        yield 'range' => ['@id: 1 ~ 12;'];
-        yield 'negated range' => ['@id: !1 ~ 12;'];
-        yield 'comparison' => ['@id: >1;'];
-        yield 'pattern' => ['@id: ~> desc;'];
     }
 }

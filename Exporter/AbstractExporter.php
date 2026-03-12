@@ -50,7 +50,7 @@ abstract class AbstractExporter implements ConditionExporter
                         'converted to a string. You must set a viewTransformer for field "%s" with type "%s".',
                         \gettype($value),
                         $field->getName(),
-                        \get_class($field->getType()->getInnerType())
+                        $field->getType()->getInnerType()::class
                     )
                 );
             }
@@ -78,7 +78,7 @@ abstract class AbstractExporter implements ConditionExporter
                         'converted to a string. You must set a normTransformer for field "%s" with type "%s".',
                         \gettype($value),
                         $field->getName(),
-                        \get_class($field->getType()->getInnerType())
+                        $field->getType()->getInnerType()::class
                     )
                 );
             }

@@ -27,7 +27,7 @@ trait ChoiceLoaderTrait
     public function loadChoicesForValues(array $values, ?callable $value = null): array
     {
         // Optimize
-        if (empty($values)) {
+        if ($values === []) {
             return [];
         }
 
@@ -42,7 +42,7 @@ trait ChoiceLoaderTrait
     public function loadValuesForChoices(array $choices, ?callable $value = null): array
     {
         // Optimize
-        if (empty($choices)) {
+        if ($choices === []) {
             return [];
         }
 

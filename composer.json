@@ -25,6 +25,7 @@
         "psr/container": "^1.1 || ^2.0",
         "symfony/intl": "^6.4 || ^7.4 || ^8.0",
         "symfony/options-resolver": "^6.4 || ^7.4 || ^8.0",
+        "symfony/polyfill-php84": "^1.33",
         "symfony/property-access": "^6.4 || ^7.4 || ^8.0",
         "symfony/string": "^6.4 || ^7.4 || ^8.0",
         "symfony/translation-contracts": "^3.4"

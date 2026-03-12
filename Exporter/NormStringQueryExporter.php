@@ -33,7 +33,7 @@ final class NormStringQueryExporter extends StringExporter
         }
 
         if (\is_callable($valueExporter)) {
-            return $valueExporter($value, [$this, 'modelToNorm'], $field);
+            return $valueExporter($value, $this->modelToNorm(...), $field);
         }
 
         return $this->exportValueAsString($this->modelToNorm($value, $field));

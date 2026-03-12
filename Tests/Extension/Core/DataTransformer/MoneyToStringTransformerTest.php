@@ -38,18 +38,6 @@ final class MoneyToStringTransformerTest extends TestCase
         return $moneyParser->parse((string) $input, new Currency($currency));
     }
 
-    public static function provideTransformations(): iterable
-    {
-        return [
-            [null, ''],
-            [1, 'EUR 1.00'],
-            [1.5, 'EUR 1.50'],
-            [1234.5, 'EUR 1234.50'],
-            [12345.912, 'EUR 12345.91'],
-            [1234.5, 'EUR 1234.50'],
-        ];
-    }
-
     /**
      * @dataProvider provideTransformations
      *
@@ -79,7 +67,7 @@ final class MoneyToStringTransformerTest extends TestCase
             $from = new MoneyValue($this->parseMoneyAsDecimal($from), false);
         }
 
-        $to = mb_substr($to, 4);
+        $to = mb_substr((string) $to, 4);
 
         self::assertEquals($to, $transformer->transform($from));
     }
@@ -111,13 +99,27 @@ final class MoneyToStringTransformerTest extends TestCase
 
         if ($to !== null) {
             $to = new MoneyValue($this->parseMoneyAsDecimal($to, 'USD'), false);
-            $from = mb_substr($from, 4);
+            $from = mb_substr((string) $from, 4);
         }
 
         self::assertEquals($to, $transformer->reverseTransform($from));
     }
 
-    /** @test */
+    public static function provideTransformations(): iterable
+    {
+        return [
+            [null, ''],
+            [1, 'EUR 1.00'],
+            [1.5, 'EUR 1.50'],
+            [1234.5, 'EUR 1234.50'],
+            [12345.912, 'EUR 12345.91'],
+            [1234.5, 'EUR 1234.50'],
+        ];
+    }
+
+    /**
+     * @test
+     */
     public function transform_expects_money_value(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');

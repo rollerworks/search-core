@@ -46,19 +46,6 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         return $moneyParser->parse((string) $input, new Currency($currency));
     }
 
-    public static function provideTransformations(): iterable
-    {
-        return [
-            [null, '', 'de_AT'],
-            [1, '€ 1,00', 'de_AT'],
-            [1.5, '€ 1,50', 'de_AT'],
-            [1234.5, '€ 1234,50', 'de_AT'],
-            [12345.912, '€ 12345,91', 'de_AT'],
-            [1234.5, '1234,50 €', 'ru'],
-            [1234.5, '1234,50 €', 'fi'],
-        ];
-    }
-
     /**
      * @dataProvider provideTransformations
      *
@@ -98,7 +85,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
             $from = new MoneyValue($this->parseMoneyAsDecimal($from), false);
         }
 
-        $to = preg_replace('#(\s?\p{Sc}\s?)#u', '', $to);
+        $to = preg_replace('#(\s?\p{Sc}\s?)#u', '', (string) $to);
 
         self::assertEquals($to, $transformer->transform($from));
     }
@@ -116,17 +103,6 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $from = new MoneyValue($this->parseMoneyAsDecimal(1234.5, 'USD'), false);
 
         self::assertEquals('1234,50', $transformer->transform($from));
-    }
-
-    public static function provideTransformationsWithGrouping(): iterable
-    {
-        return [
-            [1234.5, '1.234,50 €', 'de_DE'],
-            [12345.912, '12.345,91 €', 'de_DE'],
-            [1234.5, '1 234,50 €', 'fr'],
-            [1234.5, '1 234,50 €', 'ru'],
-            [1234.5, '1 234,50 €', 'fi'],
-        ];
     }
 
     /**
@@ -180,7 +156,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
         \Locale::setDefault($locale);
 
-        $from = preg_replace('#(\s?\p{Sc}\s?)#u', '', $from);
+        $from = preg_replace('#(\s?\p{Sc}\s?)#u', '', (string) $from);
         $transformer = new MoneyToLocalizedStringTransformer('USD');
 
         if ($to !== null) {
@@ -188,6 +164,19 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         }
 
         self::assertEquals($to, $transformer->reverseTransform($from));
+    }
+
+    public static function provideTransformations(): iterable
+    {
+        return [
+            [null, '', 'de_AT'],
+            [1, '€ 1,00', 'de_AT'],
+            [1.5, '€ 1,50', 'de_AT'],
+            [1234.5, '€ 1234,50', 'de_AT'],
+            [12345.912, '€ 12345,91', 'de_AT'],
+            [1234.5, '1234,50 €', 'ru'],
+            [1234.5, '1234,50 €', 'fi'],
+        ];
     }
 
     /**
@@ -206,6 +195,17 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
         $to = new MoneyValue($this->parseMoneyAsDecimal($to));
         self::assertEquals($to, $transformer->reverseTransform($from));
+    }
+
+    public static function provideTransformationsWithGrouping(): iterable
+    {
+        return [
+            [1234.5, '1.234,50 €', 'de_DE'],
+            [12345.912, '12.345,91 €', 'de_DE'],
+            [1234.5, '1 234,50 €', 'fr'],
+            [1234.5, '1 234,50 €', 'ru'],
+            [1234.5, '1 234,50 €', 'fi'],
+        ];
     }
 
     /**

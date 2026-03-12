@@ -48,7 +48,7 @@ abstract class StringExporter extends AbstractExporter
 
         $result .= $this->exportOrder($condition, $fieldSet);
 
-        return trim($result . $this->exportGroup($valuesGroup, $fieldSet, true));
+        return mb_trim($result . $this->exportGroup($valuesGroup, $fieldSet, true));
     }
 
     abstract protected function resolveLabels(FieldSet $fieldSet): array;
@@ -68,7 +68,7 @@ abstract class StringExporter extends AbstractExporter
             $result .= ': ' . $this->modelToExported($direction, $fieldSet->get($name)) . '; ';
         }
 
-        return ltrim($result);
+        return mb_ltrim($result);
     }
 
     protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, bool $isRoot = false): string
@@ -86,7 +86,7 @@ abstract class StringExporter extends AbstractExporter
         }
 
         foreach ($valuesGroup->getGroups() as $group) {
-            $exportedGroup = '( ' . trim($this->exportGroup($group, $fieldSet), ' ;') . ' ); ';
+            $exportedGroup = '( ' . mb_trim($this->exportGroup($group, $fieldSet), ' ;') . ' ); ';
 
             if ($exportedGroup !== '(  ); ' && $group->getGroupLogical() === ValuesGroup::GROUP_LOGICAL_OR) {
                 $exportedGroups .= '*';
@@ -97,7 +97,7 @@ abstract class StringExporter extends AbstractExporter
 
         $result .= $exportedGroups;
 
-        return trim($result);
+        return mb_trim($result);
     }
 
     protected function modelToExported($value, FieldConfig $field): string
@@ -109,7 +109,7 @@ abstract class StringExporter extends AbstractExporter
         }
 
         if (\is_callable($valueExporter)) {
-            return $valueExporter($value, [$this, 'modelToView'], $field);
+            return $valueExporter($value, $this->modelToView(...), $field);
         }
 
         return $this->exportValueAsString($this->modelToView($value, $field));
@@ -167,7 +167,7 @@ abstract class StringExporter extends AbstractExporter
             $exportedValues .= $this->getPatternMatchOperator($value) . ' ' . $this->exportValueAsString($value->getValue()) . ', ';
         }
 
-        return rtrim($exportedValues, ', ');
+        return mb_rtrim($exportedValues, ', ');
     }
 
     private function getPatternMatchOperator(PatternMatch $patternMatch): string
@@ -178,39 +178,18 @@ abstract class StringExporter extends AbstractExporter
             $operator .= '!';
         }
 
-        switch ($patternMatch->getType()) {
-            case PatternMatch::PATTERN_CONTAINS:
-            case PatternMatch::PATTERN_NOT_CONTAINS:
-                $operator .= '*';
-
-                break;
-
-            case PatternMatch::PATTERN_STARTS_WITH:
-            case PatternMatch::PATTERN_NOT_STARTS_WITH:
-                $operator .= '>';
-
-                break;
-
-            case PatternMatch::PATTERN_ENDS_WITH:
-            case PatternMatch::PATTERN_NOT_ENDS_WITH:
-                $operator .= '<';
-
-                break;
-
-            case PatternMatch::PATTERN_EQUALS:
-            case PatternMatch::PATTERN_NOT_EQUALS:
-                $operator .= '=';
-
-                break;
-
-            default:
-                throw new \RuntimeException(
-                    \sprintf(
-                        'Unsupported pattern-match type "%s" found. Please report this bug.',
-                        $patternMatch->getType()
-                    )
-                );
-        }
+        match ($patternMatch->getType()) {
+            PatternMatch::PATTERN_CONTAINS, PatternMatch::PATTERN_NOT_CONTAINS => $operator .= '*',
+            PatternMatch::PATTERN_STARTS_WITH, PatternMatch::PATTERN_NOT_STARTS_WITH => $operator .= '>',
+            PatternMatch::PATTERN_ENDS_WITH, PatternMatch::PATTERN_NOT_ENDS_WITH => $operator .= '<',
+            PatternMatch::PATTERN_EQUALS, PatternMatch::PATTERN_NOT_EQUALS => $operator .= '=',
+            default => throw new \RuntimeException(
+                \sprintf(
+                    'Unsupported pattern-match type "%s" found. Please report this bug.',
+                    $patternMatch->getType()
+                )
+            ),
+        };
 
         return $operator;
     }

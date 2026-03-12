@@ -202,6 +202,12 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
         $this->assertConditionContainsErrors($input, $config, [$error]);
     }
 
+    public static function provideNestedOrderClauseTests(): iterable
+    {
+        yield ['(@id: asc;)'];
+        yield ['((@id: asc;))'];
+    }
+
     /**
      * @test
      *
@@ -223,11 +229,5 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
         yield 'negated range' => ['@id: !1 ~ 12;'];
         yield 'comparison' => ['@id: >1;'];
         yield 'pattern' => ['@id: ~> desc;'];
-    }
-
-    public static function provideNestedOrderClauseTests(): iterable
-    {
-        yield ['(@id: asc;)'];
-        yield ['((@id: asc;))'];
     }
 }

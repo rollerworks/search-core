@@ -27,7 +27,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 final class SearchConditionTest extends TestCase
 {
     /** @test */
-    public function it_can_check_if__field_set_is_supported(): void
+    public function it_can_check_if_field_set_is_supported(): void
     {
         $fieldSet = $this->createMock(FieldSet::class);
         $fieldSet->expects(self::any())->method('getSetName')->willReturn('test');
@@ -41,7 +41,7 @@ final class SearchConditionTest extends TestCase
     }
 
     /** @test */
-    public function it_gives_an_exception_when_checked__field_set_is_not_supported(): void
+    public function it_gives_an_exception_when_checked_field_set_is_not_supported(): void
     {
         $fieldSet = $this->createMock(FieldSet::class);
         $fieldSet->expects(self::any())->method('getSetName')->willReturn('test');

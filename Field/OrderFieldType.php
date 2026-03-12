@@ -54,7 +54,8 @@ final class OrderFieldType implements FieldType
         // Ensure view-labels are part of the alias list.
         $resolver->addNormalizer('alias', static function (Options $options, array $value): mixed {
             // Must always exist for interoperability, but it's still possible to overwrite.
-            $value = array_merge($value,
+            $value = array_merge(
+                $value,
                 $options['case'] === OrderTransformer::CASE_LOWERCASE ? ['asc' => 'ASC', 'desc' => 'DESC'] : ['ASC' => 'ASC', 'DESC' => 'DESC']
             );
 

@@ -34,7 +34,7 @@ final class JsonExporter extends AbstractExporter
     {
         $fieldSet = $condition->getFieldSet();
 
-        return (string) json_encode(
+        return json_encode(
             array_merge(
                 $this->exportOrder($condition, $fieldSet),
                 $this->exportGroup($condition->getValuesGroup(), $fieldSet, true)

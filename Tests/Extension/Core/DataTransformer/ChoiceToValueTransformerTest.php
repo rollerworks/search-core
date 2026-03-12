@@ -43,6 +43,17 @@ final class ChoiceToValueTransformerTest extends TestCase
         $this->transformerWithNull = null;
     }
 
+    /**
+     * @dataProvider transformProvider
+     *
+     * @test
+     */
+    public function transform($in, $out, $inWithNull, $outWithNull): void
+    {
+        self::assertSame($out, $this->transformer->transform($in));
+        self::assertSame($outWithNull, $this->transformerWithNull->transform($inWithNull));
+    }
+
     public static function transformProvider(): iterable
     {
         return [
@@ -55,14 +66,14 @@ final class ChoiceToValueTransformerTest extends TestCase
     }
 
     /**
-     * @dataProvider transformProvider
+     * @dataProvider reverseTransformProvider
      *
      * @test
      */
-    public function transform($in, $out, $inWithNull, $outWithNull): void
+    public function reverse_transform($in, $out, $inWithNull, $outWithNull): void
     {
-        self::assertSame($out, $this->transformer->transform($in));
-        self::assertSame($outWithNull, $this->transformerWithNull->transform($inWithNull));
+        self::assertSame($out, $this->transformer->reverseTransform($in));
+        self::assertSame($outWithNull, $this->transformerWithNull->reverseTransform($inWithNull));
     }
 
     public static function reverseTransformProvider(): iterable
@@ -78,14 +89,15 @@ final class ChoiceToValueTransformerTest extends TestCase
     }
 
     /**
-     * @dataProvider reverseTransformProvider
+     * @dataProvider reverseTransformExpectsStringOrNullProvider
      *
      * @test
      */
-    public function reverse_transform($in, $out, $inWithNull, $outWithNull): void
+    public function reverse_transform_expects_string_or_null($value): void
     {
-        self::assertSame($out, $this->transformer->reverseTransform($in));
-        self::assertSame($outWithNull, $this->transformerWithNull->reverseTransform($inWithNull));
+        $this->expectException(TransformationFailedException::class);
+
+        $this->transformer->reverseTransform($value);
     }
 
     public static function reverseTransformExpectsStringOrNullProvider(): iterable
@@ -96,17 +108,5 @@ final class ChoiceToValueTransformerTest extends TestCase
             [false],
             [[]],
         ];
-    }
-
-    /**
-     * @dataProvider reverseTransformExpectsStringOrNullProvider
-     *
-     * @test
-     */
-    public function reverse_transform_expects_string_or_null($value): void
-    {
-        $this->expectException(TransformationFailedException::class);
-
-        $this->transformer->reverseTransform($value);
     }
 }

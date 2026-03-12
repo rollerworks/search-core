@@ -78,7 +78,7 @@ final class OrderStructureBuilder implements StructureBuilder
         }
 
         $this->fieldConfig = $this->fieldSet->get($name);
-        $this->inputTransformer = ($this->viewFormat ? $this->fieldConfig->getViewTransformer() : $this->fieldConfig->getNormTransformer()) ?? null;
+        $this->inputTransformer = $this->viewFormat ? $this->fieldConfig->getViewTransformer() : $this->fieldConfig->getNormTransformer();
 
         $this->valuesBag = $this->valuesGroup->getField($name);
 
@@ -146,44 +146,44 @@ final class OrderStructureBuilder implements StructureBuilder
      * @return mixed returns null when the value is empty or invalid.
      *               Note: When the value is invalid an error is registered
      */
-    private function inputToNorm($value, string $path)
+    private function inputToNorm(mixed $value, string $path): mixed
     {
-        if ($this->inputTransformer === null) {
-            if ($value !== null && ! \is_scalar($value)) {
-                $e = new \RuntimeException(
-                    \sprintf(
-                        'Norm value of type %s is not a scalar value or null and not cannot be ' .
-                        'converted to a string. You must set a NormTransformer for field "%s" with type "%s".',
-                        \gettype($value),
-                        $this->fieldConfig->getName(),
-                        \get_class($this->fieldConfig->getType()->getInnerType())
-                    )
-                );
-
-                $error = new ConditionErrorMessage(
-                    $path,
-                    $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
-                    $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
-                    $this->fieldConfig->getOption('invalid_message_parameters', []),
-                    null,
-                    $e
-                );
-
-                $this->addError($error);
+        if ($this->inputTransformer !== null) {
+            try {
+                return $this->inputTransformer->reverseTransform($value);
+            } catch (TransformationFailedException $e) {
+                $this->addError($this->transformationExceptionToError($e, $path));
 
                 return null;
             }
-
-            return $value === '' ? null : $value;
         }
 
-        try {
-            return $this->inputTransformer->reverseTransform($value);
-        } catch (TransformationFailedException $e) {
-            $this->addError($this->transformationExceptionToError($e, $path));
+        if ($value !== null && ! \is_scalar($value)) {
+            $e = new \RuntimeException(
+                \sprintf(
+                    'Norm value of type %s is not a scalar value or null and not cannot be ' .
+                    'converted to a string. You must set a NormTransformer for field "%s" with type "%s".',
+                    \gettype($value),
+                    $this->fieldConfig->getName(),
+                    $this->fieldConfig->getType()->getInnerType()::class
+                )
+            );
+
+            $error = new ConditionErrorMessage(
+                $path,
+                $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
+                $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
+                $this->fieldConfig->getOption('invalid_message_parameters', []),
+                null,
+                $e
+            );
+
+            $this->addError($error);
 
             return null;
         }
+
+        return $value === '' ? null : $value;
     }
 
     private function transformationExceptionToError($e, string $path): ConditionErrorMessage

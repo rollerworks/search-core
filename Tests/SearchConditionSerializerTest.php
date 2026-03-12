@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\GenericFieldSet;
@@ -29,22 +28,24 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class SearchConditionSerializerTest extends TestCase
 {
-    use ProphecyTrait;
-
     private SearchConditionSerializer $serializer;
     private GenericFieldSet $fieldSet;
 
     protected function setUp(): void
     {
         $field = $this->createMock(FieldConfig::class);
-        $field->expects(self::any())->method('getName')->willReturn('id');
+        $field->method('getName')->willReturn('id');
 
         $this->fieldSet = new GenericFieldSet(['id' => $field], 'foobar');
 
-        $factory = $this->prophesize(SearchFactory::class);
-        $factory->createFieldSet('foobar')->willReturn($this->fieldSet);
+        $factory = $this->createMock(SearchFactory::class);
+        $factory
+            ->method('createFieldSet')
+            ->with('foobar')
+            ->willReturn($this->fieldSet)
+        ;
 
-        $this->serializer = new SearchConditionSerializer($factory->reveal());
+        $this->serializer = new SearchConditionSerializer($factory);
     }
 
     /** @test */
@@ -81,7 +82,7 @@ final class SearchConditionSerializerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Serialized search condition must be exactly two values [FieldSet-name, serialized ValuesGroup].'
+            'Serialized search condition must be exactly two values ["FieldSet-name", "serialized ValuesGroup"].'
         );
 
         $this->serializer->unserialize(['foobar']);
@@ -92,7 +93,7 @@ final class SearchConditionSerializerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Serialized search condition must be exactly two values [FieldSet-name, serialized ValuesGroup].'
+            'Serialized search condition must be exactly two values ["FieldSet-name", "serialized ValuesGroup"].'
         );
 
         $this->serializer->unserialize(['foobar', 'foo' => 'bar']);
@@ -101,16 +102,9 @@ final class SearchConditionSerializerTest extends TestCase
     /** @test */
     public function un_serialize_invalid_data(): void
     {
-        try {
-            // Disable errors to get the exception
-            error_reporting(0);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to unserialize invalid value.');
 
-            $this->expectException(InvalidArgumentException::class);
-            $this->expectExceptionMessage('Unable to unserialize invalid value.');
-
-            $this->serializer->unserialize(['foobar', '{i-am-invalid}']);
-        } finally {
-            error_reporting(1);
-        }
+        $this->serializer->unserialize(['foobar', '{i-am-invalid}']);
     }
 }

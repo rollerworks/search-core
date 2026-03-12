@@ -69,7 +69,7 @@ final class BirthdayTransformer implements DataTransformer
 
     private function transformWhenInteger($value)
     {
-        if (ctype_digit($value)) {
+        if (ctype_digit((string) $value)) {
             return (int) $value;
         }
 

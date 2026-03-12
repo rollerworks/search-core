@@ -26,7 +26,7 @@ final class BooleanType extends AbstractFieldType
     {
         $resolver->setDefault('invalid_message', 'This value is not a valid boolean.');
 
-        // Symfony 6.4 compatiblity
+        // Symfony 6.4 compatibility
         if (! method_exists($resolver, 'setOptions')) {
             $resolver->setDefault('view_label', static function (OptionsResolver $options): void {
                 $options->setDefaults([
@@ -90,8 +90,6 @@ final class BooleanType extends AbstractFieldType
             $options->setAllowedTypes('true', ['scalar[]']);
             $options->setAllowedTypes('false', ['scalar[]']);
         });
-
-
     }
 
     public function buildType(FieldConfig $config, array $options): void

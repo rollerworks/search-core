@@ -25,6 +25,20 @@ final class DateTimeToStringTransformerTest extends TestCase
 {
     use assertDateTimeEqualsTrait;
 
+    /**
+     * @dataProvider dataProvider
+     *
+     * @test
+     */
+    public function transform($format, $output, $input): void
+    {
+        $transformer = new DateTimeToStringTransformer('UTC', 'UTC', $format);
+
+        $input = new \DateTimeImmutable($input);
+
+        self::assertEquals($output, $transformer->transform($input));
+    }
+
     public static function dataProvider(): iterable
     {
         return [
@@ -74,20 +88,8 @@ final class DateTimeToStringTransformerTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProvider
-     *
      * @test
      */
-    public function transform($format, $output, $input): void
-    {
-        $transformer = new DateTimeToStringTransformer('UTC', 'UTC', $format);
-
-        $input = new \DateTimeImmutable($input);
-
-        self::assertEquals($output, $transformer->transform($input));
-    }
-
-    /** @test */
     public function transform_empty(): void
     {
         $transformer = new DateTimeToStringTransformer();

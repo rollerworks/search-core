@@ -56,29 +56,31 @@ final class CachingInputProcessor implements InputProcessor
 
     public function process(ProcessorConfig $config, $input): SearchCondition
     {
-        if (\is_string($input)) {
-            $cacheKey = $this->getConditionCacheKey($config, $input);
+        $ttl = $config->getCacheTTL() ?? $this->ttl;
 
-            try {
-                return $this->conditionSerializer->unserialize($this->cache->get($cacheKey, []));
-            } catch (InvalidArgumentException $e) {
-                // No-op
-            }
-
-            $result = $this->inputProcessor->process($config, $input);
-
-            if (! $result->isEmpty()) {
-                $this->cache->set($cacheKey, $this->conditionSerializer->serialize($result), $config->getCacheTTL() ?? $this->ttl);
-            }
-
-            return $result;
+        if ($ttl === null || $ttl === 0 || ! \is_string($input)) {
+            return $this->inputProcessor->process($config, $input);
         }
 
-        return $this->inputProcessor->process($config, $input);
+        $cacheKey = $this->getConditionCacheKey($config, $input);
+
+        try {
+            return $this->conditionSerializer->unserialize($this->cache->get($cacheKey, []));
+        } catch (InvalidArgumentException) {
+            // No-op
+        }
+
+        $result = $this->inputProcessor->process($config, $input);
+
+        if (! $result->isEmpty()) {
+            $this->cache->set($cacheKey, $this->conditionSerializer->serialize($result), $ttl);
+        }
+
+        return $result;
     }
 
     private function getConditionCacheKey(ProcessorConfig $config, string $input): string
     {
-        return hash('sha256', $config->getFieldSet()->getSetName() . '~' . $input . '~' . \get_class($this->inputProcessor));
+        return hash('sha256', $config->getFieldSet()->getSetName() . '~' . $input . '~' . $this->inputProcessor::class);
     }
 }

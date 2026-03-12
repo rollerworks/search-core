@@ -40,18 +40,11 @@ class ValuesBag implements \Countable
             return $this->valuesCount;
         }
 
-        switch ($type) {
-            case 'simpleValues':
-            case 'simpleValue':
-                return \count($this->simpleValues);
-
-            case 'simpleExcludedValues':
-            case 'simpleExcludedValue':
-                return \count($this->simpleExcludedValues);
-
-            default:
-                return \count($this->values[$type] ?? []);
-        }
+        return match ($type) {
+            'simpleValues', 'simpleValue' => \count($this->simpleValues),
+            'simpleExcludedValues', 'simpleExcludedValue' => \count($this->simpleExcludedValues),
+            default => \count($this->values[$type] ?? []),
+        };
     }
 
     /**

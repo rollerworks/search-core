@@ -29,23 +29,12 @@ final class NumberToStringTransformerTest extends TestCase
         \Locale::setDefault('en');
     }
 
-    public static function provideTransformations(): iterable
-    {
-        return [
-            [null, ''],
-            [1, '1'],
-            [1.5, '1.5'],
-            [1234.5, '1234.5'],
-            [12345.912, '12345.912'],
-        ];
-    }
-
     /**
      * @dataProvider provideTransformations
      *
      * @test
      */
-    public function transform($from, string $to): void
+    public function transform(mixed $from, string $to): void
     {
         $transformer = new NumberToStringTransformer();
 
@@ -59,6 +48,20 @@ final class NumberToStringTransformerTest extends TestCase
 
         self::assertSame('1234.5', $transformer->transform(1234.5));
         self::assertSame('678.92', $transformer->transform(678.916));
+    }
+
+    /**
+     * @param NumberToStringTransformer::ROUND_* $roundingMode
+     *
+     * @dataProvider transformWithRoundingProvider
+     *
+     * @test
+     */
+    public function transform_with_rounding(int $scale, $input, string $output, int $roundingMode): void
+    {
+        $transformer = new NumberToStringTransformer($scale, false, $roundingMode);
+
+        self::assertEquals($output, $transformer->transform($input));
     }
 
     public static function transformWithRoundingProvider(): iterable
@@ -151,20 +154,10 @@ final class NumberToStringTransformerTest extends TestCase
     }
 
     /**
-     * @param NumberToStringTransformer::ROUND_* $roundingMode
-     *
      * @dataProvider transformWithRoundingProvider
      *
      * @test
      */
-    public function transform_with_rounding(int $scale, $input, string $output, int $roundingMode): void
-    {
-        $transformer = new NumberToStringTransformer($scale, false, $roundingMode);
-
-        self::assertEquals($output, $transformer->transform($input));
-    }
-
-    /** @test */
     public function transform_does_not_round_if_no_scale(): void
     {
         $transformer = new NumberToStringTransformer(null, false, NumberToStringTransformer::ROUND_DOWN);
@@ -177,11 +170,36 @@ final class NumberToStringTransformerTest extends TestCase
      *
      * @test
      */
-    public function reverse_transform($to, $from): void
+    public function reverse_transform(mixed $to, mixed $from): void
     {
         $transformer = new NumberToStringTransformer();
 
         self::assertEquals($to, $transformer->reverseTransform($from));
+    }
+
+    public static function provideTransformations(): iterable
+    {
+        return [
+            [null, ''],
+            [1, '1'],
+            [1.5, '1.5'],
+            [1234.5, '1234.5'],
+            [12345.912, '12345.912'],
+        ];
+    }
+
+    /**
+     * @param NumberToStringTransformer::ROUND_* $roundingMode
+     *
+     * @dataProvider reverseTransformWithRoundingProvider
+     *
+     * @test
+     */
+    public function reverse_transform_with_rounding(int $scale, string $input, mixed $output, int $roundingMode): void
+    {
+        $transformer = new NumberToStringTransformer($scale, false, $roundingMode);
+
+        self::assertEquals($output, $transformer->reverseTransform($input));
     }
 
     public static function reverseTransformWithRoundingProvider(): iterable
@@ -274,20 +292,10 @@ final class NumberToStringTransformerTest extends TestCase
     }
 
     /**
-     * @param NumberToStringTransformer::ROUND_* $roundingMode
-     *
      * @dataProvider reverseTransformWithRoundingProvider
      *
      * @test
      */
-    public function reverse_transform_with_rounding(int $scale, string $input, $output, int $roundingMode): void
-    {
-        $transformer = new NumberToStringTransformer($scale, false, $roundingMode);
-
-        self::assertEquals($output, $transformer->reverseTransform($input));
-    }
-
-    /** @test */
     public function reverse_transform_does_not_round_if_no_scale(): void
     {
         $transformer = new NumberToStringTransformer(null, false, NumberToStringTransformer::ROUND_DOWN);

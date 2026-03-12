@@ -93,9 +93,8 @@ final class OrderFieldTest extends TestCase
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('does not support supporting custom value types');
 
-        $this->field->setValueTypeSupport(Range::class, true);
-
         self::assertFalse($this->field->supportValueType(Range::class));
+        $this->field->setValueTypeSupport(Range::class, true);
     }
 
     /** @test */
@@ -112,8 +111,8 @@ final class OrderFieldTest extends TestCase
 
         $comparisonObj = $this->getMockBuilder(ValueComparator::class)->getMock();
 
-        $this->field->setValueComparator($comparisonObj);
         self::assertNull($this->field->getValueComparator());
+        $this->field->setValueComparator($comparisonObj);
     }
 
     /** @test */

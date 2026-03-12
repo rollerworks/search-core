@@ -31,7 +31,7 @@ class UnexpectedTypeException extends \InvalidArgumentException implements Searc
             \sprintf(
                 'Expected argument of type "%s", "%s" given',
                 $expectedType,
-                \is_object($value) ? $value::class : \gettype($value)
+                get_debug_type($value)
             )
         );
     }

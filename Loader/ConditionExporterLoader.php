@@ -16,7 +16,9 @@ namespace Rollerworks\Component\Search\Loader;
 use Psr\Container\ContainerInterface;
 use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
-use Rollerworks\Component\Search\Exporter;
+use Rollerworks\Component\Search\Exporter\JsonExporter;
+use Rollerworks\Component\Search\Exporter\NormStringQueryExporter;
+use Rollerworks\Component\Search\Exporter\StringQueryExporter;
 
 /**
  * ConditionExporterLoader provides lazy loading of ConditionExporters.
@@ -45,9 +47,9 @@ final class ConditionExporterLoader
         return new self(
             new ClosureContainer(
                 [
-                    'rollerworks_search.condition_exporter.json' => static fn () => new Exporter\JsonExporter(),
-                    'rollerworks_search.condition_exporter.string_query' => static fn () => new Exporter\StringQueryExporter(),
-                    'rollerworks_search.condition_exporter.norm_string_query' => static fn () => new Exporter\NormStringQueryExporter(),
+                    'rollerworks_search.condition_exporter.json' => static fn (): JsonExporter => new JsonExporter(),
+                    'rollerworks_search.condition_exporter.string_query' => static fn (): StringQueryExporter => new StringQueryExporter(),
+                    'rollerworks_search.condition_exporter.norm_string_query' => static fn (): NormStringQueryExporter => new NormStringQueryExporter(),
                 ]
             ),
             [

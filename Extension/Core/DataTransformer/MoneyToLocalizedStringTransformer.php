@@ -14,8 +14,6 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
 use Money\Currencies\ISOCurrencies;
-use Money\Currency;
-use Money\Exception\ParserException;
 use Money\Formatter\IntlMoneyFormatter;
 use Money\Parser\IntlMoneyParser;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
@@ -125,8 +123,6 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
             $money = (new IntlMoneyParser($formatter, new ISOCurrencies()))->parse($value);
 
             return new MoneyValue($money, $withCurrency);
-        } catch (ParserException $e) {
-            throw new TransformationFailedException($e->getMessage(), 0, $e);
         } catch (\Exception $e) {
             throw new TransformationFailedException($e->getMessage(), 0, $e);
         }
@@ -197,6 +193,6 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
             $this->addCurrencySymbol('123', $currency);
         }
 
-        return preg_replace('#(\s?' . preg_quote(self::$patterns[$locale][$currency][1], '#') . '\s?)#u', '', $value);
+        return preg_replace('#(\s?' . preg_quote((string) self::$patterns[$locale][$currency][1], '#') . '\s?)#u', '', $value);
     }
 }

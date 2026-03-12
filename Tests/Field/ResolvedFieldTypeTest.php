@@ -234,8 +234,10 @@ final class UsageTrackingFieldTypeExtension extends AbstractFieldTypeExtension
      * @param mixed[]              $calls
      * @param array<string, mixed> $defaultOptions
      */
-    public function __construct(array &$calls, private array $defaultOptions)
-    {
+    public function __construct(
+        array &$calls,
+        private array $defaultOptions,
+    ) {
         $this->calls = &$calls;
     }
 

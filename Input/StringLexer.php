@@ -304,7 +304,7 @@ final class StringLexer
             $this->moveCursor($c);
         }
 
-        $value = rtrim($value);
+        $value = mb_rtrim($value);
 
         if (preg_match('/\s+/', $value)) {
             throw $this->createFormatException(StringLexerException::SPACES_REQ_QUOTING);
@@ -315,7 +315,7 @@ final class StringLexer
 
     public function fieldIdentification(): string
     {
-        return mb_substr(trim($this->expects(self::FIELD_NAME, 'FieldIdentification')), 0, -1);
+        return mb_substr(mb_trim($this->expects(self::FIELD_NAME, 'FieldIdentification')), 0, -1);
     }
 
     //

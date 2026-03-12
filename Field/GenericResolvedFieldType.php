@@ -117,18 +117,15 @@ class GenericResolvedFieldType implements ResolvedFieldType
 
     public function getOptionsResolver(): OptionsResolver
     {
-        if ($this->optionsResolver === null) {
-            if ($this->parent !== null) {
-                $this->optionsResolver = clone $this->parent->getOptionsResolver();
-            } else {
-                $this->optionsResolver = new OptionsResolver();
-            }
+        if ($this->optionsResolver !== null) {
+            return $this->optionsResolver;
+        }
 
-            $this->innerType->configureOptions($this->optionsResolver);
+        $this->optionsResolver = $this->parent !== null ? clone $this->parent->getOptionsResolver() : new OptionsResolver();
+        $this->innerType->configureOptions($this->optionsResolver);
 
-            foreach ($this->typeExtensions as $extension) {
-                $extension->configureOptions($this->optionsResolver);
-            }
+        foreach ($this->typeExtensions as $extension) {
+            $extension->configureOptions($this->optionsResolver);
         }
 
         return $this->optionsResolver;
@@ -141,11 +138,7 @@ class GenericResolvedFieldType implements ResolvedFieldType
      */
     protected function newField($name, array $options): FieldConfig
     {
-        if (OrderField::isOrder($name)) {
-            return new OrderField($name, $this, $options);
-        }
-
-        return new SearchField($name, $this, $options);
+        return OrderField::isOrder($name) ? new OrderField($name, $this, $options) : new SearchField($name, $this, $options);
     }
 
     /**

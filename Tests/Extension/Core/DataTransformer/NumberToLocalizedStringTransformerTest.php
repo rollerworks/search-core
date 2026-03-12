@@ -30,19 +30,6 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         \Locale::setDefault('en');
     }
 
-    public static function provideTransformations(): iterable
-    {
-        return [
-            [null, '', 'de_AT'],
-            [1, '1', 'de_AT'],
-            [1.5, '1,5', 'de_AT'],
-            [1234.5, '1234,5', 'de_AT'],
-            [12345.912, '12345,912', 'de_AT'],
-            [1234.5, '1234,5', 'ru'],
-            [1234.5, '1234,5', 'fi'],
-        ];
-    }
-
     /**
      * @dataProvider provideTransformations
      *
@@ -58,17 +45,6 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer = new NumberToLocalizedStringTransformer();
 
         self::assertSame($to, $transformer->transform($from));
-    }
-
-    public static function provideTransformationsWithGrouping(): iterable
-    {
-        return [
-            [1234.5, '1.234,5', 'de_DE'],
-            [12345.912, '12.345,912', 'de_DE'],
-            [1234.5, '1 234,5', 'fr'],
-            [1234.5, '1 234,5', 'ru'],
-            [1234.5, '1 234,5', 'fi'],
-        ];
     }
 
     /**
@@ -100,6 +76,23 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
 
         self::assertEquals('1234,50', $transformer->transform(1234.5));
         self::assertEquals('678,92', $transformer->transform(678.916));
+    }
+
+    /**
+     * @dataProvider transformWithRoundingProvider
+     *
+     * @test
+     */
+    public function transform_with_rounding($scale, $input, $output, $roundingMode): void
+    {
+        // Since we test against "de_AT", we need the full implementation
+        IntlTestHelper::requireFullIntl($this, '70.1');
+
+        \Locale::setDefault('de_AT');
+
+        $transformer = new NumberToLocalizedStringTransformer($scale, null, $roundingMode);
+
+        self::assertEquals($output, $transformer->transform($input));
     }
 
     public static function transformWithRoundingProvider(): iterable
@@ -192,25 +185,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
     }
 
     /**
-     * @param self::ROUND_* $roundingMode
-     *
-     * @dataProvider transformWithRoundingProvider
-     *
      * @test
      */
-    public function transform_with_rounding(int $scale, float $input, string $output, int $roundingMode): void
-    {
-        // Since we test against "de_AT", we need the full implementation
-        IntlTestHelper::requireFullIntl($this, '70.1');
-
-        \Locale::setDefault('de_AT');
-
-        $transformer = new NumberToLocalizedStringTransformer($scale, false, $roundingMode);
-
-        self::assertEquals($output, $transformer->transform($input));
-    }
-
-    /** @test */
     public function transform_does_not_round_if_no_scale(): void
     {
         // Since we test against "de_AT", we need the full implementation
@@ -240,6 +216,19 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         self::assertEquals($to, $transformer->reverseTransform($from));
     }
 
+    public static function provideTransformations(): iterable
+    {
+        return [
+            [null, '', 'de_AT'],
+            [1, '1', 'de_AT'],
+            [1.5, '1,5', 'de_AT'],
+            [1234.5, '1234,5', 'de_AT'],
+            [12345.912, '12345,912', 'de_AT'],
+            [1234.5, '1234,5', 'ru'],
+            [1234.5, '1234,5', 'fi'],
+        ];
+    }
+
     /**
      * @dataProvider provideTransformationsWithGrouping
      *
@@ -255,6 +244,17 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         $transformer = new NumberToLocalizedStringTransformer(null, true);
 
         self::assertEquals($to, $transformer->reverseTransform($from));
+    }
+
+    public static function provideTransformationsWithGrouping(): iterable
+    {
+        return [
+            [1234.5, '1.234,5', 'de_DE'],
+            [12345.912, '12.345,912', 'de_DE'],
+            [1234.5, '1 234,5', 'fr'],
+            [1234.5, '1 234,5', 'ru'],
+            [1234.5, '1 234,5', 'fi'],
+        ];
     }
 
     /**
@@ -287,6 +287,18 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         // omit group separator
         self::assertEquals(1234.5, $transformer->reverseTransform('1234,5'));
         self::assertEquals(12345.912, $transformer->reverseTransform('12345,912'));
+    }
+
+    /**
+     * @dataProvider reverseTransformWithRoundingProvider
+     *
+     * @test
+     */
+    public function reverse_transform_with_rounding($scale, $input, $output, $roundingMode): void
+    {
+        $transformer = new NumberToLocalizedStringTransformer($scale, null, $roundingMode);
+
+        self::assertEquals($output, $transformer->reverseTransform($input));
     }
 
     public static function reverseTransformWithRoundingProvider(): iterable
@@ -379,20 +391,8 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
     }
 
     /**
-     * @param self::ROUND_* $roundingMode
-     *
-     * @dataProvider reverseTransformWithRoundingProvider
-     *
      * @test
      */
-    public function reverse_transform_with_rounding(int $scale, string $input, float $output, int $roundingMode): void
-    {
-        $transformer = new NumberToLocalizedStringTransformer($scale, false, $roundingMode);
-
-        self::assertEquals($output, $transformer->reverseTransform($input));
-    }
-
-    /** @test */
     public function reverse_transform_does_not_round_if_no_scale(): void
     {
         $transformer = new NumberToLocalizedStringTransformer(null, false, NumberToLocalizedStringTransformer::ROUND_DOWN);

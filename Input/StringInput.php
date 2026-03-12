@@ -164,7 +164,7 @@ abstract class StringInput extends AbstractInput
             throw new UnexpectedTypeException($input, 'string');
         }
 
-        $input = trim($input);
+        $input = mb_trim($input);
 
         $fieldSet = $config->getFieldSet();
         $condition = null;

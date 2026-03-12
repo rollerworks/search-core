@@ -67,9 +67,7 @@ class ConditionStructureBuilder implements StructureBuilder
     private array $valuesGroupLevels = [];
 
     private ?ValuesBag $valuesBag = null;
-
-    /** False when not set, null when undetected (lazy loaded). */
-    protected DataTransformer | false | null $inputTransformer = null;
+    protected DataTransformer | null $inputTransformer;
 
     public function __construct(
         ProcessorConfig $config,
@@ -145,6 +143,8 @@ class ConditionStructureBuilder implements StructureBuilder
 
         $this->fieldConfig = $this->fieldSet->get($name);
         $this->valuesBag = new ValuesBag();
+
+        $this->initializeInputTransformer();
 
         $this->valuesGroupLevels[$this->nestingLevel]->addField($name, $this->valuesBag);
         $this->path[] = \sprintf($path, $name);
@@ -289,6 +289,11 @@ class ConditionStructureBuilder implements StructureBuilder
         array_pop($this->path);
     }
 
+    protected function initializeInputTransformer(): void
+    {
+        $this->inputTransformer = $this->fieldConfig->getNormTransformer();
+    }
+
     /**
      * Reverse transforms a value if a value transformer is set.
      *
@@ -297,46 +302,42 @@ class ConditionStructureBuilder implements StructureBuilder
      */
     protected function inputToNorm(mixed $value, string $path): mixed
     {
-        if ($this->inputTransformer === null) {
-            $this->inputTransformer = $this->fieldConfig->getNormTransformer() ?? false;
-        }
-
-        if ($this->inputTransformer === false) {
-            if ($value !== null && ! \is_scalar($value)) {
-                $e = new \RuntimeException(
-                    \sprintf(
-                        'Norm value of type %s is not a scalar value or null and not cannot be ' .
-                        'converted to a string. You must set a NormTransformer for field "%s" with type "%s".',
-                        \gettype($value),
-                        $this->fieldConfig->getName(),
-                        \get_class($this->fieldConfig->getType()->getInnerType())
-                    )
-                );
-
-                $error = new ConditionErrorMessage(
-                    $path,
-                    $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
-                    $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
-                    $this->fieldConfig->getOption('invalid_message_parameters', []),
-                    null,
-                    $e
-                );
-
-                $this->addError($error);
+        if ($this->inputTransformer !== null) {
+            try {
+                return $this->inputTransformer->reverseTransform($value);
+            } catch (TransformationFailedException $e) {
+                $this->addError($this->transformationExceptionToError($e, $path));
 
                 return null;
             }
-
-            return $value === '' ? null : $value;
         }
 
-        try {
-            return $this->inputTransformer->reverseTransform($value);
-        } catch (TransformationFailedException $e) {
-            $this->addError($this->transformationExceptionToError($e, $path));
+        if ($value !== null && ! \is_scalar($value)) {
+            $e = new \RuntimeException(
+                \sprintf(
+                    'Norm value of type %s is not a scalar value or null and not cannot be ' .
+                    'converted to a string. You must set a NormTransformer for field "%s" with type "%s".',
+                    \gettype($value),
+                    $this->fieldConfig->getName(),
+                    $this->fieldConfig->getType()->getInnerType()::class
+                )
+            );
+
+            $error = new ConditionErrorMessage(
+                $path,
+                $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
+                $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
+                $this->fieldConfig->getOption('invalid_message_parameters', []),
+                null,
+                $e
+            );
+
+            $this->addError($error);
 
             return null;
         }
+
+        return $value === '' ? null : $value;
     }
 
     protected function transformationExceptionToError(TransformationFailedException $e, string $path): ConditionErrorMessage

@@ -64,7 +64,7 @@ final class OrderToLocalizedTransformer implements DataTransformer
             throw new TransformationFailedException('Expected a string or null.');
         }
 
-        if ($value === '') {
+        if ($value === '' || $value === null) {
             return null;
         }
 
@@ -90,7 +90,7 @@ final class OrderToLocalizedTransformer implements DataTransformer
                 0,
                 null,
                 'This value is not a valid sorting direction. Accepted directions are: {{ directions }}.',
-                ['{{ directions }}' => array_unique(array_map('mb_strtolower', array_keys($this->alias)))]
+                ['{{ directions }}' => array_unique(array_map(mb_strtolower(...), array_keys($this->alias)))]
             );
         }
 

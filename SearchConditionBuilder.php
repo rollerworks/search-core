@@ -98,8 +98,8 @@ final class SearchConditionBuilder
         $this->fieldSet->get($name);
         $direction = mb_strtoupper($direction);
 
-        if ($direction !== 'ASC' && $direction !== 'DESC') {
-            throw new InvalidArgumentException(\sprintf('Invalid direction provided "%s" for field "%s", must be either "ASC" or "DESC" (case insensitive).', $direction, $name));
+        if (! \in_array($direction, ['DESC', 'ASC'], true)) {
+            throw new InvalidArgumentException(\sprintf('Invalid direction provided "%s" for field "%s", must be either "ASC" OR "DESC" (case insensitive).', $direction, $name));
         }
 
         if ($this->order === null) {

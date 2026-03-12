@@ -49,6 +49,22 @@ final class CachingInputProcessorTest extends TestCase
     }
 
     /** @test */
+    public function it_ignores_caching_when_ttl_is_0(): void
+    {
+        $cache = $this->createMock(CacheInterface::class);
+        $cache->expects(self::never())->method('get');
+
+        $serializer = $this->createMock(SearchConditionSerializer::class);
+        $inputProcessor = new SpyingInputProcessor();
+        $processor = new CachingInputProcessor($cache, $serializer, $inputProcessor);
+
+        $processor->process($config = (new ProcessorConfig(new FieldSetStub()))->setCacheTTL(0), $input = ['Hello']);
+
+        self::assertEquals($config, $inputProcessor->getConfig());
+        self::assertEquals($input, $inputProcessor->getInput());
+    }
+
+    /** @test */
     public function it_processes_with_no_existing_cache(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
@@ -62,7 +78,7 @@ final class CachingInputProcessorTest extends TestCase
         $cache = new Psr16Cache($arrayCache = new ArrayAdapter());
         $processor = new CachingInputProcessor($cache, $serializer, $inputProcessor);
 
-        $processor->process($config = new ProcessorConfig(new FieldSetStub()), $input = 'Hello');
+        $processor->process($config = (new ProcessorConfig(new FieldSetStub()))->setCacheTTL(10), $input = 'Hello');
 
         self::assertCount(1, $arrayCache->getValues());
         self::assertEquals($config, $inputProcessor->getConfig());
@@ -91,7 +107,7 @@ final class CachingInputProcessorTest extends TestCase
 
         $processor = new CachingInputProcessor($cache, $serializer, $inputProcessor);
 
-        self::assertSame($condition, $processor->process(new ProcessorConfig(new FieldSetStub()), 'Hello'));
+        self::assertSame($condition, $processor->process((new ProcessorConfig(new FieldSetStub()))->setCacheTTL(10), 'Hello'));
         self::assertNull($inputProcessor->getConfig());
         self::assertNull($inputProcessor->getInput());
     }
@@ -129,7 +145,7 @@ final class CachingInputProcessorTest extends TestCase
         $inputProcessor = new SpyingInputProcessor();
         $processor = new CachingInputProcessor($cache, $serializer, $inputProcessor);
 
-        $processor->process($config = new ProcessorConfig(new FieldSetStub()), $input = 'Hello');
+        $processor->process($config = (new ProcessorConfig(new FieldSetStub()))->setCacheTTL(10), $input = 'Hello');
 
         self::assertEquals($config, $inputProcessor->getConfig());
         self::assertEquals($input, $inputProcessor->getInput());
@@ -248,7 +264,7 @@ final class CachingInputProcessorTest extends TestCase
         $inputProcessor = new EmptyInputProcessorStub();
         $processor = new CachingInputProcessor($cache, $serializer, $inputProcessor);
 
-        $processor->process(new ProcessorConfig(new FieldSetStub()), 'Hello');
+        $processor->process((new ProcessorConfig(new FieldSetStub()))->setCacheTTL(10), 'Hello');
     }
 
     /** @test */
@@ -264,10 +280,10 @@ final class CachingInputProcessorTest extends TestCase
         $cache = new Psr16Cache($arrayCache = new ArrayAdapter());
 
         $processor = new CachingInputProcessor($cache, $serializer, new SpyingInputProcessor());
-        $processor->process($config = new ProcessorConfig(new FieldSetStub()), $input = 'Hello');
+        $processor->process((new ProcessorConfig(new FieldSetStub()))->setCacheTTL(10), 'Hello');
 
         $processor2 = new CachingInputProcessor($cache, $serializer, new StubInputProcessor());
-        $processor2->process($config2 = new ProcessorConfig(new FieldSetStub()), $input2 = 'Hello');
+        $processor2->process((new ProcessorConfig(new FieldSetStub()))->setCacheTTL(10), 'Hello');
 
         self::assertCount(2, $arrayCache->getValues());
     }

@@ -55,15 +55,15 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
         $dateFormat ??= \IntlDateFormatter::MEDIUM;
         $timeFormat ??= \IntlDateFormatter::SHORT;
 
-        if (!\in_array($dateFormat, self::$formats, true)) {
+        if (! \in_array($dateFormat, self::$formats, true)) {
             throw new UnexpectedTypeException($dateFormat, implode('", "', self::$formats));
         }
 
-        if (!\in_array($timeFormat, self::$formats, true)) {
+        if (! \in_array($timeFormat, self::$formats, true)) {
             throw new UnexpectedTypeException($timeFormat, implode('", "', self::$formats));
         }
 
-        if (\is_int($calendar) && !\in_array($calendar, [\IntlDateFormatter::GREGORIAN, \IntlDateFormatter::TRADITIONAL], true)) {
+        if (\is_int($calendar) && ! \in_array($calendar, [\IntlDateFormatter::GREGORIAN, \IntlDateFormatter::TRADITIONAL], true)) {
             throw new InvalidArgumentException('The "calendar" option should be either an \IntlDateFormatter constant or an \IntlCalendar instance.');
         }
 

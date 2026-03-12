@@ -184,7 +184,9 @@ class NumberToLocalizedStringTransformer implements DataTransformer
 
         $result = $this->castParsedValue($result);
 
-        if (false !== $encoding = mb_detect_encoding($value, null, true)) {
+        $encoding = mb_detect_encoding($value, null, true);
+
+        if ($encoding !== false) {
             $length = mb_strlen($value, $encoding);
             $remainder = mb_substr($value, $position, $length, $encoding);
         } else {
@@ -197,7 +199,7 @@ class NumberToLocalizedStringTransformer implements DataTransformer
         if ($position < $length) {
             // Check if there are unrecognized characters at the end of the
             // number (excluding whitespace characters)
-            $remainder = trim($remainder, " \t\n\r\0\x0b\xc2\xa0");
+            $remainder = mb_trim($remainder, " \t\n\r\0\x0b\xc2\xa0");
 
             if ($remainder !== '') {
                 throw new TransformationFailedException(\sprintf('The number contains unrecognized characters: "%s"', $remainder));
@@ -244,52 +246,55 @@ class NumberToLocalizedStringTransformer implements DataTransformer
      */
     protected function round(float | int | string $number): float | int | string
     {
-        if ($this->scale !== null && $this->roundingMode !== null) {
-            // shift number to maintain the correct scale during rounding
-            $roundingCoef = 10 ** $this->scale;
-            // string representation to avoid rounding errors, similar to bcmul()
-            $number = (float) (string) ($number * $roundingCoef);
-
-            switch ($this->roundingMode) {
-                case self::ROUND_CEILING:
-                    $number = ceil($number);
-
-                    break;
-
-                case self::ROUND_FLOOR:
-                    $number = floor($number);
-
-                    break;
-
-                case self::ROUND_UP:
-                    $number = $number > 0 ? ceil($number) : floor($number);
-
-                    break;
-
-                case self::ROUND_DOWN:
-                    $number = $number > 0 ? floor($number) : ceil($number);
-
-                    break;
-
-                case self::ROUND_HALF_EVEN:
-                    $number = round($number, 0, \PHP_ROUND_HALF_EVEN);
-
-                    break;
-
-                case self::ROUND_HALF_UP:
-                    $number = round($number, 0, \PHP_ROUND_HALF_UP);
-
-                    break;
-
-                case self::ROUND_HALF_DOWN:
-                    $number = round($number, 0, \PHP_ROUND_HALF_DOWN);
-
-                    break;
-            }
-
-            $number /= $roundingCoef;
+        if ($this->scale === null || $this->roundingMode === null) {
+            return $number;
         }
 
-        return $number;
+        // shift number to maintain the correct scale during rounding
+        $roundingCoef = 10 ** $this->scale;
+        // string representation to avoid rounding errors, similar to bcmul()
+        $number = (float) (string) ($number * $roundingCoef);
+
+        switch ($this->roundingMode) {
+            case self::ROUND_CEILING:
+                $number = ceil($number);
+
+                break;
+
+            case self::ROUND_FLOOR:
+                $number = floor($number);
+
+                break;
+
+            case self::ROUND_UP:
+                $number = $number > 0 ? ceil($number) : floor($number);
+
+                break;
+
+            case self::ROUND_DOWN:
+                $number = $number > 0 ? floor($number) : ceil($number);
+
+                break;
+
+            case self::ROUND_HALF_EVEN:
+                $number = round($number, 0, \PHP_ROUND_HALF_EVEN);
+
+                break;
+
+            case self::ROUND_HALF_UP:
+                $number = round($number, 0, \PHP_ROUND_HALF_UP);
+
+                break;
+
+            case self::ROUND_HALF_DOWN:
+                $number = round($number, 0, \PHP_ROUND_HALF_DOWN);
+
+                break;
+
+            default:
+                throw new \Exception('Unknown rounding mode:' . $this->roundingMode);
+        }
+
+        return $number / $roundingCoef;
     }
 }

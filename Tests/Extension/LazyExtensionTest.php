@@ -42,7 +42,7 @@ final class LazyExtensionTest extends TestCase
     {
         $extension = LazyExtension::create(
             [
-                TextType::class => static fn () => new TextType(),
+                TextType::class => static fn (): TextType => new TextType(),
             ]
         );
 
@@ -73,7 +73,7 @@ final class LazyExtensionTest extends TestCase
 
         $extension = LazyExtension::create(
             [
-                TextType::class => static fn () => new TextType(),
+                TextType::class => static fn (): TextType => new TextType(),
             ],
             [
                 TextType::class => ['ext1' => $typeExtension1, 'ext' => $typeExtension2],
@@ -97,7 +97,7 @@ final class LazyExtensionTest extends TestCase
 
         $extension = LazyExtension::create(
             [
-                TextType::class => static fn () => new TextType(),
+                TextType::class => static fn (): TextType => new TextType(),
             ],
             [
                 IntegerType::class => ['extension_1' => $typeExtension1],

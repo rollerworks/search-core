@@ -44,30 +44,30 @@ final class GenericTypeRegistry implements TypeRegistry
 
     public function getType(string $name): ResolvedFieldType
     {
-        if (! isset($this->types[$name])) {
-            $type = null;
-
-            foreach ($this->extensions as $extension) {
-                if ($extension->hasType($name)) {
-                    $type = $extension->getType($name);
-
-                    break;
-                }
-            }
-
-            if (! $type) {
-                // Support fully-qualified class names.
-                if (! class_exists($name) || ! \in_array(FieldType::class, class_implements($name), true)) {
-                    throw new InvalidArgumentException(\sprintf('Could not load type "%s"', $name));
-                }
-
-                $type = new $name();
-            }
-
-            $this->types[$name] = $this->resolveType($type);
+        if (isset($this->types[$name])) {
+            return $this->types[$name];
         }
 
-        return $this->types[$name];
+        $type = null;
+
+        foreach ($this->extensions as $extension) {
+            if ($extension->hasType($name)) {
+                $type = $extension->getType($name);
+
+                break;
+            }
+        }
+
+        if (! $type) {
+            // Support fully-qualified class names.
+            if (! class_exists($name) || ! \in_array(FieldType::class, class_implements($name), true)) {
+                throw new InvalidArgumentException(\sprintf('Could not load type "%s".', $name));
+            }
+
+            $type = new $name();
+        }
+
+        return $this->types[$name] = $this->resolveType($type);
     }
 
     public function hasType(string $name): bool
@@ -93,12 +93,10 @@ final class GenericTypeRegistry implements TypeRegistry
     private function resolveType(FieldType $type): ResolvedFieldType
     {
         $parentType = $type->getParent();
-        $fqcn = $type::class;
-
         $typeExtensions = [];
 
         foreach ($this->extensions as $extension) {
-            $typeExtensions[] = $extension->getTypeExtensions($fqcn);
+            $typeExtensions[] = $extension->getTypeExtensions($type::class);
         }
 
         return $this->resolvedTypeFactory->createResolvedType(

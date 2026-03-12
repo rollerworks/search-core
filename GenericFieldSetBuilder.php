@@ -60,15 +60,7 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
 
     public function has(string $name): bool
     {
-        if (isset($this->unresolvedFields[$name])) {
-            return true;
-        }
-
-        if (isset($this->fields[$name])) {
-            return true;
-        }
-
-        return false;
+        return isset($this->unresolvedFields[$name]) || isset($this->fields[$name]);
     }
 
     public function get(string $name): FieldConfig

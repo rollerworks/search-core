@@ -110,7 +110,7 @@ final class GenericFieldSetBuilderTest extends TestCase
 
     private function assertBuilderFieldConfigurationEquals(string $name, string $type, array $options = []): void
     {
-        self::assertInstanceOf(FieldConfig::class, $field = $this->builder->get($name));
+        $field = $this->builder->get($name);
         self::assertEquals($name, $field->getName());
         self::assertInstanceOf($type, $field->getType()->getInnerType());
         self::assertEquals($options, $field->getOptions());

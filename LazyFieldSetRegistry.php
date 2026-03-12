@@ -66,24 +66,24 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
      */
     public function getConfigurator(string $name): FieldSetConfigurator
     {
-        if (! isset($this->configurators[$name])) {
-            if (isset($this->serviceIds[$name])) {
-                $configurator = $this->container->get($this->serviceIds[$name]);
-            } elseif (class_exists($name)) {
-                // Support fully-qualified class names.
-                $configurator = new $name();
-            } else {
-                throw new InvalidArgumentException(\sprintf('Could not load FieldSet configurator "%s".', $name));
-            }
-
-            if (! $configurator instanceof FieldSetConfigurator) {
-                throw new InvalidArgumentException(\sprintf('Configurator class "%s" is expected to be an instance of ' . FieldSetConfigurator::class, $name));
-            }
-
-            $this->configurators[$name] = $configurator;
+        if (isset($this->configurators[$name])) {
+            return $this->configurators[$name];
         }
 
-        return $this->configurators[$name];
+        if (isset($this->serviceIds[$name])) {
+            $configurator = $this->container->get($this->serviceIds[$name]);
+        } elseif (class_exists($name)) {
+            // Support fully-qualified class names.
+            $configurator = new $name();
+        } else {
+            throw new InvalidArgumentException(\sprintf('Could not load FieldSet configurator "%s".', $name));
+        }
+
+        if (! $configurator instanceof FieldSetConfigurator) {
+            throw new InvalidArgumentException(\sprintf('Configurator class "%s" is expected to be an instance of ' . FieldSetConfigurator::class, $name));
+        }
+
+        return $this->configurators[$name] = $configurator;
     }
 
     /**

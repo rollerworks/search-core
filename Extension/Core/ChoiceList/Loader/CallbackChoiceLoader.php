@@ -47,7 +47,7 @@ class CallbackChoiceLoader implements ChoiceLoader
             return $this->choiceList;
         }
 
-        return $this->choiceList = new ArrayChoiceList(\call_user_func($this->callback), $value);
+        return $this->choiceList = new ArrayChoiceList(($this->callback)(), $value);
     }
 
     public function isValuesConstant(): bool

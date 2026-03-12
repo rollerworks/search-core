@@ -39,28 +39,6 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
         $this->dateTimeWithoutSeconds = null;
     }
 
-    public static function allProvider(): iterable
-    {
-        return [
-            ['UTC', 'UTC', '2010-02-03 04:05:06 UTC', '2010-02-03T04:05:06Z'],
-            ['UTC', 'UTC', null, ''],
-            ['America/New_York', 'Asia/Hong_Kong', '2010-02-03 04:05:06 America/New_York', '2010-02-03T17:05:06+08:00'],
-            ['America/New_York', 'Asia/Hong_Kong', null, ''],
-            ['UTC', 'Asia/Hong_Kong', '2010-02-03 04:05:06 UTC', '2010-02-03T12:05:06+08:00'],
-            ['America/New_York', 'UTC', '2010-02-03 04:05:06 America/New_York', '2010-02-03T09:05:06Z'],
-        ];
-    }
-
-    public static function reverseTransformProvider(): array
-    {
-        return array_merge((array) self::allProvider(), [
-            // format without seconds, as appears in some browsers
-            ['UTC', 'UTC', '2010-02-03 04:05:00 UTC', '2010-02-03T04:05Z'],
-            ['America/New_York', 'Asia/Hong_Kong', '2010-02-03 04:05:00 America/New_York', '2010-02-03T17:05+08:00'],
-            ['Europe/Amsterdam', 'Europe/Amsterdam', '2013-08-21 10:30:00 Europe/Amsterdam', '2013-08-21T08:30:00Z'],
-        ]);
-    }
-
     /**
      * @dataProvider allProvider
      *
@@ -85,7 +63,21 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
         self::assertSame($to, $transformer->transform($from !== null ? new \DateTimeImmutable($from) : null));
     }
 
-    /** @test */
+    public static function allProvider(): iterable
+    {
+        return [
+            ['UTC', 'UTC', '2010-02-03 04:05:06 UTC', '2010-02-03T04:05:06Z'],
+            ['UTC', 'UTC', null, ''],
+            ['America/New_York', 'Asia/Hong_Kong', '2010-02-03 04:05:06 America/New_York', '2010-02-03T17:05:06+08:00'],
+            ['America/New_York', 'Asia/Hong_Kong', null, ''],
+            ['UTC', 'Asia/Hong_Kong', '2010-02-03 04:05:06 UTC', '2010-02-03T12:05:06+08:00'],
+            ['America/New_York', 'UTC', '2010-02-03 04:05:06 America/New_York', '2010-02-03T09:05:06Z'],
+        ];
+    }
+
+    /**
+     * @test
+     */
     public function transform_requires_valid_date_time(): void
     {
         $transformer = new DateTimeToRfc3339Transformer();
@@ -111,7 +103,19 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
         }
     }
 
-    /** @test */
+    public static function reverseTransformProvider(): array
+    {
+        return array_merge((array) self::allProvider(), [
+            // format without seconds, as appears in some browsers
+            ['UTC', 'UTC', '2010-02-03 04:05:00 UTC', '2010-02-03T04:05Z'],
+            ['America/New_York', 'Asia/Hong_Kong', '2010-02-03 04:05:00 America/New_York', '2010-02-03T17:05+08:00'],
+            ['Europe/Amsterdam', 'Europe/Amsterdam', '2013-08-21 10:30:00 Europe/Amsterdam', '2013-08-21T08:30:00Z'],
+        ]);
+    }
+
+    /**
+     * @test
+     */
     public function reverse_transform_requires_string(): void
     {
         $transformer = new DateTimeToRfc3339Transformer();

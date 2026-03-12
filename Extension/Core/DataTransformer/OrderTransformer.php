@@ -43,11 +43,7 @@ final class OrderTransformer implements DataTransformer
             return '';
         }
 
-        if (isset($this->alias[$value])) {
-            return $this->alias[$value];
-        }
-
-        return $value;
+        return $this->alias[$value] ?? $value;
     }
 
     public function reverseTransform($value)
@@ -56,7 +52,7 @@ final class OrderTransformer implements DataTransformer
             throw new TransformationFailedException('Expected a string or null.');
         }
 
-        if ($value === '') {
+        if ($value === '' || $value === null) {
             return null;
         }
 
@@ -82,7 +78,7 @@ final class OrderTransformer implements DataTransformer
                 0,
                 null,
                 'This value is not a valid sorting direction. Accepted directions are: {{ directions }}.',
-                ['{{ directions }}' => array_unique(array_map('mb_strtolower', array_keys($this->alias)))]
+                ['{{ directions }}' => array_unique(array_map(mb_strtolower(...), array_keys($this->alias)))]
             );
         }
 

@@ -67,20 +67,19 @@ final class LazyExtension implements SearchExtension
     {
         $extensions = [];
 
-        if (isset($this->typeExtensionServices[$name])) {
-            foreach ($this->typeExtensionServices[$name] as $extensionId => $extension) {
-                $extensions[] = $extension;
+        foreach ($this->typeExtensionServices[$name] ?? [] as $extensionId => $extension) {
+            $extensions[] = $extension;
 
-                // validate result of getExtendedType() to ensure it is consistent with the service definition
-                if ($extension->getExtendedType() !== $name) {
-                    throw new InvalidArgumentException(
-                        \sprintf('The extended type specified for the service "%s" does not match the actual extended type. Expected "%s", given "%s".',
-                            $extensionId,
-                            $name,
-                            $extension->getExtendedType()
-                        )
-                    );
-                }
+            // validate result of getExtendedType() to ensure it is consistent with the service definition
+            if ($extension->getExtendedType() !== $name) {
+                throw new InvalidArgumentException(
+                    \sprintf(
+                        'The extended type specified for the service "%s" does not match the actual extended type. Expected "%s", given "%s".',
+                        $extensionId,
+                        $name,
+                        $extension->getExtendedType()
+                    )
+                );
             }
         }
 

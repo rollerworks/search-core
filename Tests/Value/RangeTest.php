@@ -23,10 +23,6 @@ final class RangeTest extends TestCase
 {
     private Range $value;
 
-    /**
-     * @test
-     */
-
     /** @test */
     public function it_has_a_lower_value(): void
     {

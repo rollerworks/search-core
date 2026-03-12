@@ -29,12 +29,10 @@ final class LazyFieldSetRegistryTest extends TestCase
         $configurator = $this->createMock(FieldSetConfigurator::class);
         $configurator2 = $this->createMock(FieldSetConfigurator::class);
 
-        $registry = LazyFieldSetRegistry::create(
-            [
-                'set' => static fn () => $configurator,
-                'set2' => static fn () => $configurator2,
-            ]
-        );
+        $registry = LazyFieldSetRegistry::create([
+            'set' => static fn (): FieldSetConfigurator => $configurator,
+            'set2' => static fn (): FieldSetConfigurator => $configurator2,
+        ]);
 
         self::assertTrue($registry->hasConfigurator('set'));
         self::assertTrue($registry->hasConfigurator('set2'));
@@ -56,11 +54,9 @@ final class LazyFieldSetRegistryTest extends TestCase
         $configurator = $this->createMock(FieldSetConfigurator::class);
         $configurator2 = $this->createMock(FieldSetConfigurator::class);
 
-        $registry = LazyFieldSetRegistry::create(
-            [
-                'set' => static fn () => $configurator,
-            ]
-        );
+        $registry = LazyFieldSetRegistry::create([
+            'set' => static fn (): FieldSetConfigurator => $configurator,
+        ]);
 
         $name = $configurator2::class;
 
@@ -69,7 +65,7 @@ final class LazyFieldSetRegistryTest extends TestCase
         self::assertFalse($registry->hasConfigurator('set2'));
 
         self::assertSame($configurator, $registry->getConfigurator('set'));
-        self::assertSame($name, \get_class($registry->getConfigurator($name)));
+        self::assertSame($name, $registry->getConfigurator($name)::class);
     }
 
     /** @test */
@@ -79,12 +75,10 @@ final class LazyFieldSetRegistryTest extends TestCase
         $configurator2 = $this->createMock(FieldSetConfigurator::class);
         $name = $configurator2::class;
 
-        $registry = LazyFieldSetRegistry::create(
-            [
-                'set' => static fn () => $configurator,
-                $name => static fn () => $configurator2,
-            ]
-        );
+        $registry = LazyFieldSetRegistry::create([
+            'set' => static fn (): FieldSetConfigurator => $configurator,
+            $name => static fn (): FieldSetConfigurator => $configurator2,
+        ]);
 
         $name = $configurator2::class;
 
@@ -102,11 +96,9 @@ final class LazyFieldSetRegistryTest extends TestCase
         $configurator = $this->createMock(FieldSetConfigurator::class);
         $configurator2 = \stdClass::class;
 
-        $registry = LazyFieldSetRegistry::create(
-            [
-                'set' => static fn () => $configurator,
-            ]
-        );
+        $registry = LazyFieldSetRegistry::create([
+            'set' => static fn (): FieldSetConfigurator => $configurator,
+        ]);
 
         self::assertTrue($registry->hasConfigurator('set'));
         self::assertFalse($registry->hasConfigurator('set2'));
@@ -126,11 +118,9 @@ final class LazyFieldSetRegistryTest extends TestCase
         $configurator = $this->createMock(FieldSetConfigurator::class);
         $configurator2 = 'f4394832948_foobar_cow';
 
-        $registry = LazyFieldSetRegistry::create(
-            [
-                'set' => static fn () => $configurator,
-            ]
-        );
+        $registry = LazyFieldSetRegistry::create([
+            'set' => static fn (): FieldSetConfigurator => $configurator,
+        ]);
 
         self::assertTrue($registry->hasConfigurator('set'));
         self::assertFalse($registry->hasConfigurator('set2'));
