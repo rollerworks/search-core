@@ -93,11 +93,7 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
      */
     public function hasConfigurator(string $name): bool
     {
-        if (isset($this->configurators[$name])) {
-            return true;
-        }
-
-        if (isset($this->serviceIds[$name])) {
+        if (isset($this->configurators[$name]) || isset($this->serviceIds[$name])) {
             return true;
         }
 

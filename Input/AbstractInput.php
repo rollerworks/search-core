@@ -13,10 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Input;
 
-use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\ErrorList;
-use Rollerworks\Component\Search\Exception\GroupsNestingException;
-use Rollerworks\Component\Search\Exception\GroupsOverflowException;
 use Rollerworks\Component\Search\InputProcessor;
 
 /**
@@ -36,22 +33,6 @@ abstract class AbstractInput implements InputProcessor
     public function __construct(?Validator $validator = null)
     {
         $this->validator = $validator ?? new NullValidator();
-    }
-
-    protected function validateGroupNesting(string $path): void
-    {
-        if ($this->level > $this->config->getMaxNestingLevel()) {
-            throw new GroupsNestingException(
-                $this->config->getMaxNestingLevel(), $path
-            );
-        }
-    }
-
-    protected function validateGroupsCount(int $count, string $path): void
-    {
-        if ($count > $this->config->getMaxGroups()) {
-            throw new GroupsOverflowException($this->config->getMaxGroups(), $path);
-        }
     }
 
     /**
