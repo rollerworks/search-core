@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\UnsupportedFieldSetException;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\SearchOrder;
 use Rollerworks\Component\Search\SearchPrimaryCondition;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
@@ -81,5 +82,43 @@ final class SearchConditionTest extends TestCase
         $condition->setPrimaryCondition(null);
 
         self::assertNull($condition->getPrimaryCondition());
+    }
+
+    /** @test */
+    public function it_gives_whether_condition_is_empty(): void
+    {
+        $fieldSet = $this->createMock(FieldSet::class);
+        $fieldSet->expects(self::any())->method('getSetName')->willReturn('test');
+
+        // Empty condition
+        self::assertTrue((new SearchCondition($fieldSet, new ValuesGroup()))->isEmpty());
+
+        // With primary condition (not part of the cached condition)
+        self::assertTrue(
+            (new SearchCondition($fieldSet, new ValuesGroup()))
+                ->setPrimaryCondition(
+                    new SearchPrimaryCondition((new ValuesGroup())->addField('id', new ValuesBag())
+                ),
+            )->isEmpty(),
+        );
+
+        // -- None empty --
+
+        // Field
+        $condition = new SearchCondition($fieldSet, new ValuesGroup());
+        $condition->getValuesGroup()->addField('id', new ValuesBag());
+        self::assertFalse($condition->isEmpty());
+
+        // Nested group
+        $condition = new SearchCondition($fieldSet, new ValuesGroup());
+        $condition->getValuesGroup()->addGroup((new ValuesGroup()));
+        self::assertFalse($condition->isEmpty());
+
+        // Ordering
+        self::assertFalse(
+            (new SearchCondition($fieldSet, new ValuesGroup()))
+                ->setOrder(new SearchOrder(((new ValuesGroup())->addField('id', (new ValuesBag())->addSimpleValue('desc')))),
+            )->isEmpty(),
+        );
     }
 }

@@ -42,9 +42,14 @@ class SearchCondition
         return $this->values;
     }
 
-    public function setPrimaryCondition(?SearchPrimaryCondition $condition): void
+    /**
+     * @return $this
+     */
+    public function setPrimaryCondition(?SearchPrimaryCondition $condition): self
     {
         $this->primaryCondition = $condition;
+
+        return $this;
     }
 
     public function getPrimaryCondition(): ?SearchPrimaryCondition
@@ -52,9 +57,14 @@ class SearchCondition
         return $this->primaryCondition;
     }
 
-    public function setOrder(?SearchOrder $order): void
+    /**
+     * @return $this
+     */
+    public function setOrder(?SearchOrder $order): self
     {
         $this->order = $order;
+
+        return $this;
     }
 
     public function getOrder(): ?SearchOrder
@@ -64,7 +74,7 @@ class SearchCondition
 
     public function isEmpty(): bool
     {
-        return \count($this->values->getGroups()) === 0 && \count($this->values->getFields()) === 0;
+        return $this->order === null && \count($this->values->getGroups()) === 0 && \count($this->values->getFields()) === 0;
     }
 
     /**
