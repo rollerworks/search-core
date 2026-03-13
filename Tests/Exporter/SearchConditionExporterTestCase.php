@@ -62,7 +62,9 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exporters_values(): void
     {
         $exporter = $this->getExporter();
@@ -91,7 +93,9 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
     abstract public function provideSingleValuePairTest();
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exporters_multiple_fields(): void
     {
         $exporter = $this->getExporter();
@@ -119,7 +123,9 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
     abstract public function provideMultipleValuesTest();
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_ignores_private_fields(): void
     {
         $exporter = $this->getExporter();
@@ -148,7 +154,9 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
     abstract public function providePrivateFieldsTest();
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exporters_range_values(): void
     {
         $exporter = $this->getExporter();
@@ -180,7 +188,9 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
     abstract public function provideRangeValuesTest();
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exporters_comparisons(): void
     {
         $exporter = $this->getExporter();
@@ -210,7 +220,9 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
     abstract public function provideComparisonValuesTest();
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exporters_matchers(): void
     {
         $exporter = $this->getExporter();
@@ -239,7 +251,9 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
     abstract public function provideMatcherValuesTest();
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exporters_groups(): void
     {
         $exporter = $this->getExporter();
@@ -277,7 +291,9 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
     abstract public function provideGroupTest();
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exporters_multiple_subgroups(): void
     {
         $exporter = $this->getExporter();
@@ -310,7 +326,9 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
     abstract public function provideMultipleSubGroupTest();
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exporters_nested_subgroups(): void
     {
         $exporter = $this->getExporter();
@@ -337,7 +355,9 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
     abstract public function provideNestedGroupTest();
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exporters_with_empty_fields(): void
     {
         $exporter = $this->getExporter();
@@ -354,7 +374,9 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
     abstract public function provideEmptyValuesTest();
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exporters_with_empty_group(): void
     {
         $exporter = $this->getExporter();
@@ -372,7 +394,9 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 
     abstract public function provideEmptyGroupTest();
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exports_with_ordering(): void
     {
         $exporter = $this->getExporter();

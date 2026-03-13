@@ -24,7 +24,9 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class NumberTypeTest extends SearchIntegrationTestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function casts_to_integer(): void
     {
         $field = $this->getFactory()->createField('number', NumberType::class);
@@ -54,7 +56,9 @@ final class NumberTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function wrong_input_fails(): void
     {
         $field = $this->getFactory()->createField('integer', NumberType::class);
@@ -65,7 +69,9 @@ final class NumberTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function default_formatting(): void
     {
         $field = $this->getFactory()->createField('number', NumberType::class);
@@ -83,7 +89,9 @@ final class NumberTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function non_western_formatting(): void
     {
         \Locale::setDefault('ar_BH');
@@ -103,7 +111,9 @@ final class NumberTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function default_formatting_with_grouping(): void
     {
         $field = $this->getFactory()->createField('number', NumberType::class, ['grouping' => true]);
@@ -121,7 +131,9 @@ final class NumberTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function default_formatting_with_precision(): void
     {
         $field = $this->getFactory()->createField('number', NumberType::class, ['scale' => 2]);
@@ -139,7 +151,9 @@ final class NumberTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function default_formatting_with_rounding(): void
     {
         $field = $this->getFactory()->createField('number', NumberType::class, [
@@ -159,7 +173,9 @@ final class NumberTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function view_is_configured_properly(): void
     {
         $field = $this->getFactory()->createField('number', NumberType::class, [

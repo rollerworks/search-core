@@ -25,7 +25,9 @@ final class DateTimeToTimestampTransformerTest extends TestCase
 {
     use assertDateTimeEqualsTrait;
 
-    /** @test */
+    /**
+     * @test
+     */
     public function transform(): void
     {
         $transformer = new DateTimeToTimestampTransformer('UTC', 'UTC');
@@ -36,7 +38,9 @@ final class DateTimeToTimestampTransformerTest extends TestCase
         self::assertEquals($output, $transformer->transform($input));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function transform_empty(): void
     {
         $transformer = new DateTimeToTimestampTransformer();
@@ -44,7 +48,9 @@ final class DateTimeToTimestampTransformerTest extends TestCase
         self::assertNull($transformer->transform(null));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function transform_with_different_timezones(): void
     {
         $transformer = new DateTimeToTimestampTransformer('Asia/Hong_Kong', 'America/New_York');
@@ -56,7 +62,9 @@ final class DateTimeToTimestampTransformerTest extends TestCase
         self::assertEquals($output, $transformer->transform($input));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function transform_from_different_timezone(): void
     {
         $transformer = new DateTimeToTimestampTransformer('Asia/Hong_Kong', 'UTC');
@@ -70,7 +78,9 @@ final class DateTimeToTimestampTransformerTest extends TestCase
         self::assertEquals($output, $transformer->transform($input));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function transform_date_time_immutable(): void
     {
         $transformer = new DateTimeToTimestampTransformer('Asia/Hong_Kong', 'America/New_York');
@@ -82,7 +92,9 @@ final class DateTimeToTimestampTransformerTest extends TestCase
         self::assertEquals($output, $transformer->transform($input));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function transform_expects_date_time(): void
     {
         $transformer = new DateTimeToTimestampTransformer();
@@ -92,7 +104,9 @@ final class DateTimeToTimestampTransformerTest extends TestCase
         $transformer->transform('1234');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform(): void
     {
         $reverseTransformer = new DateTimeToTimestampTransformer('UTC', 'UTC');
@@ -103,7 +117,9 @@ final class DateTimeToTimestampTransformerTest extends TestCase
         self::assertDateTimeEquals($output, $reverseTransformer->reverseTransform($input));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_empty(): void
     {
         $reverseTransformer = new DateTimeToTimestampTransformer();
@@ -111,7 +127,9 @@ final class DateTimeToTimestampTransformerTest extends TestCase
         self::assertNull($reverseTransformer->reverseTransform(null));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_with_different_timezones(): void
     {
         $reverseTransformer = new DateTimeToTimestampTransformer('Asia/Hong_Kong', 'America/New_York');
@@ -123,7 +141,9 @@ final class DateTimeToTimestampTransformerTest extends TestCase
         self::assertDateTimeEquals($output, $reverseTransformer->reverseTransform($input));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_expects_valid_timestamp(): void
     {
         $reverseTransformer = new DateTimeToTimestampTransformer();

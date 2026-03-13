@@ -58,7 +58,7 @@ final class DefaultChoiceListFactoryTest extends TestCase
                 return '2';
 
             default:
-                throw new \InvalidArgumentException(sprintf('Unexpected choice "%s".', $choice));
+                throw new \InvalidArgumentException(\sprintf('Unexpected choice "%s".', $choice));
         }
     }
 
@@ -143,7 +143,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choices_empty(): void
     {
         $list = $this->factory->createListFromChoices([]);
@@ -152,7 +154,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         self::assertSame([], $list->getValues());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choices_flat(): void
     {
         $list = $this->factory->createListFromChoices(
@@ -162,7 +166,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithGeneratedValues($list);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choices_flat_traversable(): void
     {
         $list = $this->factory->createListFromChoices(
@@ -172,7 +178,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithGeneratedValues($list);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choices_flat_values_as_callable(): void
     {
         $list = $this->factory->createListFromChoices(
@@ -183,7 +191,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithCustomValues($list);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choices_flat_values_as_closure(): void
     {
         $list = $this->factory->createListFromChoices(
@@ -194,7 +204,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithCustomValues($list);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choices_grouped(): void
     {
         $list = $this->factory->createListFromChoices(
@@ -207,7 +219,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithGeneratedValues($list);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choices_grouped_traversable(): void
     {
         $list = $this->factory->createListFromChoices(
@@ -220,7 +234,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithGeneratedValues($list);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choices_grouped_values_as_callable(): void
     {
         $list = $this->factory->createListFromChoices(
@@ -234,7 +250,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithCustomValues($list);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choices_grouped_values_as_closure(): void
     {
         $list = $this->factory->createListFromChoices(
@@ -248,7 +266,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertObjectListWithCustomValues($list);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_loader(): void
     {
         $loader = $this->createMock(ChoiceLoader::class);
@@ -258,7 +278,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         self::assertEquals(new LazyChoiceList($loader), $list);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_loader_with_values(): void
     {
         $loader = $this->createMock(ChoiceLoader::class);
@@ -269,7 +291,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         self::assertEquals(new LazyChoiceList($loader, $value), $list);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat(): void
     {
         $view = $this->factory->createView($this->list);
@@ -281,13 +305,16 @@ final class DefaultChoiceListFactoryTest extends TestCase
                     1 => new ChoiceView($this->obj2, '1', 'B'),
                     2 => new ChoiceView($this->obj3, '2', 'C'),
                     3 => new ChoiceView($this->obj4, '3', 'D'),
-                ], []
+                ],
+                []
             ),
             $view
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_preferred_choices(): void
     {
         $view = $this->factory->createView(
@@ -298,7 +325,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_preferred_choices_empty_array(): void
     {
         $view = $this->factory->createView(
@@ -313,13 +342,16 @@ final class DefaultChoiceListFactoryTest extends TestCase
                     1 => new ChoiceView($this->obj2, '1', 'B'),
                     2 => new ChoiceView($this->obj3, '2', 'C'),
                     3 => new ChoiceView($this->obj4, '3', 'D'),
-                ], []
+                ],
+                []
             ),
             $view
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_preferred_choices_as_callable(): void
     {
         $view = $this->factory->createView(
@@ -330,7 +362,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_preferred_choices_as_closure(): void
     {
         $obj2 = $this->obj2;
@@ -344,7 +378,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_preferred_choices_closure_receives_key(): void
     {
         $view = $this->factory->createView(
@@ -355,7 +391,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_preferred_choices_closure_receives_value(): void
     {
         $view = $this->factory->createView(
@@ -366,7 +404,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_label_as_callable(): void
     {
         $view = $this->factory->createView(
@@ -378,7 +418,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_label_as_closure(): void
     {
         $view = $this->factory->createView(
@@ -390,7 +432,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_label_closure_receives_key(): void
     {
         $view = $this->factory->createView(
@@ -402,7 +446,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_label_closure_receives_value(): void
     {
         $view = $this->factory->createView(
@@ -424,7 +470,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_index_as_callable(): void
     {
         $view = $this->factory->createView(
@@ -437,7 +485,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithCustomIndices($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_index_as_closure(): void
     {
         $view = $this->factory->createView(
@@ -450,7 +500,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithCustomIndices($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_index_closure_receives_key(): void
     {
         $view = $this->factory->createView(
@@ -473,7 +525,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithCustomIndices($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_index_closure_receives_value(): void
     {
         $view = $this->factory->createView(
@@ -496,7 +550,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithCustomIndices($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_group_by_original_structure(): void
     {
         $list = new ArrayChoiceList([
@@ -513,7 +569,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertGroupedView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_group_by_empty(): void
     {
         $view = $this->factory->createView(
@@ -527,7 +585,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_group_by_as_callable(): void
     {
         $view = $this->factory->createView(
@@ -541,7 +601,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertGroupedView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_group_by_object_that_can_be_cast_to_string(): void
     {
         $view = $this->factory->createView(
@@ -555,7 +617,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertGroupedView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_group_by_as_closure(): void
     {
         $obj1 = $this->obj1;
@@ -572,7 +636,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertGroupedView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_group_by_closure_receives_key(): void
     {
         $view = $this->factory->createView(
@@ -586,7 +652,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertGroupedView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_group_by_closure_receives_value(): void
     {
         $view = $this->factory->createView(
@@ -600,7 +668,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertGroupedView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_attr_as_array(): void
     {
         $view = $this->factory->createView(
@@ -618,7 +688,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithAttr($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_attr_empty(): void
     {
         $view = $this->factory->createView(
@@ -633,7 +705,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatView($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_attr_as_callable(): void
     {
         $view = $this->factory->createView(
@@ -648,7 +722,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithAttr($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_attr_as_closure(): void
     {
         $view = $this->factory->createView(
@@ -663,7 +739,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithAttr($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_attr_closure_receives_key(): void
     {
         $view = $this->factory->createView(
@@ -682,7 +760,9 @@ final class DefaultChoiceListFactoryTest extends TestCase
         $this->assertFlatViewWithAttr($view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_flat_attr_closure_receives_value(): void
     {
         $view = $this->factory->createView(

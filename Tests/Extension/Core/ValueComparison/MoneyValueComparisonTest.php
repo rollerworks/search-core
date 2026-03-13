@@ -31,7 +31,9 @@ final class MoneyValueComparisonTest extends TestCase
         $this->comparison = new MoneyValueComparator();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_true_equal(): void
     {
         $value1 = new MoneyValue(Money::EUR(1200));
@@ -45,7 +47,9 @@ final class MoneyValueComparisonTest extends TestCase
         self::assertTrue($this->comparison->isEqual($value1, $value2, []));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_false_when_not_equal(): void
     {
         $value1 = new MoneyValue(Money::EUR(1200));
@@ -60,7 +64,9 @@ final class MoneyValueComparisonTest extends TestCase
         self::assertFalse($this->comparison->isEqual($value1, $value2, []));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_true_when_first_value_is_higher(): void
     {
         $value1 = new MoneyValue(Money::EUR(1500));
@@ -74,7 +80,9 @@ final class MoneyValueComparisonTest extends TestCase
         self::assertTrue($this->comparison->isHigher($value1, $value2, []));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_true_when_first_value_is_lower(): void
     {
         $value1 = new MoneyValue(Money::EUR(1000));
@@ -88,7 +96,9 @@ final class MoneyValueComparisonTest extends TestCase
         self::assertTrue($this->comparison->isLower($value1, $value2, []));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_false_when_first_value_is_not_higher(): void
     {
         $value1 = new MoneyValue(Money::EUR(1200));
@@ -103,7 +113,9 @@ final class MoneyValueComparisonTest extends TestCase
         self::assertFalse($this->comparison->isHigher($value1, $value2, []));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_false_when_first_value_is_not_lower(): void
     {
         $value1 = new MoneyValue(Money::EUR(1200));

@@ -27,7 +27,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class NormStringQueryExporterTest extends SearchConditionExporterTestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exporters_values(): void
     {
         $exporter = $this->getExporter();

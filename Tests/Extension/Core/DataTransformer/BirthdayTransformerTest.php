@@ -27,7 +27,9 @@ final class BirthdayTransformerTest extends TestCase
 {
     use ProphecyTrait;
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_transforms_age_to_integer(): void
     {
         $dateTransformer = $this->prophesize(DataTransformer::class);
@@ -40,7 +42,9 @@ final class BirthdayTransformerTest extends TestCase
         self::assertEquals('18', $transformer->transform(18));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_transforms_with_date(): void
     {
         $date = new \DateTimeImmutable('2010-03-05 00:00:00 UTC');
@@ -58,7 +62,9 @@ final class BirthdayTransformerTest extends TestCase
         self::assertEquals('18', $transformer->transform(18));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_disabled_age(): void
     {
         $date = new \DateTimeImmutable('2010-03-05 00:00:00 UTC');
@@ -89,7 +95,9 @@ final class BirthdayTransformerTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_disallows_date_in_the_future_by_default(): void
     {
         $dateObj = new \DateTimeImmutable('tomorrow');
@@ -105,7 +113,9 @@ final class BirthdayTransformerTest extends TestCase
         $transformer->reverseTransform($dateObj->format('Y-m-d'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_date_in_the_future_when_enabled(): void
     {
         $dateObj = new \DateTimeImmutable('tomorrow');

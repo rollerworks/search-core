@@ -252,7 +252,7 @@ final class JsonInput extends AbstractInput
     private function assertValueArrayHasKeys($array, array $requiredKeys, string $path): void
     {
         if (! \is_array($array)) {
-            throw new InputProcessorException(implode('', $this->structureBuilder->getCurrentPath()) . $path, \sprintf('Expected value-structure to be an array, got %s instead.', \gettype($array)));
+            throw new InputProcessorException(implode('', $this->structureBuilder->getCurrentPath()) . $path, \sprintf('Expected value-structure to be an array, got "%s" instead.', \gettype($array)));
         }
 
         $missingKeys = [];

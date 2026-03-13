@@ -88,7 +88,7 @@ final class OrderStructureBuilder implements StructureBuilder
     public function simpleValue(mixed $value, string $path): void
     {
         if ($this->valuesBag === null) {
-            throw new \LogicException('Cannot add value to unknown bag');
+            throw new \LogicException('Cannot add value to unknown bag.');
         }
 
         if ($this->valuesBag->count()) {

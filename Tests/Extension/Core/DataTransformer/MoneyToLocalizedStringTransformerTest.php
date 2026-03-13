@@ -90,7 +90,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         self::assertEquals($to, $transformer->transform($from));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function transform_without_currency_and_different_default_currency(): void
     {
         // Since we test against other locales, we need the full implementation
@@ -228,7 +230,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_with_grouping_but_without_group_separator(): void
     {
         // Since we test against "de_AT", we need the full implementation
@@ -250,7 +254,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function decimal_separator_may_be_dot_if_grouping_separator_is_not_dot(): void
     {
         // Since we test against other locales, we need the full implementation
@@ -283,7 +289,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function decimal_separator_may_not_be_dot_if_grouping_separator_is_dot(): void
     {
         // Since we test against "de_DE", we need the full implementation
@@ -298,7 +306,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('1.234.5');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function decimal_separator_may_not_be_dot_if_grouping_separator_is_dot_with_no_group_sep(): void
     {
         // Since we test against "de_DE", we need the full implementation
@@ -313,7 +323,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('1234.5');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function decimal_separator_may_be_dot_if_grouping_separator_is_dot_but_no_grouping_used(): void
     {
         // Since we test against other locales, we need the full implementation
@@ -333,7 +345,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function decimal_separator_may_be_comma_if_grouping_separator_is_not_comma(): void
     {
         // Since we test against other locales, we need the full implementation
@@ -366,7 +380,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function decimal_separator_may_not_be_comma_if_grouping_separator_is_comma(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR', true);
@@ -376,7 +392,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('1,234,5');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function decimal_separator_may_not_be_comma_if_grouping_separator_is_comma_with_no_group_sep(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR', true);
@@ -386,7 +404,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('1234,5');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function decimal_separator_may_be_comma_if_grouping_separator_is_comma_but_no_grouping_used(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
@@ -402,7 +422,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function transform_expects_money_value(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
@@ -412,7 +434,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->transform('foo');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_expects_string(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
@@ -422,7 +446,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform(1);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_expects_valid_number(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
@@ -432,7 +458,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('foo');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_na_n(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
@@ -442,7 +470,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('NaN');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_na_n2(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
@@ -452,7 +482,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('nan');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_infinity(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
@@ -462,7 +494,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_infinity2(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');
@@ -472,7 +506,9 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞,123');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_negative_infinity(): void
     {
         $transformer = new MoneyToLocalizedStringTransformer('EUR');

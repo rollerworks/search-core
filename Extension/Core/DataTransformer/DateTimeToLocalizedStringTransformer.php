@@ -23,7 +23,7 @@ use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Florian Eckerstorfer <florian@eckerstorfer.org>
  *
- * @psalm-type DateFormat \IntlDateFormatter::NONE|\IntlDateFormatter::FULL|\IntlDateFormatter::LONG|\IntlDateFormatter::MEDIUM|\IntlDateFormatter::SHORT
+ * @psalm-type DateFormat \IntlDateFormatter::NONE|\IntlDateFormatter::FULL|\IntlDateFormatter::LONG|\IntlDateFormatter::MEDIUM|\IntlDateFormatter::SHORT|null
  * @psalm-type CalendarType \IntlDateFormatter::GREGORIAN|\IntlDateFormatter::TRADITIONAL|\IntlCalendar
  */
 final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer

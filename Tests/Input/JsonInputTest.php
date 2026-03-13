@@ -32,7 +32,9 @@ final class JsonInputTest extends InputProcessorTestCase
         return new JsonInput();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_errors_on_invalid_json(): void
     {
         $config = new ProcessorConfig($this->getFieldSet());

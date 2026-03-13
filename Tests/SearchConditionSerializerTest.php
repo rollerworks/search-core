@@ -48,7 +48,9 @@ final class SearchConditionSerializerTest extends TestCase
         $this->serializer = new SearchConditionSerializer($factory);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function serialize_un_serialize(): void
     {
         $date = new \DateTimeImmutable();
@@ -77,7 +79,9 @@ final class SearchConditionSerializerTest extends TestCase
         self::assertEquals($searchCondition, $unSerialized);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function un_serialize_missing_fields(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -88,7 +92,9 @@ final class SearchConditionSerializerTest extends TestCase
         $this->serializer->unserialize(['foobar']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function un_serialize_wrong_field(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -99,7 +105,9 @@ final class SearchConditionSerializerTest extends TestCase
         $this->serializer->unserialize(['foobar', 'foo' => 'bar']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function un_serialize_invalid_data(): void
     {
         $this->expectException(InvalidArgumentException::class);

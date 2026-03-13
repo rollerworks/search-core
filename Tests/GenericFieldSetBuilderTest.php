@@ -51,7 +51,9 @@ final class GenericFieldSetBuilderTest extends TestCase
         $this->builder = new GenericFieldSetBuilder($factory->reveal());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function add_fields(): void
     {
         $this->builder->add('id', FooType::class);
@@ -61,7 +63,9 @@ final class GenericFieldSetBuilderTest extends TestCase
         self::assertTrue($this->builder->has('name'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function always_gives_a_resolved_field(): void
     {
         $this->builder->add('id', FooType::class, ['foo' => 'bar']);
@@ -69,7 +73,9 @@ final class GenericFieldSetBuilderTest extends TestCase
         $this->assertBuilderFieldConfigurationEquals('id', FooType::class, ['foo' => 'bar']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function set_pre_configured_field(): void
     {
         $field = $this->prophesize(FieldConfig::class);
@@ -83,7 +89,9 @@ final class GenericFieldSetBuilderTest extends TestCase
         self::assertSame($field, $this->builder->get('id'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function remove_field(): void
     {
         $this->builder->add('id', FooType::class);
@@ -95,7 +103,9 @@ final class GenericFieldSetBuilderTest extends TestCase
         self::assertFalse($this->builder->has('id'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_build_field_set(): void
     {
         $this->builder->add('id', FooType::class, ['max' => 5000]);

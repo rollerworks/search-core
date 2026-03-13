@@ -25,7 +25,9 @@ use Rollerworks\Component\Search\GenericFieldSet;
  */
 final class GenericFieldSetTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function it_gets_a_field(): void
     {
         $fieldSet = new GenericFieldSet([
@@ -41,7 +43,9 @@ final class GenericFieldSetTest extends TestCase
         self::assertFalse($fieldSet->has('foo'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_creates_a_view(): void
     {
         $fieldSet = new GenericFieldSet([
@@ -63,7 +67,9 @@ final class GenericFieldSetTest extends TestCase
         self::assertEquals($expectedView, $view);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_creates_a_view_with_builder(): void
     {
         $fieldSet = new GenericFieldSet(

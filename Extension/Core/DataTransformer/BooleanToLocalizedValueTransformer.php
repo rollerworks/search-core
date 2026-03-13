@@ -37,7 +37,7 @@ final class BooleanToLocalizedValueTransformer implements DataTransformer
         }
 
         if (! \is_bool($value)) {
-            throw new TransformationFailedException(\sprintf('Expected a boolean value, got "%s".', \gettype($value)));
+            throw new TransformationFailedException(\sprintf('Expected a boolean value, got "%s".', get_debug_type($value)));
         }
 
         return $value ? $this->trueLabel : $this->falseLabel;
@@ -50,7 +50,7 @@ final class BooleanToLocalizedValueTransformer implements DataTransformer
         }
 
         if (! \is_scalar($value)) {
-            throw new TransformationFailedException(\sprintf('Expected a scalar value, got "%s".', \gettype($value)));
+            throw new TransformationFailedException(\sprintf('Expected a scalar value, got "%s".', get_debug_type($value)));
         }
 
         if (\is_string($value)) {
@@ -65,11 +65,6 @@ final class BooleanToLocalizedValueTransformer implements DataTransformer
             return false;
         }
 
-        $valueTransformer = static fn (mixed $value): string => \is_string($value) ? \sprintf('"%s"', $value) : (string) $value;
-
-        $trueValues = implode(', ', array_map($valueTransformer, $this->trueValues));
-        $falseValues = implode(', ', array_map($valueTransformer, $this->falseValues));
-
-        throw new TransformationFailedException(\sprintf('Expected one of (%s) or (%s), got %s.', $trueValues, $falseValues, $valueTransformer($value)));
+        throw new TransformationFailedException(\sprintf('Expected one of ("%s") or ("%s"), got "%s".', implode('", "', $this->trueValues), implode('", "', $this->falseValues), $value));
     }
 }

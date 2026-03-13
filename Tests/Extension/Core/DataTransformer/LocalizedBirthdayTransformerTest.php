@@ -35,7 +35,9 @@ final class LocalizedBirthdayTransformerTest extends TestCase
         \Locale::setDefault('en');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_transforms_age_to_integer(): void
     {
         $dateTransformer = $this->prophesize(DataTransformer::class);
@@ -51,7 +53,9 @@ final class LocalizedBirthdayTransformerTest extends TestCase
         self::assertEquals('18000', $transformer->transform(18000));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_transforms_ar_localized_age_to_integer(): void
     {
         // Since we test against other locales, we need the full implementation
@@ -69,7 +73,9 @@ final class LocalizedBirthdayTransformerTest extends TestCase
         self::assertEquals('٧٩', $transformer->transform(79));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_transforms_with_date(): void
     {
         $date = new \DateTimeImmutable('2010-03-05 00:00:00 UTC');
@@ -87,7 +93,9 @@ final class LocalizedBirthdayTransformerTest extends TestCase
         self::assertEquals('18', $transformer->transform(18));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_disabled_age(): void
     {
         $date = new \DateTimeImmutable('2010-03-05 00:00:00 UTC');
@@ -118,7 +126,9 @@ final class LocalizedBirthdayTransformerTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_disallows_date_in_the_future_by_default(): void
     {
         $dateObj = new \DateTimeImmutable('tomorrow');
@@ -134,7 +144,9 @@ final class LocalizedBirthdayTransformerTest extends TestCase
         $transformer->reverseTransform($dateObj->format('Y-m-d'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_date_in_the_future_when_enabled(): void
     {
         $dateObj = new \DateTimeImmutable('tomorrow');

@@ -34,7 +34,9 @@ final class SearchFactoryBuilderTest extends TestCase
         $this->type = new FooType();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function add_type(): void
     {
         $factoryBuilder = new SearchFactoryBuilder();

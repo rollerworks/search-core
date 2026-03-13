@@ -28,19 +28,25 @@ final class CompareTest extends TestCase
         $this->value = new Compare(10, '>');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_a_value(): void
     {
         self::assertEquals(10, $this->value->getValue());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_an_operator(): void
     {
         self::assertEquals('>', $this->value->getOperator());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_an_object_as_value(): void
     {
         $value = new \DateTimeImmutable();

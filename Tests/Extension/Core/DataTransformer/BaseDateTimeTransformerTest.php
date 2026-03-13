@@ -22,7 +22,9 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\BaseDateTimeTran
  */
 final class BaseDateTimeTransformerTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function construct_fails_if_input_timezone_is_invalid(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -31,7 +33,9 @@ final class BaseDateTimeTransformerTest extends TestCase
         $this->getMockBuilder(BaseDateTimeTransformer::class)->setConstructorArgs(['this_timezone_does_not_exist'])->getMock();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function construct_fails_if_output_timezone_is_invalid(): void
     {
         $this->expectExceptionMessage('that_timezone_does_not_exist');

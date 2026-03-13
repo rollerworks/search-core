@@ -30,7 +30,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class StringQueryExporterTest extends SearchConditionExporterTestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exporters_with_field_label(): void
     {
         $labelResolver = static function (FieldConfig $field) {
@@ -61,7 +63,9 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
         $processor->process($config, 'firstname: value, value2;');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exporters_values(): void
     {
         $exporter = $this->getExporter();
@@ -94,7 +98,9 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
         $this->assertConditionEquals($this->provideSingleValuePairTest(), $condition, $processor, $config);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exports_with_ordering_aliases(): void
     {
         $exporter = $this->getExporter();
@@ -123,7 +129,9 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
         $this->assertConditionEquals('@id: desc; @status: asc;', $condition, $processor, $config);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_exports_with_ordering_and_root_group_logical(): void
     {
         $exporter = $this->getExporter();

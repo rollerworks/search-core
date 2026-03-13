@@ -24,7 +24,9 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class IntegerTypeTest extends SearchIntegrationTestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function create(): void
     {
         $field = $this->getFactory()->createField('integer', IntegerType::class);
@@ -32,7 +34,9 @@ final class IntegerTypeTest extends SearchIntegrationTestCase
         self::assertFalse($field->getOption('grouping'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function casts_to_integer(): void
     {
         $field = $this->getFactory()->createField('integer', IntegerType::class);
@@ -56,7 +60,9 @@ final class IntegerTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function non_western_formatting(): void
     {
         \Locale::setDefault('ar_BH');
@@ -70,7 +76,9 @@ final class IntegerTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function wrong_input_fails(): void
     {
         $field = $this->getFactory()->createField('integer', IntegerType::class);
@@ -78,7 +86,9 @@ final class IntegerTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)->withInput('foo')->failsToTransforms();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function view_is_configured_properly(): void
     {
         $field = $this->getFactory()->createField(

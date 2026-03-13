@@ -32,7 +32,9 @@ final class TimezoneTypeTest extends SearchIntegrationTestCase
         parent::setUp();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function currencies_are_selectable(): void
     {
         $field = $field = $this->getFactory()->createField('choice', TimezoneType::class);

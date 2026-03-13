@@ -71,7 +71,8 @@ final readonly class PatternMatch implements ValueHolder
                 self::PATTERN_NOT_CONTAINS,
                 self::PATTERN_NOT_ENDS_WITH,
                 self::PATTERN_NOT_EQUALS,
-            ], true
+            ],
+            true
         );
     }
 }

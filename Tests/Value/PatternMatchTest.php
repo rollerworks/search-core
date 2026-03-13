@@ -28,32 +28,42 @@ final class PatternMatchTest extends TestCase
         $this->value = new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_a_value(): void
     {
         self::assertEquals('foo', $this->value->getValue());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_a_pattern_type(): void
     {
         self::assertEquals(PatternMatch::PATTERN_CONTAINS, $this->value->getType());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_is_case_sensitive_by_default(): void
     {
         self::assertFalse($this->value->isCaseInsensitive());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_case_insensitive(): void
     {
         $this->value = new PatternMatch('foo', PatternMatch::PATTERN_CONTAINS, true);
         self::assertTrue($this->value->isCaseInsensitive());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_accepts_a_pattern_type_as_string(): void
     {
         $this->value = new PatternMatch('foo', 'CONTAINS');

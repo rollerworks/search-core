@@ -38,56 +38,74 @@ final class OrderFieldTest extends TestCase
         $this->field = new OrderField('@foobar', $this->resolvedType, ['name' => 'value']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_a_name(): void
     {
         self::assertEquals('@foobar', $this->field->getName());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_a_type(): void
     {
         self::assertEquals($this->resolvedType, $this->field->getType());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_options(): void
     {
         self::assertEquals(['name' => 'value'], $this->field->getOptions());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_should_return_if_an_option_exists(): void
     {
         self::assertTrue($this->field->hasOption('name'));
         self::assertFalse($this->field->hasOption('foo'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_should_return_an_options_value(): void
     {
         self::assertEquals('value', $this->field->getOption('name'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_should_return_null_by_default_if_the_option_does_exist(): void
     {
         self::assertNull($this->field->getOption('foo'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_should_return_default_value_if_the_option_does_exist(): void
     {
         self::assertEquals('value1', $this->field->getOption('foo', 'value1'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_supports_no_special_value_types_by_default(): void
     {
         self::assertFalse($this->field->supportValueType(Range::class));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_does_not_allow_configuring_value_support(): void
     {
         $this->expectException(BadMethodCallException::class);
@@ -97,13 +115,17 @@ final class OrderFieldTest extends TestCase
         $this->field->setValueTypeSupport(Range::class, true);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_no_comparison_class_by_default(): void
     {
         self::assertNull($this->field->getValueComparator());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_does_not_allow_setting_a_comparison_class(): void
     {
         $this->expectException(BadMethodCallException::class);
@@ -115,13 +137,17 @@ final class OrderFieldTest extends TestCase
         $this->field->setValueComparator($comparisonObj);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_no__view_transformer_by_default(): void
     {
         self::assertNull($this->field->getViewTransformer());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_setting_a__view_transformer(): void
     {
         $viewTransformer = $this->getMockBuilder(DataTransformer::class)->getMock();
@@ -130,13 +156,17 @@ final class OrderFieldTest extends TestCase
         self::assertEquals($viewTransformer, $this->field->getViewTransformer());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_no_norm_transformer_by_default(): void
     {
         self::assertNull($this->field->getNormTransformer());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_setting_a_norm_transformer(): void
     {
         $normTransformer = $this->getMockBuilder(DataTransformer::class)->getMock();

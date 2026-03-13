@@ -150,7 +150,9 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
         ];
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_processes_with_customer_value_lexer(): void
     {
         $processor = new NormStringQueryInput();
@@ -168,7 +170,9 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
         $this->assertConditionEquals('geo: (12,24), >(12,24), (12,24)~(12,25);', $condition, $processor, $config);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_errors_when_the_field_does_not_exist_in_fieldset(): void
     {
         $config = new ProcessorConfig($this->getFieldSet());

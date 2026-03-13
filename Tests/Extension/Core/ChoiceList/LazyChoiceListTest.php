@@ -45,7 +45,9 @@ final class LazyChoiceListTest extends TestCase
         $this->list = new LazyChoiceList($this->loader, $this->value);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choice_loaders_loads_list(): void
     {
         $this->loader->expects(self::exactly(2))
@@ -64,7 +66,9 @@ final class LazyChoiceListTest extends TestCase
         self::assertSame(['RESULT'], $this->list->getChoices());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_values_loads_loaded_list(): void
     {
         $this->loader->expects(self::exactly(2))
@@ -83,7 +87,9 @@ final class LazyChoiceListTest extends TestCase
         self::assertSame(['RESULT'], $this->list->getValues());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_structured_values_loads_loaded_lis(): void
     {
         $this->loader->expects(self::exactly(2))
@@ -102,7 +108,9 @@ final class LazyChoiceListTest extends TestCase
         self::assertSame(['RESULT'], $this->list->getStructuredValues());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_original_keys_loads_loaded_list(): void
     {
         $this->loader->expects(self::exactly(2))
@@ -121,7 +129,9 @@ final class LazyChoiceListTest extends TestCase
         self::assertSame(['RESULT'], $this->list->getOriginalKeys());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choices_for_values_forwards_call(): void
     {
         $this->loader->expects(self::exactly(2))
@@ -134,7 +144,9 @@ final class LazyChoiceListTest extends TestCase
         self::assertSame(['RESULT'], $this->list->getChoicesForValues(['a', 'b']));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_values_for_choices_uses_loaded_list(): void
     {
         $this->loader->expects(self::exactly(2))

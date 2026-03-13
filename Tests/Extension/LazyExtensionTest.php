@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Extension;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
@@ -27,7 +26,9 @@ use Rollerworks\Component\Search\Field\FieldTypeExtension;
  */
 final class LazyExtensionTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_creating_without_types(): void
     {
         $extension = LazyExtension::create([]);
@@ -37,7 +38,9 @@ final class LazyExtensionTest extends TestCase
         self::assertEmpty($extension->getTypeExtensions(TextType::class));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_loads_registered_type(): void
     {
         $extension = LazyExtension::create(
@@ -51,7 +54,9 @@ final class LazyExtensionTest extends TestCase
         self::assertSame($type, $extension->getType(TextType::class));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_fails_when_requested_type_is_not_registered(): void
     {
         $extension = LazyExtension::create([]);
@@ -64,7 +69,9 @@ final class LazyExtensionTest extends TestCase
         $extension->getType(TextType::class);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_loads_type_extensions(): void
     {
         $typeExtension1 = $this->createTypeExtension(TextType::class);
@@ -90,7 +97,9 @@ final class LazyExtensionTest extends TestCase
         self::assertEmpty($extension->getTypeExtensions(NumberType::class));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_checks_type_extension_parent_equality(): void
     {
         $typeExtension1 = $this->createTypeExtension(TextType::class);

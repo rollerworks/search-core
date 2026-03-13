@@ -79,7 +79,9 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         $this->objectChoices = null;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function choices_option_expects_array_or_traversable(): void
     {
         $this->expectException(InvalidOptionsException::class);
@@ -89,7 +91,9 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ]);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function choice_list_option_expects_choice_list(): void
     {
         $this->expectException(InvalidOptionsException::class);
@@ -99,14 +103,18 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ]);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function choice_list_and_choices_can_be_empty(): void
     {
         $field = $this->getFactory()->createField('choice', ChoiceType::class);
         self::assertEquals([], $field->getOption('choices'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function choice_list_with_scalar_values(): void
     {
         /** @var SearchField $field */
@@ -140,7 +148,9 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         self::assertSame('', $view->vars['choices'][2]->value);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function choice_list_with_scalar_values_and_norm_format_label(): void
     {
         /** @var SearchField $field */
@@ -175,7 +185,9 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         self::assertSame('', $view->vars['choices'][2]->value);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function choice_list_with_scalar_values_and_false_as_preferred_choice(): void
     {
         /** @var SearchField $field */
@@ -190,7 +202,9 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         self::assertEquals('No', $view->vars['preferred_choices'][1]->label, 'False value should be preferred.');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function object_choices(): void
     {
         /** @var SearchField $field */
@@ -207,7 +221,9 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function value_view_format_is_value(): void
     {
         /** @var SearchField $field */
@@ -237,7 +253,9 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ], $view->vars['choices']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function array_choices(): void
     {
         /** @var SearchField $field */
@@ -252,7 +270,9 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function pass_choices_to_view(): void
     {
         $choices = ['A' => 'a', 'B' => 'b', 'C' => 'c', 'D' => 'd'];
@@ -273,7 +293,9 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ], $view->vars['choices']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function pass_preferred_choices_to_view(): void
     {
         $choices = ['A' => 'a', 'B' => 'b', 'C' => 'c', 'D' => 'd'];
@@ -298,7 +320,9 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         ], $view->vars['preferred_choices']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function pass_hierarchical_choices_to_view(): void
     {
         /** @var SearchField $field */

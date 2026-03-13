@@ -52,7 +52,9 @@ final class CachingFactoryDecoratorTest extends TestCase
         self::assertEqualsArrayChoiceList(new ArrayChoiceList([]), $list2);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choices_compares_traversable_choices_as_array(): void
     {
         // The top-most traversable is converted to an array

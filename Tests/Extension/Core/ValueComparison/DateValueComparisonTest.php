@@ -28,7 +28,9 @@ final class DateValueComparisonTest extends TestCase
         $this->comparison = new DateValueComparator();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_true_when_dates_equal(): void
     {
         $date1 = new \DateTimeImmutable('2013-09-21 12:46:00');
@@ -37,7 +39,9 @@ final class DateValueComparisonTest extends TestCase
         self::assertTrue($this->comparison->isEqual($date1, $date2, []));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_false_when_dates_are_not_equal(): void
     {
         $date1 = new \DateTimeImmutable('2013-09-21 12:46:00');
@@ -51,7 +55,9 @@ final class DateValueComparisonTest extends TestCase
         self::assertFalse($this->comparison->isEqual($date1, $date2, []));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_true_when_first_date_is_higher(): void
     {
         $date1 = new \DateTimeImmutable('2013-09-23 12:46:00');
@@ -60,7 +66,9 @@ final class DateValueComparisonTest extends TestCase
         self::assertTrue($this->comparison->isHigher($date1, $date2, []));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_returns_true_when_first_date_is_lower(): void
     {
         $date1 = new \DateTimeImmutable('2013-09-21 12:46:00');

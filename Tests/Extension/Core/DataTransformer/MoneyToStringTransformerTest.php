@@ -129,7 +129,9 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->transform('foo');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_expects_string(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
@@ -139,7 +141,9 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform(1);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_expects_valid_number(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
@@ -149,7 +153,9 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('foo');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_na_n(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
@@ -159,7 +165,9 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('NaN');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_na_n2(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
@@ -169,7 +177,9 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('nan');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_infinity(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
@@ -179,7 +189,9 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_infinity2(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
@@ -189,7 +201,9 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞,123');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_negative_infinity(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
@@ -199,7 +213,9 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('-∞');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_expects_valid_number_or_currency_with_number(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
@@ -210,7 +226,9 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('fool 12.00');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_expects_valid_number_or_currency_with_number2(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');
@@ -221,7 +239,9 @@ final class MoneyToStringTransformerTest extends TestCase
         $transformer->reverseTransform('fo ol 12.00');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_expects_currency_with_number(): void
     {
         $transformer = new MoneyToStringTransformer('EUR');

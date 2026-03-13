@@ -63,7 +63,9 @@ final class ResolvedFieldTypeTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function its_resolved_options_in_correct_order(): void
     {
         $givenOptions = ['a' => 'a_custom', 'c' => 'c_custom', 'foo' => 'bar'];
@@ -73,10 +75,12 @@ final class ResolvedFieldTypeTest extends TestCase
 
         $this->assertStructureCalled('configureOptions');
 
-        $this->assertEquals($resolvedOptions, $resolver->resolve($givenOptions));
+        self::assertEquals($resolvedOptions, $resolver->resolve($givenOptions));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_creates_a_field(): void
     {
         $givenOptions = ['a' => 'a_custom', 'c' => 'c_custom', 'foo' => 'bar'];
@@ -91,7 +95,9 @@ final class ResolvedFieldTypeTest extends TestCase
         self::assertSame($resolvedOptions, $field->getOptions());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_builds_the_type(): void
     {
         $options = ['a' => 'Foo', 'b' => 'Bar'];
@@ -102,7 +108,9 @@ final class ResolvedFieldTypeTest extends TestCase
         $this->assertStructureCalled('buildType');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view(): void
     {
         $rootView = new FieldSetView();
@@ -116,14 +124,18 @@ final class ResolvedFieldTypeTest extends TestCase
         self::assertFalse($view->vars['accept_ranges']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_block_prefix(): void
     {
         $resolvedType = new GenericResolvedFieldType($this->type);
         self::assertSame('usage_tracking_field', $resolvedType->getBlockPrefix());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function build_view(): void
     {
         $options = ['a' => '1', 'b' => '2'];
@@ -135,7 +147,9 @@ final class ResolvedFieldTypeTest extends TestCase
         $this->assertStructureCalled('buildView');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_gets_block_prefix(): void
     {
         $resolvedType = new GenericResolvedFieldType(new ConfigurableColumnType());
@@ -145,6 +159,7 @@ final class ResolvedFieldTypeTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider provideTypeClassBlockPrefixTuples
      *
      * @param class-string<FieldType> $typeClass
@@ -156,7 +171,9 @@ final class ResolvedFieldTypeTest extends TestCase
         self::assertSame($blockPrefix, $resolvedType->getBlockPrefix());
     }
 
-    /** @return iterable<array{0: class-string, 1: string}> */
+    /**
+     * @return iterable<array{0: class-string, 1: string}>
+     */
     public static function provideTypeClassBlockPrefixTuples(): iterable
     {
         yield [FooType::class, 'foo'];
@@ -185,14 +202,16 @@ final class ResolvedFieldTypeTest extends TestCase
     private function assertStructureCalled(string $name): void
     {
         if (! isset($this->calls[$name])) {
-            $this->fail(\sprintf('No call found with name "%s", found: "%s"', $name, implode('", "', array_keys($this->calls))));
+            self::fail(\sprintf('No call found with name "%s", found: "%s"', $name, implode('", "', array_keys($this->calls))));
         }
 
         self::assertSame([$this->parentType, $this->type, $this->extension1, $this->extension2], $this->calls[$name]);
     }
 }
 
-/** @internal */
+/**
+ * @internal
+ */
 final class UsageTrackingFieldType extends AbstractFieldType
 {
     use FieldUsageTrackingTrait;
@@ -212,7 +231,9 @@ final class UsageTrackingFieldType extends AbstractFieldType
     }
 }
 
-/** @internal */
+/**
+ * @internal
+ */
 final class UsageTrackingParentFieldType extends AbstractFieldType
 {
     use FieldUsageTrackingTrait;
@@ -225,7 +246,9 @@ final class UsageTrackingParentFieldType extends AbstractFieldType
     }
 }
 
-/** @internal */
+/**
+ * @internal
+ */
 final class UsageTrackingFieldTypeExtension extends AbstractFieldTypeExtension
 {
     use ExtensionUsageTrackingTrait;
@@ -254,13 +277,17 @@ final class UsageTrackingFieldTypeExtension extends AbstractFieldTypeExtension
     }
 }
 
-/** @internal */
+/**
+ * @internal
+ */
 trait FieldUsageTrackingTrait
 {
     /** @var array<string, array<int, object>> */
     private array $calls;
 
-    /** @param mixed[] $calls */
+    /**
+     * @param mixed[] $calls
+     */
     public function __construct(array &$calls)
     {
         $this->calls = &$calls;
@@ -277,7 +304,9 @@ trait FieldUsageTrackingTrait
     }
 }
 
-/** @internal */
+/**
+ * @internal
+ */
 trait ExtensionUsageTrackingTrait
 {
     /** @var array<string, array<int, object>> */

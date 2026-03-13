@@ -27,7 +27,9 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  */
 final class SearchConditionTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function it_can_check_if_field_set_is_supported(): void
     {
         $fieldSet = $this->createMock(FieldSet::class);
@@ -41,7 +43,9 @@ final class SearchConditionTest extends TestCase
         self::assertEquals(new ValuesGroup(), $condition->getValuesGroup());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_gives_an_exception_when_checked_field_set_is_not_supported(): void
     {
         $fieldSet = $this->createMock(FieldSet::class);
@@ -55,7 +59,9 @@ final class SearchConditionTest extends TestCase
         $condition->assertFieldSetName('bar', 'foo');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_setting_a_primary_condition(): void
     {
         $fieldSet = $this->createMock(FieldSet::class);
@@ -69,7 +75,9 @@ final class SearchConditionTest extends TestCase
         self::assertEquals($primaryCondition, $condition->getPrimaryCondition());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_unsetting_the_primary_condition(): void
     {
         $fieldSet = $this->createMock(FieldSet::class);
@@ -84,7 +92,9 @@ final class SearchConditionTest extends TestCase
         self::assertNull($condition->getPrimaryCondition());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_gives_whether_condition_is_empty(): void
     {
         $fieldSet = $this->createMock(FieldSet::class);
@@ -97,9 +107,10 @@ final class SearchConditionTest extends TestCase
         self::assertTrue(
             (new SearchCondition($fieldSet, new ValuesGroup()))
                 ->setPrimaryCondition(
-                    new SearchPrimaryCondition((new ValuesGroup())->addField('id', new ValuesBag())
-                ),
-            )->isEmpty(),
+                    new SearchPrimaryCondition(
+                        (new ValuesGroup())->addField('id', new ValuesBag())
+                    ),
+                )->isEmpty(),
         );
 
         // -- None empty --
@@ -111,14 +122,14 @@ final class SearchConditionTest extends TestCase
 
         // Nested group
         $condition = new SearchCondition($fieldSet, new ValuesGroup());
-        $condition->getValuesGroup()->addGroup((new ValuesGroup()));
+        $condition->getValuesGroup()->addGroup(new ValuesGroup());
         self::assertFalse($condition->isEmpty());
 
         // Ordering
         self::assertFalse(
             (new SearchCondition($fieldSet, new ValuesGroup()))
-                ->setOrder(new SearchOrder(((new ValuesGroup())->addField('id', (new ValuesBag())->addSimpleValue('desc')))),
-            )->isEmpty(),
+                ->setOrder(new SearchOrder((new ValuesGroup())->addField('id', (new ValuesBag())->addSimpleValue('desc'))))
+                ->isEmpty(),
         );
     }
 }

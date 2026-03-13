@@ -32,7 +32,9 @@ final class LocaleTypeTest extends SearchIntegrationTestCase
         parent::setUp();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function currencies_are_selectable(): void
     {
         $field = $this->getFactory()->createField('choice', LocaleType::class);

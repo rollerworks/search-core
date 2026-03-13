@@ -32,7 +32,9 @@ final class LanguageTypeTest extends SearchIntegrationTestCase
         parent::setUp();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function choices_are_selectable(): void
     {
         $field = $field = $this->getFactory()->createField('choice', LanguageType::class);
@@ -53,7 +55,9 @@ final class LanguageTypeTest extends SearchIntegrationTestCase
         self::assertContainsEquals(new ChoiceView('my', 'my', 'Burmese'), $choices);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function multiple_languages_is_not_included(): void
     {
         $field = $field = $this->getFactory()->createField('choice', LanguageType::class);

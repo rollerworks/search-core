@@ -127,7 +127,9 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_expects_a_string_input(): void
     {
         $processor = $this->getProcessor();
@@ -164,7 +166,9 @@ final class StringQueryInputTest extends InputProcessorTestCase
         self::assertEquals($condition, $processor->process($config, 'field-1: value, value2'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_parses_a_quoted_value(): void
     {
         $processor = $this->getProcessor();
@@ -182,7 +186,9 @@ final class StringQueryInputTest extends InputProcessorTestCase
         self::assertEquals($condition, $processor->process($config, 'name: "value", "value""2", "!foo";'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function pattern_match_lexer_no_end_less_loop(): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
@@ -193,7 +199,9 @@ final class StringQueryInputTest extends InputProcessorTestCase
         $this->assertConditionContainsErrors('name: ~!!*"value";', $config, [$error]);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_fails_with_unbound_values_and_no_default_field(): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
@@ -204,7 +212,9 @@ final class StringQueryInputTest extends InputProcessorTestCase
         $this->assertConditionContainsErrors('value;', $config, [$error]);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_processes_with_customer_value_lexer(): void
     {
         $processor = new StringQueryInput();

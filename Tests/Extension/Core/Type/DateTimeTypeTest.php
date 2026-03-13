@@ -31,7 +31,9 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
 {
     private static ?CarbonIntervalComparator $violationComparator = null;
 
-    /** @test */
+    /**
+     * @test
+     */
     public function view_timezone_can_be_transformed_to_model_timezone(): void
     {
         $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
@@ -52,7 +54,9 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         self::assertEquals('This value is not a valid datetime.', $field->getOption('invalid_message'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function pattern_can_be_configured(): void
     {
         $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
@@ -68,7 +72,9 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function time_format_can_be_configurable(): void
     {
         $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
@@ -86,7 +92,9 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function invalid_input_should_fail_transformation(): void
     {
         $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
@@ -109,7 +117,9 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function view_is_configured_properly(): void
     {
         $field = $this->getFactory()->createField('datetime', DateTimeType::class, [
@@ -127,7 +137,9 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         self::assertEquals('M/d/yy, h:mm a', $fieldView->vars['pattern']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function interval_valid_input(): void
     {
         \Locale::setDefault('nl');
@@ -149,7 +161,9 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         self::assertEquals('This value is not a valid datetime or date interval.', $field->getOption('invalid_message'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function interval_valid_input_in_rtl(): void
     {
         \Locale::setDefault('ar');
@@ -169,7 +183,9 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function interval_valid_input_with_iso_format(): void
     {
         \Locale::setDefault('nl');
@@ -183,7 +199,9 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function interval_with_time_format_can_be_configurable(): void
     {
         \Locale::setDefault('nl');
@@ -230,7 +248,9 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function interval_wrong_input_fails(): void
     {
         $field = $this->getFactory()->createField('datetime', DateTimeType::class, ['allow_relative' => true]);

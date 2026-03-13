@@ -97,7 +97,9 @@ final class DateTimeToStringTransformerTest extends TestCase
         self::assertSame('', $transformer->transform(null));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function transform_with_different_timezones(): void
     {
         $transformer = new DateTimeToStringTransformer('Asia/Hong_Kong', 'America/New_York', 'Y-m-d H:i:s');
@@ -109,7 +111,9 @@ final class DateTimeToStringTransformerTest extends TestCase
         self::assertEquals($output, $transformer->transform($input));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function transform_date_time_immutable(): void
     {
         $transformer = new DateTimeToStringTransformer('Asia/Hong_Kong', 'America/New_York', 'Y-m-d H:i:s');
@@ -121,7 +125,9 @@ final class DateTimeToStringTransformerTest extends TestCase
         self::assertEquals($output, $transformer->transform($input));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function transform_expects_date_time(): void
     {
         $transformer = new DateTimeToStringTransformer();
@@ -131,7 +137,9 @@ final class DateTimeToStringTransformerTest extends TestCase
         $transformer->transform('1234');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_empty(): void
     {
         $reverseTransformer = new DateTimeToStringTransformer();
@@ -139,7 +147,9 @@ final class DateTimeToStringTransformerTest extends TestCase
         self::assertNull($reverseTransformer->reverseTransform(''));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_with_different_timezones(): void
     {
         $reverseTransformer = new DateTimeToStringTransformer('America/New_York', 'Asia/Hong_Kong', 'Y-m-d H:i:s');
@@ -151,7 +161,9 @@ final class DateTimeToStringTransformerTest extends TestCase
         $this->assertDateTimeEquals($output, $reverseTransformer->reverseTransform($input));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_expects_string(): void
     {
         $reverseTransformer = new DateTimeToStringTransformer();
@@ -161,7 +173,9 @@ final class DateTimeToStringTransformerTest extends TestCase
         $reverseTransformer->reverseTransform(1234);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_expects_valid_date_string(): void
     {
         $reverseTransformer = new DateTimeToStringTransformer();
@@ -171,7 +185,9 @@ final class DateTimeToStringTransformerTest extends TestCase
         $reverseTransformer->reverseTransform('2010-2010-2010');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_with_non_existing_date(): void
     {
         $reverseTransformer = new DateTimeToStringTransformer();

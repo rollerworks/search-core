@@ -43,7 +43,9 @@ final class GenericSearchFactoryTest extends TestCase
         $this->factory = new GenericSearchFactory($this->registry, $this->createMock(FieldSetRegistry::class));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_field_with_type_name(): void
     {
         $options = ['a' => '1', 'b' => '2'];

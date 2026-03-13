@@ -33,7 +33,9 @@ final class TypeRegistryTest extends TestCase
 {
     use ProphecyTrait;
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_loads_types_from_extensions(): void
     {
         $extension = new PreloadedExtension([FooType::class => $fooType = new FooType()]);
@@ -58,7 +60,9 @@ final class TypeRegistryTest extends TestCase
         self::assertInstanceOf(BarType::class, $registry->getType(BarType::class)->getInnerType());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_loads_type_extensions(): void
     {
         $extension = new PreloadedExtension([FooType::class => $fooType = new FooType()]);

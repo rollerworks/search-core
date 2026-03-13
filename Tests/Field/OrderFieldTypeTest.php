@@ -25,7 +25,9 @@ use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
  */
 final class OrderFieldTypeTest extends SearchIntegrationTestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function it_transforms_with_default_configuration(): void
     {
         /** @var OrderField $field */
@@ -50,7 +52,9 @@ final class OrderFieldTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_transforms_with_alias(): void
     {
         /** @var OrderField $field */
@@ -81,7 +85,9 @@ final class OrderFieldTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_transforms_with_view_label(): void
     {
         /** @var OrderField $field */
@@ -109,7 +115,9 @@ final class OrderFieldTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_transforms_with_alias_and_view_label(): void
     {
         /** @var OrderField $field */
@@ -163,7 +171,9 @@ final class OrderFieldTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_transforms_with_alias_and_view_label_and_lowercase(): void
     {
         /** @var OrderField $field */
@@ -218,7 +228,9 @@ final class OrderFieldTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_fails_to_transform_with_invalid_direction(): void
     {
         /** @var OrderField $field */

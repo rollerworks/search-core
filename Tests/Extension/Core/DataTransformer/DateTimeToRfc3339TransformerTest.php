@@ -125,7 +125,9 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
         $transformer->reverseTransform(12345);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_with_non_existing_date(): void
     {
         $transformer = new DateTimeToRfc3339Transformer('UTC', 'UTC');
@@ -135,7 +137,9 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
         $transformer->reverseTransform('2010-04-31T04:05Z');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_expects_valid_date_string(): void
     {
         $transformer = new DateTimeToRfc3339Transformer('UTC', 'UTC');

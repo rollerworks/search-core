@@ -26,9 +26,7 @@ final class StringLexer
     public const COMPARE = 'compare';
     public const RANGE = 'range';
 
-    /**
-     * @var array <string, \Closure>
-     */
+    /** @var array <string, \Closure> */
     private array $valueLexers;
 
     private string $data;

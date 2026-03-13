@@ -30,7 +30,6 @@ use Rollerworks\Component\Search\ValueComparator;
 final class SearchFieldTest extends TestCase
 {
     private ResolvedFieldType $resolvedType;
-
     private SearchField $field;
 
     protected function setUp(): void
@@ -39,56 +38,74 @@ final class SearchFieldTest extends TestCase
         $this->field = new SearchField('foobar', $this->resolvedType, ['name' => 'value']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_a_name(): void
     {
         self::assertEquals('foobar', $this->field->getName());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_a_type(): void
     {
         self::assertEquals($this->resolvedType, $this->field->getType());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_options(): void
     {
         self::assertEquals(['name' => 'value'], $this->field->getOptions());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_should_return_if_an_option_exists(): void
     {
         self::assertTrue($this->field->hasOption('name'));
         self::assertFalse($this->field->hasOption('foo'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_should_return_an_options_value(): void
     {
         self::assertEquals('value', $this->field->getOption('name'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_should_return_null_by_default_if_the_option_does_exist(): void
     {
         self::assertNull($this->field->getOption('foo'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_should_return_default_value_if_the_option_does_exist(): void
     {
         self::assertEquals('value1', $this->field->getOption('foo', 'value1'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_supports_no_special_value_types_by_default(): void
     {
         self::assertFalse($this->field->supportValueType(Range::class));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_configuring_value_support(): void
     {
         $this->field->setValueTypeSupport(Range::class, true);
@@ -103,13 +120,17 @@ final class SearchFieldTest extends TestCase
         self::assertFalse($this->field->supportValueType(Compare::class));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_no_comparison_class_by_default(): void
     {
         self::assertNull($this->field->getValueComparator());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_setting_a_comparison_class(): void
     {
         $comparisonObj = $this->getMockBuilder(ValueComparator::class)->getMock();
@@ -118,13 +139,17 @@ final class SearchFieldTest extends TestCase
         self::assertEquals($comparisonObj, $this->field->getValueComparator());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_has_no__view_transformer_by_default(): void
     {
         self::assertNull($this->field->getViewTransformer());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_allows_setting_a__view_transformer(): void
     {
         $viewTransformer = $this->createTransformerMock();
@@ -133,20 +158,26 @@ final class SearchFieldTest extends TestCase
         self::assertEquals($viewTransformer, $this->field->getViewTransformer());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function its_data_is_unlocked_by_default(): void
     {
         self::assertFalse($this->field->isConfigLocked());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function its_data_is_lockable(): void
     {
         $this->field->finalizeConfig();
         self::assertTrue($this->field->isConfigLocked());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_ignores_comparator_requirement_for_non_implemented_or_disabled_types(): void
     {
         $this->field->setValueTypeSupport(PatternMatch::class, true);
@@ -156,7 +187,9 @@ final class SearchFieldTest extends TestCase
         self::assertTrue($this->field->isConfigLocked());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_checks_comparator_requirements_and_throws_when_invalid(): void
     {
         $this->field->setValueTypeSupport(Range::class, true);
@@ -169,7 +202,9 @@ final class SearchFieldTest extends TestCase
         $this->field->finalizeConfig();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function its_data_is_not_changeable_when_locked(): void
     {
         $this->field->finalizeConfig();

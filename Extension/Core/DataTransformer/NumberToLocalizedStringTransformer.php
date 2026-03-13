@@ -148,7 +148,7 @@ class NumberToLocalizedStringTransformer implements DataTransformer
         }
 
         if (\in_array($value, ['NaN', 'NAN', 'nan'], true)) {
-            throw new TransformationFailedException('"NaN" is not a valid number');
+            throw new TransformationFailedException('"NaN" is not a valid number.');
         }
 
         $position = 0;
@@ -179,7 +179,7 @@ class NumberToLocalizedStringTransformer implements DataTransformer
         }
 
         if ($result >= \PHP_INT_MAX || $result <= -\PHP_INT_MAX) {
-            throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like');
+            throw new TransformationFailedException('I don\'t have a clear idea what infinity looks like.');
         }
 
         $result = $this->castParsedValue($result);
@@ -292,7 +292,7 @@ class NumberToLocalizedStringTransformer implements DataTransformer
                 break;
 
             default:
-                throw new \Exception('Unknown rounding mode:' . $this->roundingMode);
+                throw new \Exception(\sprintf('Unknown rounding mode: %d.', $this->roundingMode));
         }
 
         return $number / $roundingCoef;

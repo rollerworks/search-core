@@ -23,7 +23,9 @@ use Rollerworks\Component\Search\LazyFieldSetRegistry;
  */
 final class LazyFieldSetRegistryTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function it_loads_configurator_lazily(): void
     {
         $configurator = $this->createMock(FieldSetConfigurator::class);
@@ -48,7 +50,9 @@ final class LazyFieldSetRegistryTest extends TestCase
         self::assertSame($configurator2, $registry->getConfigurator('set2'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_loads_configurator_by_fqcn(): void
     {
         $configurator = $this->createMock(FieldSetConfigurator::class);
@@ -68,7 +72,9 @@ final class LazyFieldSetRegistryTest extends TestCase
         self::assertSame($name, $registry->getConfigurator($name)::class);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_checks_registered_before_class_name(): void
     {
         $configurator = $this->createMock(FieldSetConfigurator::class);
@@ -90,7 +96,9 @@ final class LazyFieldSetRegistryTest extends TestCase
         self::assertSame($configurator2, $registry->getConfigurator($name));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_errors_when_configurator_is_not_registered_and_class_is_a_configurator(): void
     {
         $configurator = $this->createMock(FieldSetConfigurator::class);
@@ -112,7 +120,9 @@ final class LazyFieldSetRegistryTest extends TestCase
         $registry->getConfigurator($configurator2);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_errors_when_configurator_is_not_registered_class_does_not_exist(): void
     {
         $configurator = $this->createMock(FieldSetConfigurator::class);

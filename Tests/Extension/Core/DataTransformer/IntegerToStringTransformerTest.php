@@ -107,7 +107,9 @@ final class IntegerToStringTransformerTest extends TestCase
         self::assertEquals(12345, $transformer->reverseTransform('12345.912'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_empty(): void
     {
         $transformer = new IntegerToStringTransformer();
@@ -194,7 +196,9 @@ final class IntegerToStringTransformerTest extends TestCase
         $transformer->reverseTransform(['1']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_expects_valid_number(): void
     {
         $transformer = new IntegerToStringTransformer();
@@ -204,7 +208,9 @@ final class IntegerToStringTransformerTest extends TestCase
         $transformer->reverseTransform('foo');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_na_n(): void
     {
         $transformer = new IntegerToStringTransformer();
@@ -214,7 +220,9 @@ final class IntegerToStringTransformerTest extends TestCase
         $transformer->reverseTransform('NaN');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_na_n2(): void
     {
         $transformer = new IntegerToStringTransformer();
@@ -224,7 +232,9 @@ final class IntegerToStringTransformerTest extends TestCase
         $transformer->reverseTransform('nan');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_infinity(): void
     {
         $transformer = new IntegerToStringTransformer();
@@ -234,7 +244,9 @@ final class IntegerToStringTransformerTest extends TestCase
         $transformer->reverseTransform('∞');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function reverse_transform_disallows_negative_infinity(): void
     {
         $transformer = new IntegerToStringTransformer();

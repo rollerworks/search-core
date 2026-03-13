@@ -53,7 +53,9 @@ final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
         return ['0', '1', '2', '3', '4', '5', '6', '7', '8'];
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_choice_list_with_value_callback(): void
     {
         $callback = static fn ($choice): string => ':' . $choice;
@@ -67,7 +69,9 @@ final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
         self::assertSame([1 => ':foo', 2 => ':baz'], $choiceList->getValuesForChoices([1 => 'foo', 2 => 'baz']));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_choice_list_without_value_callback_and_duplicate_free_to_string_choices(): void
     {
         $choiceList = new ArrayChoiceList([2 => 'foo', 7 => 'bar', 10 => 123]);
@@ -79,7 +83,9 @@ final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
         self::assertSame([1 => 'foo', 2 => '123'], $choiceList->getValuesForChoices([1 => 'foo', 2 => 123]));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_choice_list_without_value_callback_and_to_string_duplicates(): void
     {
         $choiceList = new ArrayChoiceList([2 => 'foo', 7 => '123', 10 => 123]);
@@ -91,7 +97,9 @@ final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
         self::assertSame([1 => '0', 2 => '2'], $choiceList->getValuesForChoices([1 => 'foo', 2 => 123]));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_choice_list_without_value_callback_and_mixed_choices(): void
     {
         $object = new \stdClass();
@@ -104,7 +112,9 @@ final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
         self::assertSame([1 => '0', 2 => '2'], $choiceList->getValuesForChoices([1 => 'foo', 2 => $object]));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_choice_list_with_grouped_choices(): void
     {
         $choiceList = new ArrayChoiceList([
@@ -123,7 +133,9 @@ final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
         self::assertSame([1 => 'a', 2 => 'b'], $choiceList->getValuesForChoices([1 => 'a', 2 => 'b']));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function compare_choices_by_identity_by_default(): void
     {
         $callback = static fn ($choice) => $choice->value;
@@ -136,7 +148,9 @@ final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
         self::assertSame([2 => 'value2'], $choiceList->getValuesForChoices([2 => (object) ['value' => 'value2']]));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choices_for_values_with_containing_null(): void
     {
         $choiceList = new ArrayChoiceList(['Null' => null]);
@@ -144,7 +158,9 @@ final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
         self::assertSame([0 => null], $choiceList->getChoicesForValues(['0']));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choices_for_values_with_containing_false_and_null(): void
     {
         $choiceList = new ArrayChoiceList(['False' => false, 'Null' => null]);
@@ -153,7 +169,9 @@ final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
         self::assertSame([0 => false], $choiceList->getChoicesForValues(['0']));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choices_for_values_with_containing_empty_string_and_null(): void
     {
         $choiceList = new ArrayChoiceList(['Empty String' => '', 'Null' => null]);
@@ -162,7 +180,9 @@ final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
         self::assertSame([0 => null], $choiceList->getChoicesForValues(['1']));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choices_for_values_with_containing_empty_string_and_booleans(): void
     {
         $choiceList = new ArrayChoiceList(['Empty String' => '', 'True' => true, 'False' => false]);
@@ -172,7 +192,9 @@ final class ArrayChoiceListTestCase extends AbstractChoiceListTestCase
         self::assertSame([0 => false], $choiceList->getChoicesForValues(['0']));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choices_for_values_with_containing_empty_string_and_floats(): void
     {
         $choiceList = new ArrayChoiceList(['Empty String' => '', '1/3' => 0.3, '1/2' => 0.5]);

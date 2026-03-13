@@ -43,7 +43,9 @@ final class TimeTypeTest extends SearchIntegrationTestCase
         date_default_timezone_set($this->defaultTimezone);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function can_transform_time_without_seconds(): void
     {
         $field = $this->getFactory()->createField('time', TimeType::class);
@@ -57,7 +59,9 @@ final class TimeTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function can_transform_time_with_seconds(): void
     {
         $field = $this->getFactory()->createField('time', TimeType::class, ['with_seconds' => true]);
@@ -71,7 +75,9 @@ final class TimeTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function view_is_configured_properly_with_minutes_and_seconds(): void
     {
         $field = $this->getFactory()->createField('datetime', TimeType::class, [
@@ -89,7 +95,9 @@ final class TimeTypeTest extends SearchIntegrationTestCase
         self::assertEquals('H:i:s', $fieldView->vars['pattern']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function view_is_configured_properly_with_minutes_and_no_seconds(): void
     {
         $field = $this->getFactory()->createField('datetime', TimeType::class, [
@@ -107,7 +115,9 @@ final class TimeTypeTest extends SearchIntegrationTestCase
         self::assertEquals('H:i', $fieldView->vars['pattern']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function view_is_configured_properly_with_no_minutes_and_no_seconds(): void
     {
         $field = $this->getFactory()->createField('datetime', TimeType::class, [
@@ -125,7 +135,9 @@ final class TimeTypeTest extends SearchIntegrationTestCase
         self::assertEquals('H', $fieldView->vars['pattern']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function cannot_initialize_with_seconds_but_without_minutes(): void
     {
         $this->expectException(InvalidConfigurationException::class);

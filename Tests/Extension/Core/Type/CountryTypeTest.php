@@ -32,7 +32,9 @@ final class CountryTypeTest extends SearchIntegrationTestCase
         parent::setUp();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function countries_are_selectable(): void
     {
         $field = $this->getFactory()->createField('choice', CountryType::class);
@@ -55,7 +57,9 @@ final class CountryTypeTest extends SearchIntegrationTestCase
         self::assertContainsEquals(new ChoiceView('MY', 'MY', 'Malaysia'), $choices);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function unknown_country_is_not_included(): void
     {
         $field = $this->getFactory()->createField('choice', CountryType::class);

@@ -22,7 +22,9 @@ use Rollerworks\Component\Search\Extension\Core\DataTransformer\BooleanToLocaliz
  */
 final class BooleanToLocalizedValueTransformerTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function it_transforms_from_string(): void
     {
         $transformer = new BooleanToLocalizedValueTransformer();
@@ -52,7 +54,9 @@ final class BooleanToLocalizedValueTransformerTest extends TestCase
         self::assertFalse($transformer->reverseTransform(0));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_fails_with_none_scalar(): void
     {
         $transformer = new BooleanToLocalizedValueTransformer();
@@ -63,7 +67,9 @@ final class BooleanToLocalizedValueTransformerTest extends TestCase
         $transformer->transform([]);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_fails_with_none_scalar_reverse(): void
     {
         $transformer = new BooleanToLocalizedValueTransformer();
@@ -74,24 +80,28 @@ final class BooleanToLocalizedValueTransformerTest extends TestCase
         $transformer->reverseTransform([]);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_when_reverse_value_is_not_supported(): void
     {
         $transformer = new BooleanToLocalizedValueTransformer();
 
         $this->expectException(TransformationFailedException::class);
-        $this->expectExceptionMessage('Expected one of ("true", "1", 1, "on", "yes") or ("false", "0", 0, "off", "no"), got "foo".');
+        $this->expectExceptionMessage('Expected one of ("true", "1", "1", "on", "yes") or ("false", "0", "0", "off", "no"), got "foo".');
 
         $transformer->reverseTransform('foo');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_when_numeric_reverse_value_is_not_supported(): void
     {
         $transformer = new BooleanToLocalizedValueTransformer();
 
         $this->expectException(TransformationFailedException::class);
-        $this->expectExceptionMessage('Expected one of ("true", "1", 1, "on", "yes") or ("false", "0", 0, "off", "no"), got 4.');
+        $this->expectExceptionMessage('Expected one of ("true", "1", "1", "on", "yes") or ("false", "0", "0", "off", "no"), got "4".');
 
         $transformer->reverseTransform(4);
     }

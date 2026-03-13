@@ -24,13 +24,17 @@ final class StringLexerTest extends TestCase
 {
     private StringLexer $lexer;
 
-    /** @before */
+    /**
+     * @before
+     */
     public function setUpLexer(): void
     {
         $this->lexer = new StringLexer();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_skips_all_whitespace_at_the_beginning(): void
     {
         $this->lexer->parse("   \nhe:\n there;");
@@ -38,7 +42,9 @@ final class StringLexerTest extends TestCase
         self::assertTrue($this->lexer->isGlimpse('/he:/A'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function skips_whitespace_with_exception_of_new_lines(): void
     {
         $this->lexer->parse("he:\n there;");
@@ -49,7 +55,9 @@ final class StringLexerTest extends TestCase
         self::assertTrue($this->lexer->isGlimpse("/\n/A"));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_reports_the_correct_col(): void
     {
         $this->lexer->parse('he:');
@@ -60,7 +68,9 @@ final class StringLexerTest extends TestCase
         $this->lexer->stringValue();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_reports_the_correct_col_with_multiline(): void
     {
         $this->lexer->parse("he:\nid:");
@@ -74,7 +84,9 @@ final class StringLexerTest extends TestCase
         $this->lexer->stringValue();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_reports_the_correct_col_when_start_at_newline(): void
     {
         $this->lexer->parse("he:\n");

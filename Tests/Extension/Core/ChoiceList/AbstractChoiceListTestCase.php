@@ -79,52 +79,68 @@ abstract class AbstractChoiceListTestCase extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choices(): void
     {
         self::assertSame($this->choices, $this->list->getChoices());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_values(): void
     {
         self::assertSame($this->values, $this->list->getValues());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_structured_values(): void
     {
         self::assertSame($this->values, $this->list->getStructuredValues());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_original_keys(): void
     {
         self::assertSame($this->keys, $this->list->getOriginalKeys());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choices_for_values(): void
     {
         $values = [$this->value1, $this->value2];
         self::assertSame([$this->choice1, $this->choice2], $this->list->getChoicesForValues($values));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choices_for_values_preserves_keys(): void
     {
         $values = [5 => $this->value1, 8 => $this->value2];
         self::assertSame([5 => $this->choice1, 8 => $this->choice2], $this->list->getChoicesForValues($values));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choices_for_values_preserves_order(): void
     {
         $values = [$this->value2, $this->value1];
         self::assertSame([$this->choice2, $this->choice1], $this->list->getChoicesForValues($values));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choices_for_values_ignores_non_existing_values(): void
     {
         $values = [$this->value1, $this->value2, 'foobar'];
@@ -133,47 +149,61 @@ abstract class AbstractChoiceListTestCase extends TestCase
 
     // https://github.com/symfony/symfony/issues/3446
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choices_for_values_empty(): void
     {
         self::assertSame([], $this->list->getChoicesForValues([]));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_values_for_choices(): void
     {
         $choices = [$this->choice1, $this->choice2];
         self::assertSame([$this->value1, $this->value2], $this->list->getValuesForChoices($choices));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_values_for_choices_preserves_keys(): void
     {
         $choices = [5 => $this->choice1, 8 => $this->choice2];
         self::assertSame([5 => $this->value1, 8 => $this->value2], $this->list->getValuesForChoices($choices));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_values_for_choices_preserves_order(): void
     {
         $choices = [$this->choice2, $this->choice1];
         self::assertSame([$this->value2, $this->value1], $this->list->getValuesForChoices($choices));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_values_for_choices_ignores_non_existing_choices(): void
     {
         $choices = [$this->choice1, $this->choice2, 'foobar'];
         self::assertSame([$this->value1, $this->value2], $this->list->getValuesForChoices($choices));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_values_for_choices_empty(): void
     {
         self::assertSame([], $this->list->getValuesForChoices([]));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function get_choices_for_values_with_null(): void
     {
         $values = $this->list->getValuesForChoices([null]);

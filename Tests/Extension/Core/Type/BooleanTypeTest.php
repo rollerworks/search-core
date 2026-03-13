@@ -22,7 +22,9 @@ use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
  */
 final class BooleanTypeTest extends SearchIntegrationTestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function transform_to_boolean(): void
     {
         $field = $this->getFactory()->createField('active', BooleanType::class);
@@ -52,7 +54,9 @@ final class BooleanTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function transform_to_boolean_with_custom_label_and_norm(): void
     {
         $field = $this->getFactory()->createField('active', BooleanType::class, [
@@ -73,7 +77,9 @@ final class BooleanTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function wrong_input_fails(): void
     {
         $field = $this->getFactory()->createField('active', BooleanType::class);

@@ -33,7 +33,9 @@ use Symfony\Component\Cache\Psr16Cache;
  */
 final class CachingInputProcessorTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function it_ignores_caching_for_non_string_input(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
@@ -48,7 +50,9 @@ final class CachingInputProcessorTest extends TestCase
         self::assertEquals($input, $inputProcessor->getInput());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_ignores_caching_when_ttl_is_0(): void
     {
         $cache = $this->createMock(CacheInterface::class);
@@ -64,7 +68,9 @@ final class CachingInputProcessorTest extends TestCase
         self::assertEquals($input, $inputProcessor->getInput());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_processes_with_no_existing_cache(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
@@ -85,7 +91,9 @@ final class CachingInputProcessorTest extends TestCase
         self::assertEquals($input, $inputProcessor->getInput());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_uses_cached_version_when_cache_is_valid(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
@@ -112,7 +120,9 @@ final class CachingInputProcessorTest extends TestCase
         self::assertNull($inputProcessor->getInput());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_stores_processed_result_in_cache(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
@@ -151,7 +161,9 @@ final class CachingInputProcessorTest extends TestCase
         self::assertEquals($input, $inputProcessor->getInput());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_stores_processed_result_in_cache_with_processor_config_ttl(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
@@ -193,7 +205,9 @@ final class CachingInputProcessorTest extends TestCase
         self::assertEquals($input, $inputProcessor->getInput());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_stores_processed_result_in_cache_with_default_ttl(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
@@ -234,7 +248,9 @@ final class CachingInputProcessorTest extends TestCase
         self::assertEquals($input, $inputProcessor->getInput());
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_does_not_store_empty_condition(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);
@@ -267,7 +283,9 @@ final class CachingInputProcessorTest extends TestCase
         $processor->process((new ProcessorConfig(new FieldSetStub()))->setCacheTTL(10), 'Hello');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_separates_caches_by_processor_class(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);

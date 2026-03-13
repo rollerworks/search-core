@@ -22,7 +22,9 @@ use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
  */
 final class BirthdayTypeTest extends SearchIntegrationTestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function date_only_input(): void
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
@@ -42,7 +44,9 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function allow_age_input(): void
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
@@ -62,7 +66,9 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function wrong_input_fails(): void
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
@@ -74,7 +80,9 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)->withInput('+21')->failsToTransforms();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function age_in_the_future_fails(): void
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [
@@ -86,7 +94,9 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)->withInput($currentDate->format('Y-m-d'))->failsToTransforms();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function age_in_future_works_when_allowed(): void
     {
         $field = $this->getFactory()->createField('birthday', BirthdayType::class, [

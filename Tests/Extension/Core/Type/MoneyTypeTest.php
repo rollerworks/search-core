@@ -39,7 +39,9 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
         parent::setUp();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function pass_money_nl(): void
     {
         \Locale::setDefault('nl_NL');
@@ -59,7 +61,9 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function pass_money_de(): void
     {
         \Locale::setDefault('de_DE');
@@ -79,7 +83,9 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function money_pattern_works_for_yen(): void
     {
         \Locale::setDefault('en_US');
@@ -111,7 +117,9 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function view_is_configured_properly(): void
     {
         $field = $this->getFactory()->createField('money', MoneyType::class, [
@@ -129,7 +137,9 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
         self::assertEquals('EUR', $fieldView->vars['default_currency']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function value_lexing(): void
     {
         $field = $this->getFactory()->createField('money', MoneyType::class);

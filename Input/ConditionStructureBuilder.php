@@ -67,7 +67,7 @@ class ConditionStructureBuilder implements StructureBuilder
     private array $valuesGroupLevels = [];
 
     private ?ValuesBag $valuesBag = null;
-    protected DataTransformer | null $inputTransformer;
+    protected ?DataTransformer $inputTransformer;
 
     public function __construct(
         ProcessorConfig $config,

@@ -48,7 +48,9 @@ final class PropertyAccessDecoratorTest extends TestCase
         self::assertSame([$expectedValue ?? 0 => 0], $list->getOriginalKeys(), 'Originals are not the same');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choices_property_path(): void
     {
         $choices = [(object) ['property' => 'value']];
@@ -62,7 +64,9 @@ final class PropertyAccessDecoratorTest extends TestCase
         self::assertChoiceListEquals($this->factory->createListFromChoices($choices, 'property'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choices_property_path_instance(): void
     {
         $choices = [(object) ['property' => 'value']];
@@ -76,7 +80,9 @@ final class PropertyAccessDecoratorTest extends TestCase
         self::assertChoiceListEquals($this->factory->createListFromChoices($choices, new PropertyPath('property')));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_loader_property_path(): void
     {
         $loader = $this->createMock(ChoiceLoader::class);
@@ -92,7 +98,9 @@ final class PropertyAccessDecoratorTest extends TestCase
 
     // https://github.com/symfony/symfony/issues/5494
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choices_assume_null_if_value_property_path_unreadable(): void
     {
         $choices = [null];
@@ -108,7 +116,9 @@ final class PropertyAccessDecoratorTest extends TestCase
 
     // https://github.com/symfony/symfony/issues/5494
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_choice_loader_assume_null_if_value_property_path_unreadable(): void
     {
         $loader = $this->createMock(ChoiceLoader::class);
@@ -122,7 +132,9 @@ final class PropertyAccessDecoratorTest extends TestCase
         self::assertChoiceListEquals($this->factory->createListFromLoader($loader, 'property'), null);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_from_loader_property_path_instance(): void
     {
         $loader = $this->createMock(ChoiceLoader::class);
@@ -140,7 +152,9 @@ final class PropertyAccessDecoratorTest extends TestCase
     // to the tests. Symfony originally returned the value as-is, but RollerworksSearch
     // uses strict return types.
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_preferred_choices_as_property_path(): void
     {
         $list = $this->createMock(ChoiceList::class);
@@ -160,7 +174,9 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_preferred_choices_as_property_path_instance(): void
     {
         $list = $this->createMock(ChoiceList::class);
@@ -182,7 +198,9 @@ final class PropertyAccessDecoratorTest extends TestCase
 
     // https://github.com/symfony/symfony/issues/5494
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_assume_null_if_preferred_choices_property_path_unreadable(): void
     {
         $list = $this->createMock(ChoiceList::class);
@@ -202,7 +220,9 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_labels_as_property_path(): void
     {
         $list = $this->createMock(ChoiceList::class);
@@ -223,7 +243,9 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_labels_as_property_path_instance(): void
     {
         $list = $this->createMock(ChoiceList::class);
@@ -244,7 +266,9 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_indices_as_property_path(): void
     {
         $list = $this->createMock(ChoiceList::class);
@@ -266,7 +290,9 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_indices_as_property_path_instance(): void
     {
         $list = $this->createMock(ChoiceList::class);
@@ -288,7 +314,9 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_groups_as_property_path(): void
     {
         $list = $this->createMock(ChoiceList::class);
@@ -311,7 +339,9 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_groups_as_property_path_instance(): void
     {
         $list = $this->createMock(ChoiceList::class);
@@ -336,7 +366,9 @@ final class PropertyAccessDecoratorTest extends TestCase
 
     // https://github.com/symfony/symfony/issues/5494
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_assume_null_if_groups_property_path_unreadable(): void
     {
         $list = $this->createMock(ChoiceList::class);
@@ -359,7 +391,9 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_attr_as_property_path(): void
     {
         $list = $this->createMock(ChoiceList::class);
@@ -383,7 +417,9 @@ final class PropertyAccessDecoratorTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function create_view_attr_as_property_path_instance(): void
     {
         $list = $this->createMock(ChoiceList::class);

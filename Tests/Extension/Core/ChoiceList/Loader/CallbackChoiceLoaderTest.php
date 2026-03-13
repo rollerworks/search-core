@@ -30,11 +30,11 @@ final class CallbackChoiceLoaderTest extends TestCase
     /** @var callable|null */
     private static $value;
 
-    /** @var object[]|null */
-    private static ?array $choices;
+    /** @var object[] */
+    private static array $choices;
 
-    /** @var string[]|null */
-    private static ?array $choiceValues;
+    /** @var string[] */
+    private static array $choiceValues;
 
     public static function setUpBeforeClass(): void
     {
@@ -51,7 +51,9 @@ final class CallbackChoiceLoaderTest extends TestCase
         self::$lazyChoiceList = new LazyChoiceList(self::$loader, self::$value);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function load_choice_list_only_once(): void
     {
         $loadedChoiceList = self::$loader->loadChoiceList(self::$value);
@@ -59,7 +61,9 @@ final class CallbackChoiceLoaderTest extends TestCase
         self::assertSame($loadedChoiceList, self::$loader->loadChoiceList(self::$value));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function load_choices_for_values_loads_choice_list_on_first_call(): void
     {
         self::assertSame(
@@ -69,7 +73,9 @@ final class CallbackChoiceLoaderTest extends TestCase
         );
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function load_values_for_choices_loads_choice_list_on_first_call(): void
     {
         self::assertSame(

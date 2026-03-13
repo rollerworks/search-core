@@ -24,7 +24,9 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class DateTypeTest extends SearchIntegrationTestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function pattern_can_be_configured(): void
     {
         $field = $this->getFactory()->createField('datetime', DateType::class, [
@@ -40,7 +42,9 @@ final class DateTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function invalid_input_should_fail_transformation(): void
     {
         $field = $this->getFactory()->createField('datetime', DateType::class, [
@@ -58,7 +62,9 @@ final class DateTypeTest extends SearchIntegrationTestCase
         ;
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function view_is_configured_properly_without_explicit_pattern(): void
     {
         $field = $this->getFactory()->createField('datetime', DateType::class, [
@@ -75,7 +81,9 @@ final class DateTypeTest extends SearchIntegrationTestCase
         self::assertEquals('M/d/yy', $fieldView->vars['pattern']);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function view_is_configured_properly(): void
     {
         $field = $this->getFactory()->createField('datetime', DateType::class, [

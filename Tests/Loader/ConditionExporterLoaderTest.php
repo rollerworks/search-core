@@ -23,7 +23,9 @@ use Rollerworks\Component\Search\Loader\ConditionExporterLoader;
  */
 final class ConditionExporterLoaderTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function it_lazily_loads_a_condition_exporter(): void
     {
         $loader = ConditionExporterLoader::create();
@@ -53,7 +55,9 @@ final class ConditionExporterLoaderTest extends TestCase
         ];
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_fails_for_unsupported_processor(): void
     {
         $loader = ConditionExporterLoader::create();

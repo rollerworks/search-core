@@ -76,7 +76,7 @@ final class DateIntervalTransformer implements DataTransformer
 
             return CarbonInterval::parseFromLocale($uValue->toString(), $this->fromLocale);
         } catch (\Exception $e) {
-            throw new TransformationFailedException('Unable to parse value to DateInterval', 0, $e);
+            throw new TransformationFailedException('Unable to parse value to DateInterval.', 0, $e);
         }
     }
 

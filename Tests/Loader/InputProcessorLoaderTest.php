@@ -23,7 +23,9 @@ use Rollerworks\Component\Search\Loader\InputProcessorLoader;
  */
 final class InputProcessorLoaderTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     */
     public function it_lazily_loads_an_input_processor(): void
     {
         $loader = InputProcessorLoader::create();
@@ -53,7 +55,9 @@ final class InputProcessorLoaderTest extends TestCase
         ];
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function it_fails_for_unsupported_processor(): void
     {
         $loader = InputProcessorLoader::create();
