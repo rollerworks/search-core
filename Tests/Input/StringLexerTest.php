@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Input;
 
 use PHPUnit\Framework\TestCase;
+use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\StringLexerException;
 use Rollerworks\Component\Search\Input\StringLexer;
 
@@ -96,5 +97,35 @@ final class StringLexerTest extends TestCase
         $this->expectExceptionObject(StringLexerException::syntaxErrorUnexpectedEnd(1, 2, 'StringValue', 'end of string'));
 
         $this->lexer->stringValue();
+    }
+
+    /**
+     * @dataProvider provideInternalLexerMethods
+     *
+     * @test
+     */
+    public function it_forbids_internal_lexer_methods_in_custom_value_lexer(string $method): void
+    {
+        $customLexer = static function (StringLexer $lexer, string $expectedNext) use ($method): string {
+            $lexer->{$method}('custom');
+
+            return 'error';
+        };
+
+        $this->lexer->parse('id: 12;', ['id' => $customLexer]);
+        $this->lexer->fieldIdentification();
+
+        $this->expectExceptionObject(new BadMethodCallException(\sprintf('Cannot call "%s" inside a custom value-lexer for field "%s".', $method, 'id')));
+
+        $this->lexer->valuePart('id');
+    }
+
+    public static function provideInternalLexerMethods(): iterable
+    {
+        yield ['valuePart'];
+        yield ['rangeValue'];
+        yield ['comparisonValue'];
+        yield ['patternMatchValue'];
+        yield ['detectValueType'];
     }
 }

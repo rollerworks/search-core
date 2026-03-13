@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Input;
 
+use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\StringLexerException;
 
 /**
@@ -26,7 +27,7 @@ final class StringLexer
     public const COMPARE = 'compare';
     public const RANGE = 'range';
 
-    /** @var array <string, \Closure> */
+    /** @var array<string, \Closure(self, string): string> */
     private array $valueLexers;
 
     private string $data;
@@ -39,11 +40,12 @@ final class StringLexer
     private ?int $colSnapshot;
     private ?int $cursorSnapshot;
     private ?int $charSnapshot;
+    private ?string $inValue = null;
 
     /**
      * @internal
      *
-     * @param array<string, \Closure> $fieldLexers
+     * @param array<string, \Closure(self, string): string> $fieldLexers
      */
     public function parse(string $data, array $fieldLexers = []): void
     {
@@ -327,9 +329,17 @@ final class StringLexer
      */
     public function valuePart(string $fieldName, string $allowedNext = ',;)'): string
     {
+        if ($this->inValue) {
+            $this->throwForbiddenInternalOperation(__METHOD__);
+        }
+
         // matches value syntax (with custom lexer) or string
         if (isset($this->valueLexers[$fieldName])) {
-            return $this->valueLexers[$fieldName]($this, $allowedNext);
+            $this->inValue = $fieldName;
+            $value = $this->valueLexers[$fieldName]($this, $allowedNext);
+            $this->inValue = null;
+
+            return $value;
         }
 
         return $this->stringValue($allowedNext);
@@ -342,6 +352,10 @@ final class StringLexer
      */
     public function rangeValue(string $name): array
     {
+        if ($this->inValue) {
+            $this->throwForbiddenInternalOperation(__METHOD__);
+        }
+
         $lowerInclusive = ($this->matchOptional('/[[\]]/A') ?? '[') === '[';
 
         $this->skipWhitespace();
@@ -367,6 +381,10 @@ final class StringLexer
      */
     public function comparisonValue(string $name): array
     {
+        if ($this->inValue) {
+            $this->throwForbiddenInternalOperation(__METHOD__);
+        }
+
         $operator = $this->expects('/<>|(?:[<>]=?)/A', 'CompareOperator');
 
         $this->skipWhitespace();
@@ -383,6 +401,10 @@ final class StringLexer
      */
     public function patternMatchValue(): array
     {
+        if ($this->inValue) {
+            $this->throwForbiddenInternalOperation(__METHOD__);
+        }
+
         $this->expects('~');
 
         if ($this->cursor === $this->end) {
@@ -436,6 +458,10 @@ final class StringLexer
      */
     public function detectValueType(string $name): string
     {
+        if ($this->inValue) {
+            $this->throwForbiddenInternalOperation(__METHOD__);
+        }
+
         if ($this->cursor === $this->end) {
             return '';
         }
@@ -494,5 +520,10 @@ final class StringLexer
         }
 
         return null;
+    }
+
+    private function throwForbiddenInternalOperation(string $method): never
+    {
+        throw new BadMethodCallException(\sprintf('Cannot call "%s" inside a custom value-lexer for field "%s".', mb_substr($method, mb_strrpos($method, '::') + 2), $this->inValue));
     }
 }
