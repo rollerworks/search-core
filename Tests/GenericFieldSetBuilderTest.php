@@ -22,6 +22,7 @@ use Rollerworks\Component\Search\Field\SearchField;
 use Rollerworks\Component\Search\GenericFieldSetBuilder;
 use Rollerworks\Component\Search\SearchFactory;
 use Rollerworks\Component\Search\Tests\Fixtures\BarType;
+use Rollerworks\Component\Search\Tests\Fixtures\FooSubType;
 use Rollerworks\Component\Search\Tests\Fixtures\FooType;
 
 /**
@@ -56,11 +57,14 @@ final class GenericFieldSetBuilderTest extends TestCase
      */
     public function add_fields(): void
     {
-        $this->builder->add('id', FooType::class);
+        $this->builder->add('id', FooType::class, ['foo' => 'bar']);
         $this->builder->add('name', BarType::class);
 
         self::assertTrue($this->builder->has('id'));
         self::assertTrue($this->builder->has('name'));
+
+        $this->assertBuilderFieldConfigurationEquals('id', FooType::class, ['foo' => 'bar']);
+        $this->assertBuilderFieldConfigurationEquals('name', BarType::class);
     }
 
     /**
@@ -71,6 +75,7 @@ final class GenericFieldSetBuilderTest extends TestCase
         $this->builder->add('id', FooType::class, ['foo' => 'bar']);
 
         $this->assertBuilderFieldConfigurationEquals('id', FooType::class, ['foo' => 'bar']);
+        self::assertFalse($this->builder->has('name'));
     }
 
     /**
@@ -78,14 +83,11 @@ final class GenericFieldSetBuilderTest extends TestCase
      */
     public function set_pre_configured_field(): void
     {
-        $field = $this->prophesize(FieldConfig::class);
-        $field->getName()->willReturn('id');
-
-        $field = $field->reveal();
-
+        $field = $this->createFieldConfigMock('id');
         $this->builder->set($field);
 
         self::assertTrue($this->builder->has('id'));
+        self::assertFalse($this->builder->has('name'));
         self::assertSame($field, $this->builder->get('id'));
     }
 
@@ -118,6 +120,29 @@ final class GenericFieldSetBuilderTest extends TestCase
         self::assertFieldConfigurationEquals($fieldSet->get('gid'), 'gid', FooType::class);
     }
 
+    /**
+     * @test
+     */
+    public function remove_existing_unresolved_when_setting_explicit(): void
+    {
+        $this->builder->add('id', FooType::class, ['max' => 5000]);
+
+        $this->builder->set($field = $this->createFieldConfigMock('id'));
+        $this->builder->set($field2 = $this->createFieldConfigMock('name'));
+
+        self::assertSame($field, $this->builder->get('id'));
+        self::assertSame($field2, $this->builder->get('name'));
+
+        $fieldSet = $this->builder->getFieldSet('test');
+
+        self::assertEquals('test', $fieldSet->getSetName());
+        self::assertFieldConfigurationEquals($fieldSet->get('id'), 'id', FooSubType::class);
+        self::assertFieldConfigurationEquals($fieldSet->get('name'), 'name', FooSubType::class);
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
     private function assertBuilderFieldConfigurationEquals(string $name, string $type, array $options = []): void
     {
         $field = $this->builder->get($name);
@@ -126,10 +151,25 @@ final class GenericFieldSetBuilderTest extends TestCase
         self::assertEquals($options, $field->getOptions());
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     private static function assertFieldConfigurationEquals(FieldConfig $field, string $name, string $type, array $options = []): void
     {
         self::assertEquals($name, $field->getName());
-        self::assertInstanceOf($type, $field->getType()->getInnerType());
+        self::assertInstanceOf($type, $field->getType()->getInnerType(), 'Expected type to be ' . $type . ', got ' . $field->getType()->getInnerType()::class . ' instead.');
         self::assertEquals($options, $field->getOptions());
+    }
+
+    private function createFieldConfigMock(string $name, string $typeName = FooSubType::class): FieldConfig
+    {
+        $type = $this->createMock(ResolvedFieldType::class);
+        $type->method('getInnerType')->willReturn(new $typeName());
+
+        $field = $this->createMock(FieldConfig::class);
+        $field->method('getName')->willReturn($name);
+        $field->method('getType')->willReturn($type);
+
+        return $field;
     }
 }

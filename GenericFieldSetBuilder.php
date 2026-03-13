@@ -36,7 +36,10 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
 
     public function set(FieldConfig $field): self
     {
-        $this->fields[$field->getName()] = $field;
+        $name = $field->getName();
+
+        unset($this->unresolvedFields[$name]);
+        $this->fields[$name] = $field;
 
         return $this;
     }
