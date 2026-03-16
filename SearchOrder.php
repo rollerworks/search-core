@@ -14,19 +14,71 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search;
 
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+use Rollerworks\Component\Search\Field\OrderField;
+use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * @author Dalibor Karlović <dalibor@flexolabs.io>
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 final class SearchOrder
 {
+    /** @var array <string, 'desc'|'asc'> */
+    private readonly array $fields;
+
+    private readonly ValuesGroup $valuesGroup;
+
+    /**
+     * @param ValuesGroup|array<string, 'desc'|'asc'|'DESC'|'ASC'> $values
+     */
     public function __construct(
-        private ValuesGroup $valuesGroup,
+        ValuesGroup | array $values,
     ) {
-        if ($valuesGroup->hasGroups()) {
-            throw new InvalidArgumentException('A SearchOrder must have a single-level structure. Only fields with single values are accepted.');
+        if ($values instanceof ValuesGroup) {
+            trigger_deprecation('rollerworks/search', '2.0-BETA14', 'Passing a "%s" to "%s()" is deprecated, pass an associative array fields and there directions instead.', ValuesGroup::class, __METHOD__);
+
+            if ($values->hasGroups()) {
+                throw new InvalidArgumentException('A SearchOrder must have a single-level structure. Only fields with single values are accepted.');
+            }
+
+            $fields = [];
+
+            foreach ($values->getFields() as $fieldName => $valuesBag) {
+                if ($valuesBag->count() !== 1 || ! $valuesBag->hasSimpleValues()) {
+                    throw new InvalidArgumentException(\sprintf('Field "%s" must have a single value only.', $fieldName));
+                }
+
+                $fields[$fieldName] = current($valuesBag->getSimpleValues());
+            }
+
+            $values = $fields;
         }
+
+        $valuesGroup = new ValuesGroup();
+        $fields = [];
+
+        foreach ($values as $fieldName => $direction) {
+            if (! OrderField::isOrder($fieldName)) {
+                throw new InvalidArgumentException(\sprintf('Field "%s" is not a valid ordering field. Expected either "@%1$s".', $fieldName));
+            }
+
+            if (! \is_string($direction)) {
+                throw new InvalidArgumentException(\sprintf('Field "%s" direction must be a string.', $fieldName));
+            }
+
+            $direction = mb_strtolower($direction);
+
+            if (! \in_array($direction, ['desc', 'asc'], true)) {
+                throw new InvalidArgumentException(\sprintf('Invalid direction provided "%s" for field "%s", must be either "asc" or "desc" (case insensitive).', $direction, $fieldName));
+            }
+
+            $valuesGroup->addField($fieldName, (new ValuesBag())->addSimpleValue($direction));
+            $fields[$fieldName] = $direction;
+        }
+
+        $this->fields = $fields;
+        $this->valuesGroup = $valuesGroup;
     }
 
     public function getValuesGroup(): ValuesGroup
@@ -39,15 +91,6 @@ final class SearchOrder
      */
     public function getFields(): array
     {
-        $fields = [];
-
-        foreach ($this->valuesGroup->getFields() as $fieldName => $valuesBag) {
-            $direction = mb_strtolower((string) current($valuesBag->getSimpleValues()));
-            \assert($direction === 'desc' || $direction === 'asc');
-
-            $fields[$fieldName] = $direction;
-        }
-
-        return $fields;
+        return $this->fields;
     }
 }

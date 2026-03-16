@@ -24,7 +24,6 @@ use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\OrderField;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\SearchOrder;
 use Rollerworks\Component\Search\StructureBuilder;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
@@ -137,7 +136,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 abstract class StringInput extends AbstractInput
 {
     protected ?StructureBuilder $structureBuilder;
-    protected ?StructureBuilder $orderStructureBuilder;
+    protected ?OrderStructureBuilder $orderStructureBuilder;
 
     /** @var array<string, string> */
     protected array $fields = [];
@@ -178,12 +177,8 @@ abstract class StringInput extends AbstractInput
         try {
             $this->parse($config, $input, $fieldSet);
             $condition = new SearchCondition($fieldSet, $this->structureBuilder->getRootGroup());
+            $condition->setOrder($this->orderStructureBuilder->getOrder());
 
-            $orderValuesGroup = $this->orderStructureBuilder->getRootGroup();
-
-            if ($orderValuesGroup->countValues() > 0) {
-                $condition->setOrder(new SearchOrder($orderValuesGroup));
-            }
             $this->assertLevel0();
         } catch (InputProcessorException $e) {
             $this->errors[] = $e->toErrorMessageObj();

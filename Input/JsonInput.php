@@ -19,11 +19,9 @@ use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
-use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\OrderField;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
-use Rollerworks\Component\Search\SearchOrder;
 use Rollerworks\Component\Search\StructureBuilder;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
@@ -77,7 +75,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 final class JsonInput extends AbstractInput
 {
     private ?StructureBuilder $structureBuilder = null;
-    private ?StructureBuilder $orderStructureBuilder = null;
+    private ?OrderStructureBuilder $orderStructureBuilder = null;
 
     public function process(ProcessorConfig $config, $input): SearchCondition
     {
@@ -219,22 +217,21 @@ final class JsonInput extends AbstractInput
         $order = $array['order'] ?? [];
 
         if ($order === []) {
-            /** @var FieldConfig $field */
             foreach ($fieldSet->all() as $name => $field) {
+                if (! OrderField::isOrder($name)) {
+                    continue;
+                }
+
                 $direction = $field->getOption('default');
 
-                if (OrderField::isOrder($name) && $direction !== null) {
+                if ($direction !== null) {
                     $this->orderStructureBuilder->field($name, '[order][%s]');
                     $this->orderStructureBuilder->simpleValue($direction, '');
                     $this->orderStructureBuilder->endValues();
                 }
             }
 
-            $orderValuesGroup = $this->orderStructureBuilder->getRootGroup();
-
-            if ($orderValuesGroup->countValues() > 0) {
-                $condition->setOrder(new SearchOrder($orderValuesGroup));
-            }
+            $condition->setOrder($this->orderStructureBuilder->getOrder());
 
             return;
         }
@@ -245,8 +242,7 @@ final class JsonInput extends AbstractInput
             $this->orderStructureBuilder->endValues();
         }
 
-        $orderCondition = new SearchOrder($this->orderStructureBuilder->getRootGroup());
-        $condition->setOrder($orderCondition);
+        $condition->setOrder($this->orderStructureBuilder->getOrder());
     }
 
     private function assertValueArrayHasKeys($array, array $requiredKeys, string $path): void

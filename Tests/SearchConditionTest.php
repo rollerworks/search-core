@@ -128,7 +128,7 @@ final class SearchConditionTest extends TestCase
         // Ordering
         self::assertFalse(
             (new SearchCondition($fieldSet, new ValuesGroup()))
-                ->setOrder(new SearchOrder((new ValuesGroup())->addField('id', (new ValuesBag())->addSimpleValue('desc'))))
+                ->setOrder(new SearchOrder(['@id' => 'desc']))
                 ->isEmpty(),
         );
     }

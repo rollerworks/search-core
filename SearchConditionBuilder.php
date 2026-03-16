@@ -16,13 +16,14 @@ namespace Rollerworks\Component\Search;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Field\OrderField;
-use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 final class SearchConditionBuilder
 {
+    /** @var array<string, 'ASC'|'DESC'> */
+    private ?array $order = [];
+
     private ValuesGroup $valuesGroup;
-    private ?ValuesGroup $order = null;
     private ?self $primaryCondition = null;
 
     /**
@@ -80,12 +81,12 @@ final class SearchConditionBuilder
      * ->end() // Returns to the main condition
      * ```
      *
-     * @param string                    $name      The field-name (must be a valid known ordering field like "@id")
-     * @param 'asc'|'desc'|'ASC'|'DESC' $direction
+     * @param string                         $name      The field-name (must be a valid known ordering field like "@id")
+     * @param 'asc'|'desc'|'ASC'|'DESC'|null $direction Use null to remove the ordering for the field
      *
      * @return $this
      */
-    public function order(string $name, string $direction = 'ASC'): self
+    public function order(string $name, ?string $direction = 'ASC'): self
     {
         if ($this->parent && $this->parent->primaryCondition !== $this) {
             throw new BadMethodCallException('Cannot add ordering at nested levels.');
@@ -96,19 +97,20 @@ final class SearchConditionBuilder
         }
 
         $this->fieldSet->get($name);
+
+        if ($direction === null) {
+            unset($this->order[$name]);
+
+            return $this;
+        }
+
         $direction = mb_strtoupper($direction);
 
         if (! \in_array($direction, ['DESC', 'ASC'], true)) {
             throw new InvalidArgumentException(\sprintf('Invalid direction provided "%s" for field "%s", must be either "ASC" OR "DESC" (case insensitive).', $direction, $name));
         }
 
-        if ($this->order === null) {
-            $this->order = new ValuesGroup();
-        }
-
-        $values = new ValuesBag();
-        $values->addSimpleValue($direction);
-        $this->order->addField($name, $values);
+        $this->order[$name] = $direction;
 
         return $this;
     }
@@ -120,7 +122,7 @@ final class SearchConditionBuilder
      */
     public function clearOrder(): self
     {
-        $this->order = null;
+        $this->order = [];
 
         return $this;
     }

@@ -20,6 +20,7 @@ use Rollerworks\Component\Search\Exception\OrderStructureException;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
+use Rollerworks\Component\Search\SearchOrder;
 use Rollerworks\Component\Search\StructureBuilder;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
@@ -34,6 +35,9 @@ final class OrderStructureBuilder implements StructureBuilder
     private ?FieldConfig $fieldConfig = null;
     private ?ValuesBag $valuesBag = null;
     private ?DataTransformer $inputTransformer;
+
+    /** @var array<string, mixed> */
+    private array $order = [];
 
     public function __construct(
         ProcessorConfig $config,
@@ -91,17 +95,21 @@ final class OrderStructureBuilder implements StructureBuilder
             throw new \LogicException('Cannot add value to unknown bag.');
         }
 
+        $name = $this->fieldConfig->getName();
+
         if ($this->valuesBag->count()) {
-            throw OrderStructureException::invalidValue($this->fieldConfig->getName());
+            throw OrderStructureException::invalidValue($name);
         }
 
-        $path = str_replace('{pos}', $this->fieldConfig->getName(), $path);
+        $path = str_replace('{pos}', $name, $path);
+        $modelVal = $this->inputToNorm($value, $path);
 
-        if (($modelVal = $this->inputToNorm($value, $path)) !== null) {
+        if ($modelVal !== null) {
             $this->validator->validate($modelVal, 'simple', $value, $path);
         }
 
         $this->valuesBag->addSimpleValue($modelVal);
+        $this->order[$name] = $modelVal;
     }
 
     public function excludedSimpleValue(mixed $value, string $path): void
@@ -133,6 +141,11 @@ final class OrderStructureBuilder implements StructureBuilder
     {
         $this->fieldConfig = null;
         $this->valuesBag = null;
+    }
+
+    public function getOrder(): ?SearchOrder
+    {
+        return $this->order === [] ? null : new SearchOrder($this->order);
     }
 
     private function addError(ConditionErrorMessage $error): void
