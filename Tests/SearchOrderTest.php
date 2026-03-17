@@ -22,6 +22,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 
 /**
  * @internal
+ *
+ * @psalm-type Sorting = array<string, 'asc'|'desc'>
  */
 final class SearchOrderTest extends TestCase
 {
@@ -101,6 +103,67 @@ final class SearchOrderTest extends TestCase
     /**
      * @test
      */
+    public function construct_with_prepend(): void
+    {
+        // Prepend should be placed before any user sorting
+        self::assertSortingSame(
+            finalSorting: ['@date' => 'asc', '@id' => 'desc', '@name' => 'asc'],
+            prepend: ['@date' => 'asc'],
+            append: [],
+            fields: ['@id' => 'desc', '@name' => 'asc'],
+            actual: new SearchOrder(['@id' => 'DESC', '@name' => 'ASC'], prepend: ['@date' => 'ASC']),
+        );
+
+        // Prepend should keep the original position
+        self::assertSortingSame(
+            finalSorting: ['@name' => 'asc', '@id' => 'desc'],
+            prepend: ['@name' => 'desc'],
+            append: [],
+            fields: ['@id' => 'desc', '@name' => 'asc'],
+            actual: new SearchOrder(['@id' => 'DESC', '@name' => 'ASC'], prepend: ['@name' => 'DESC']),
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function construct_with_append(): void
+    {
+        // Append should be placed after the user sorting
+        self::assertSortingSame(
+            finalSorting: ['@id' => 'desc', '@name' => 'asc', '@date' => 'asc'],
+            prepend: [],
+            append: ['@date' => 'asc'],
+            fields: ['@id' => 'desc', '@name' => 'asc'],
+            actual: new SearchOrder(['@id' => 'DESC', '@name' => 'ASC'], append: ['@date' => 'ASC']),
+        );
+
+        // Append should ignore already existing sorting
+        self::assertSortingSame(
+            finalSorting: ['@id' => 'desc', '@name' => 'asc', '@date' => 'desc'],
+            prepend: [],
+            append: ['@id' => 'asc', '@date' => 'desc'],
+            fields: ['@id' => 'desc', '@name' => 'asc'],
+            actual: new SearchOrder(['@id' => 'DESC', '@name' => 'ASC'], append: ['@id' => 'ASC', '@date' => 'desc']),
+        );
+
+        // Prepend and append
+        self::assertSortingSame(
+            finalSorting: ['@name' => 'asc', '@group' => 'desc', '@id' => 'desc', '@date' => 'desc'],
+            prepend: ['@name' => 'desc', '@group' => 'desc'],
+            append: ['@id' => 'asc', '@date' => 'desc'],
+            fields: ['@id' => 'desc', '@name' => 'asc'],
+            actual: new SearchOrder(
+                values: ['@id' => 'DESC', '@name' => 'ASC'],
+                prepend: ['@name' => 'DESC', '@group' => 'DESC'],
+                append: ['@id' => 'ASC', '@date' => 'desc']
+            ),
+        );
+    }
+
+    /**
+     * @test
+     */
     public function fail_with_invalid_field_name(): void
     {
         $valuesGroup = new ValuesGroup();
@@ -121,7 +184,7 @@ final class SearchOrderTest extends TestCase
         $valuesGroup->addField('@id', (new ValuesBag())->addSimpleValue(['up']));
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Field "@id" direction must be a string.');
+        $this->expectExceptionMessage('Field "@id" direction must be a string, "array" given.');
 
         new SearchOrder($valuesGroup);
     }
@@ -195,5 +258,28 @@ final class SearchOrderTest extends TestCase
         $this->expectExceptionMessage('Field "@id" must have a single value only.');
 
         new SearchOrder($valuesGroup);
+    }
+
+    /**
+     * @param Sorting $finalSorting
+     * @param Sorting $prepend
+     * @param Sorting $append
+     * @param Sorting $fields
+     */
+    private static function assertSortingSame(array $finalSorting, array $prepend, array $append, array $fields, SearchOrder $actual): void
+    {
+        $valuesGroup = new ValuesGroup();
+
+        foreach ($finalSorting as $field => $direction) {
+            $valuesGroup->addField($field, (new ValuesBag())->addSimpleValue($direction));
+        }
+
+        self::assertEquals($valuesGroup, $actual->getValuesGroup(), 'The values group does not match the expected values group.');
+        self::assertSame(array_keys($finalSorting), array_keys($actual->getValuesGroup()->getFields()), 'The fields do not match the expected fields order.');
+
+        self::assertSame($finalSorting, $actual->getSorting(), 'The final sorting does not match the expected sorting.');
+        self::assertSame($prepend, $actual->getPrepend(), 'The prepend does not match.');
+        self::assertSame($fields, $actual->getFields(), 'The fields do not match.');
+        self::assertSame($append, $actual->getAppend(), 'The append does not match.');
     }
 }

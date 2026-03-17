@@ -134,6 +134,8 @@ final class JsonInput extends AbstractInput
             throw new InvalidSearchConditionException($errors);
         }
 
+        self::finalizeOrdering($condition);
+
         return $condition;
     }
 

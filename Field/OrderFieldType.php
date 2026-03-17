@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Field;
 
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\OrderToLocalizedTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\OrderTransformer;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -32,6 +33,7 @@ final class OrderFieldType implements FieldType
     {
         $resolver->setDefaults([
             'default' => null,
+            'always' => null,
             'case' => OrderTransformer::CASE_UPPERCASE,
             'alias' => ['ASC' => 'ASC', 'DESC' => 'DESC'],
             'view_label' => ['ASC' => 'asc', 'DESC' => 'desc'],
@@ -44,9 +46,10 @@ final class OrderFieldType implements FieldType
             OrderTransformer::CASE_LOWERCASE,
             OrderTransformer::CASE_UPPERCASE,
         ]);
+        $resolver->setAllowedValues('default', ['asc', 'desc', 'ASC', 'DESC', null]);
+        $resolver->setAllowedValues('always', ['append', 'prepend', null]);
         $resolver->setAllowedTypes('alias', 'array');
         $resolver->setAllowedTypes('view_label', ['array']);
-        $resolver->setAllowedTypes('default', ['null', 'string']);
         $resolver->setAllowedTypes('type', ['string', 'null']);
         $resolver->setAllowedTypes('type_options', ['array']);
         $resolver->setAllowedTypes('label', ['null', 'string']);
@@ -85,6 +88,10 @@ final class OrderFieldType implements FieldType
 
     public function buildType(FieldConfig $config, array $options): void
     {
+        if ($options['always'] !== null && $options['default'] === null) {
+            throw new InvalidOptionsException('Setting "always" requires the "default" option is set with a direction.');
+        }
+
         $config->setNormTransformer(new OrderTransformer($options['alias'], $options['case']));
         $config->setViewTransformer(new OrderToLocalizedTransformer($options['alias'], $options['view_label'], $options['case']));
     }

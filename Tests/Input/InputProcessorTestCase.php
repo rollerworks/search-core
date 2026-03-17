@@ -59,9 +59,10 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $fieldSet->add('date', DateType::class, ['pattern' => 'MM-dd-yyyy']);
 
         if ($order) {
-            $fieldSet->add('@date', OrderFieldType::class, ['case' => OrderTransformer::CASE_LOWERCASE, 'alias' => ['up' => 'ASC', 'down' => 'DESC'], 'default' => 'down']);
+            $fieldSet->add('@date', OrderFieldType::class, ['case' => OrderTransformer::CASE_LOWERCASE, 'alias' => ['up' => 'ASC', 'down' => 'DESC'], 'default' => 'desc']);
             $fieldSet->add('@id', OrderFieldType::class, ['default' => 'ASC']);
         }
+
         $fieldSet->set(
             $this->getFactory()->createField('no-range-field', IntegerType::class)
                 ->setValueTypeSupport(Range::class, false)

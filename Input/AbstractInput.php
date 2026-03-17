@@ -15,6 +15,8 @@ namespace Rollerworks\Component\Search\Input;
 
 use Rollerworks\Component\Search\ErrorList;
 use Rollerworks\Component\Search\InputProcessor;
+use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\SearchOrder;
 
 /**
  * AbstractInput provides the shared logic for the InputProcessors.
@@ -33,6 +35,52 @@ abstract class AbstractInput implements InputProcessor
     public function __construct(?Validator $validator = null)
     {
         $this->validator = $validator ?? new NullValidator();
+    }
+
+    /**
+     * Finalize the ordering of the fields.
+     *
+     * - Sets the default ordering if no ordering is set.
+     * - Ensures that the always-ordered fields are present.
+     */
+    public static function finalizeOrdering(SearchCondition $condition): void
+    {
+        $ordering = $condition->getOrder()?->getFields() ?? [];
+        $hasOrder = $ordering !== [];
+
+        $apply = $hasOrder;
+        $prepend = $append = [];
+
+        foreach ($condition->getFieldSet()->all() as $field) {
+            $name = $field->getName();
+
+            if (! $condition->getFieldSet()->isOrder($name)) {
+                continue;
+            }
+
+            $default = $field->getOption('default');
+
+            if ($default === null) {
+                continue;
+            }
+
+            $always = $field->getOption('always');
+
+            if ($always === 'prepend') {
+                $prepend[$name] = $default;
+                $apply = true;
+            } elseif ($always === 'append') {
+                $append[$name] = $default;
+                $apply = true;
+            } elseif (! $hasOrder) {
+                $ordering[$name] = $default;
+                $apply = true;
+            }
+        }
+
+        if ($apply) {
+            $condition->setOrder(new SearchOrder($ordering, $prepend, $append));
+        }
     }
 
     /**

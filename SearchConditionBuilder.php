@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Field\OrderField;
+use Rollerworks\Component\Search\Input\AbstractInput;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
 final class SearchConditionBuilder
@@ -272,6 +273,8 @@ final class SearchConditionBuilder
         }
 
         $searchCondition->setPrimaryCondition($this->getPrimaryCondition());
+
+        AbstractInput::finalizeOrdering($searchCondition);
 
         return $searchCondition;
     }

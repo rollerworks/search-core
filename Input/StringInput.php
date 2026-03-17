@@ -192,6 +192,8 @@ abstract class StringInput extends AbstractInput
             throw new InvalidSearchConditionException($errors);
         }
 
+        self::finalizeOrdering($condition);
+
         return $condition;
     }
 

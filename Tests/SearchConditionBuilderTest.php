@@ -473,4 +473,172 @@ final class SearchConditionBuilderTest extends TestCase
             },
         ];
     }
+
+    /**
+     * @test
+     */
+    public function finalizes_ordering_fields_without_existing(): void
+    {
+        $searchFactory = Searches::createSearchFactory();
+
+        $fieldSetBuilder = $searchFactory->createFieldSetBuilder();
+        $fieldSetBuilder
+            ->add('id', IntegerType::class)
+            ->add('@id', OrderFieldType::class)
+            ->add('@name', OrderFieldType::class, ['default' => 'ASC'])
+        ;
+
+        $fieldSet = $fieldSetBuilder->getFieldSet('users');
+        $condBuilder = SearchConditionBuilder::create($fieldSet)
+            ->field('id')
+                ->addSimpleValue(10)
+                ->addSimpleValue(30)
+            ->end()
+        ;
+
+        $expected = new SearchCondition($fieldSet, (new ValuesGroup())->addField('id', (new ValuesBag())->addSimpleValue(10)->addSimpleValue(30)));
+        $expected->setOrder(new SearchOrder(['@name' => 'ASC']));
+
+        self::assertEquals($expected, $condBuilder->getSearchCondition());
+    }
+
+    /**
+     * @test
+     */
+    public function finalizes_ordering_fields_with_existing(): void
+    {
+        $searchFactory = Searches::createSearchFactory();
+
+        $fieldSetBuilder = $searchFactory->createFieldSetBuilder();
+        $fieldSetBuilder
+            ->add('id', IntegerType::class)
+            ->add('@id', OrderFieldType::class)
+            ->add('@name', OrderFieldType::class, ['default' => 'ASC'])
+        ;
+
+        $fieldSet = $fieldSetBuilder->getFieldSet('users');
+        $condBuilder = SearchConditionBuilder::create($fieldSet)
+            ->field('id')
+                ->addSimpleValue(10)
+                ->addSimpleValue(30)
+            ->end()
+            ->order('@id', 'DESC')
+        ;
+
+        $expected = new SearchCondition($fieldSet, (new ValuesGroup())->addField('id', (new ValuesBag())->addSimpleValue(10)->addSimpleValue(30)));
+        $expected->setOrder(new SearchOrder(['@id' => 'DESC']));
+
+        self::assertEquals($expected, $condBuilder->getSearchCondition());
+    }
+
+    /**
+     * @test
+     */
+    public function finalize_appended_fields_without_existing(): void
+    {
+        $fieldSetBuilder = Searches::createSearchFactory()->createFieldSetBuilder();
+        $fieldSetBuilder
+            ->add('id', IntegerType::class)
+            ->add('@id', OrderFieldType::class)
+            ->add('@name', OrderFieldType::class, ['always' => 'append', 'default' => 'ASC'])
+        ;
+
+        $fieldSet = $fieldSetBuilder->getFieldSet('users');
+        $condBuilder = SearchConditionBuilder::create($fieldSet)
+            ->field('id')
+                ->addSimpleValue(10)
+                ->addSimpleValue(30)
+            ->end()
+        ;
+
+        $expected = new SearchCondition($fieldSet, (new ValuesGroup())->addField('id', (new ValuesBag())->addSimpleValue(10)->addSimpleValue(30)));
+        $expected->setOrder(new SearchOrder([], append: ['@name' => 'ASC']));
+
+        self::assertEquals($expected, $condBuilder->getSearchCondition());
+    }
+
+    /**
+     * @test
+     */
+    public function finalize_appended_fields_without_existing_default_set(): void
+    {
+        $fieldSetBuilder = Searches::createSearchFactory()->createFieldSetBuilder();
+        $fieldSetBuilder
+            ->add('id', IntegerType::class)
+            ->add('@id', OrderFieldType::class, ['default' => 'desc'])
+            ->add('@name', OrderFieldType::class, ['always' => 'append', 'default' => 'ASC'])
+        ;
+
+        $fieldSet = $fieldSetBuilder->getFieldSet('users');
+        $condBuilder = SearchConditionBuilder::create($fieldSet)
+            ->field('id')
+                ->addSimpleValue(10)
+                ->addSimpleValue(30)
+            ->end()
+        ;
+
+        $expected = new SearchCondition($fieldSet, (new ValuesGroup())->addField('id', (new ValuesBag())->addSimpleValue(10)->addSimpleValue(30)));
+        $expected->setOrder(new SearchOrder(['@id' => 'desc'], append: ['@name' => 'ASC']));
+
+        self::assertEquals($expected, $condBuilder->getSearchCondition());
+    }
+
+    /**
+     * @test
+     */
+    public function finalize_prepend_fields_merge(): void
+    {
+        $searchFactory = Searches::createSearchFactory();
+
+        $fieldSetBuilder = $searchFactory->createFieldSetBuilder();
+        $fieldSetBuilder
+            ->add('id', IntegerType::class)
+            ->add('@id', OrderFieldType::class)
+            ->add('@name', OrderFieldType::class, ['always' => 'prepend', 'default' => 'ASC'])
+        ;
+
+        $fieldSet = $fieldSetBuilder->getFieldSet('users');
+        $condBuilder = SearchConditionBuilder::create($fieldSet)
+            ->field('id')
+                ->addSimpleValue(10)
+                ->addSimpleValue(30)
+            ->end()
+            ->order('@id', 'DESC')
+        ;
+
+        $expected = new SearchCondition($fieldSet, (new ValuesGroup())->addField('id', (new ValuesBag())->addSimpleValue(10)->addSimpleValue(30)));
+        $expected->setOrder(new SearchOrder(['@id' => 'DESC'], prepend: ['@name' => 'ASC']));
+
+        self::assertEquals($expected, $condBuilder->getSearchCondition());
+    }
+
+    /**
+     * @test
+     */
+    public function finalize_prepend_and_appended_fields_merge(): void
+    {
+        $searchFactory = Searches::createSearchFactory();
+
+        $fieldSetBuilder = $searchFactory->createFieldSetBuilder();
+        $fieldSetBuilder
+            ->add('id', IntegerType::class)
+            ->add('@id', OrderFieldType::class)
+            ->add('@name', OrderFieldType::class, ['always' => 'append', 'default' => 'ASC'])
+            ->add('@group', OrderFieldType::class, ['always' => 'prepend', 'default' => 'DESC'])
+        ;
+
+        $fieldSet = $fieldSetBuilder->getFieldSet('users');
+        $condBuilder = SearchConditionBuilder::create($fieldSet)
+            ->field('id')
+                ->addSimpleValue(10)
+                ->addSimpleValue(30)
+            ->end()
+            ->order('@id', 'DESC')
+        ;
+
+        $expected = new SearchCondition($fieldSet, (new ValuesGroup())->addField('id', (new ValuesBag())->addSimpleValue(10)->addSimpleValue(30)));
+        $expected->setOrder(new SearchOrder(['@id' => 'DESC'], prepend: ['@group' => 'desc'], append: ['@name' => 'ASC']));
+
+        self::assertEquals($expected, $condBuilder->getSearchCondition());
+    }
 }

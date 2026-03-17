@@ -19,6 +19,7 @@ use Rollerworks\Component\Search\Field\OrderField;
 use Rollerworks\Component\Search\Field\OrderFieldType;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
 /**
  * @internal
@@ -253,5 +254,18 @@ final class OrderFieldTypeTest extends SearchIntegrationTestCase
                 )
             )
         ;
+    }
+
+    /**
+     * @test
+     */
+    public function error_with_always_append_and_no_default_value(): void
+    {
+        $this->expectException(InvalidOptionsException::class);
+        $this->expectExceptionMessage('Setting "always" requires the "default" option is set with a direction.');
+
+        $this->getFactory()->createField('@id', OrderFieldType::class, [
+            'always' => 'append',
+        ]);
     }
 }
