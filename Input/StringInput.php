@@ -30,108 +30,148 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 /**
  * StringInput - processes input in the StringQuery format.
  *
- * The formats works as follow (whitespace between values is ignored).
+ *  Caution: The error message reports the character position, not the byte position.
+ *  Multibyte may cause some problems when using substr() rather then mb_substr().
  *
- * Caution: The error message reports the character position not the byte position.
- * Multi byte may cause some problems when using substr() rather then mb_substr().
+ * Use the {@see ErrorPathTranslator} to translate the error-path to a
+ * human readable format.
+ *
+ * The formats works as follow:
  *
  * Each query-pair is a 'field-name: value1, value2;' or 'value1, value2;'.
  *
- * Tip: The field-name can be omitted, which uses the default field-name configured
+ * Tip: The "field-name" can be omitted, which uses the default field-name configured
  * in the ProcessorConfig. This should only be used for the first values list.
  *
- *  Query-pairs can be nested inside a group "(field-name: value1, value2;)"
+ *  Query-pairs can be nested inside a group `(field-name: value1, value2;)`
  *    Subgroups are threaded as AND-case to there parent,
  *    multiple groups inside the same group are OR-case to each other.
  *
- *    By default all the query-pairs and other direct-subgroups are treated as AND-case.
- *    To make a group OR-case (any of the fields), prefix the group with '*'
- *    Example: *(field1=values; field2=values);
+ *    By default all fields in query-pairs and other subgroups are treated as AND-case.
+ *    To make a group OR-case (any of the fields must match), prefix the group with `*`.
  *
- *    Groups are separated with a single semicolon ";".
+ *    Example: `*( field1: values; field2: values );`
+ *
+ *    Groups are separated with a single semicolon `;`.
  *    If the subgroup is last in the group the semicolon can be omitted.
  *
- *  Query-Pairs are separated with a single semicolon ";"
+ *  Query-Pairs are separated with a single semicolon `;`.
  *  If the query-pair is last in the group the semicolon can be omitted.
  *
  *  Each value inside a query-pair is separated with a single comma.
- *  A value containing special characters (<>[](),;~!*?=) or spaces
+ *  A value containing special characters (`<>[](),;~!*?=`) or spaces
  *  must be surrounded by quotes or use a custom value lexer.
  *
- *  Note surrounding spaces are ignored. Example: field: value , value2  ;
+ *  Note: surrounding spaces are ignored. Example: field: value , value2  ;
  *
  *  To escape a quote use it double.
- *  Example: field: "va""lue";
+ *  Example: `field: "va""lue"`
  *
- *  Escaped quotes will be normalized to a single one.
+ *  Escaped quotes will be normalized to a single one, as `"va"lue"`.
  *
  * Line separators are allowed for better readability, but are not allowed
  * within a value.
  *
+ * Multiple value types are supported (depending on the field configuration);
+ * Spaces between operators are supported, but not within the operator.
+ *
+ * Simple Values
+ * =============
+ *
+ * A simple value is a single value without any operator.
+ *
+ * Example: `field: value, value2, "value 3", "!value4";`
+ *
+ * Excluded Values
+ * ===============
+ *
+ * To mark a value as excluded prefix it with an `!`.
+ *
+ * Example: `field: !value, value2, !"value 3", ! "!value4";`
+ *
  * Ranges
  * ======
  *
- * A range consists of two sides, lower and upper bound (inclusive by default).
- * Each side is considered a value-part and must follow the value convention (as described above).
+ * A range consists of two sides, a lower and upper bound (inclusive by default).
+ * Each side is considered a value-part and must follow the value convention
+ * (as described above).
  *
- * Example: field: 1~100; field2: -1 ~ 100
+ * Example: `field: 1~100; field2: -1 ~ 100`
  *
- * Each side is inclusive by default, meaning 'the value' and anything lower/higher then it.
+ * Each side is inclusive by default, meaning 'the value' and anything lower/higher than it.
  * The left delimiter can be `[` (inclusive) or `]` (exclusive).
  * The right delimiter can be `[` (exclusive) or `]` (inclusive).
  *
- *   `]1 ~ 100`  is equal to (> 1 and <= 100)
- *   `[1 ~ 100`  is equal to (>= 1 and <= 100)
- *   `[1 ~ 100[` is equal to (>= 1 and < 100)
- *   `]1 ~ 100[` is equal to (> 1 and < 100)
+ *   `]1 ~ 100`  is equal to `(> 1 and <= 100)`
+ *   `[1 ~ 100`  is equal to` (>= 1 and <= 100)`
+ *   `[1 ~ 100[` is equal to `(>= 1 and < 100)`
+ *   `]1 ~ 100[` is equal to `(> 1 and < 100)`
  *
  *   Example:
- *     field: ]1 ~ 100;
- *     field: [1 ~ 100;
+ *     `field: ]1 ~ 100;`
+ *     `field: [1 ~ 100;`
  *
- * Excluded values
- * ===============
+ * To mark the range as excluded prefix it with an `!`
+ * (same as single excluded values).
  *
- * To mark a value as excluded (also done for ranges) prefix it with an '!'.
- *
- * Example: field: !value, !1 ~ 10;
+ * Example: `field: !1 ~ 100, ![1 ~ 100;`
  *
  * Comparison
  * ==========
  *
  * Comparisons are as any programming language.
- * Supported operators are: <, <=, <>, >, >=
+ * Supported operators are: `<`, `<=`, `<>`, `>`, `>=`
+ *
+ * * `<` lower than;
+ * * `>` higher than;
+ * * `<=` lower than or equal;
+ * * `>=` higher than or equal;
+ * * `<>` not higher or lower than (aka not equal).
  *
  * Followed by a value-part.
  *
- * Example: field: >= 1, < -10;
+ * Example: field: `>= 1, < -10;`
  *
  * Caution: Spaces are not allowed within the operator.
- * Invalid: > =
+ * Invalid: `> =`
  *
  * PatternMatch
  * ============
  *
- * PatternMatch works similar to Comparison, everything that starts with a tilde (~)
- * is considered a pattern match. Spaces within the operator are not allowed.
+ * A PatternMatch works similar to a Comparison, everything that starts
+ * with a tilde (`~`) is considered a pattern match.
  *
  * Supported operators are:
  *
- *    ~* (contains)
- *    ~> (starts with)
- *    ~< (ends with)
+ * * `~*` (contains)
+ * * `~>` (starts with)
+ * * `~<` (ends with)
  *
- * And not the NOT equivalent.
+ * And the NOT equivalent:
  *
- *     ~!* (does not contain)
- *     ~!> (does not start with)
- *     ~!< (does not end with)
+ * * `~!*` (does not contain)
+ * * `~!>` (does not start with)
+ * * `~!<` (does not end with)
  *
- * Example: field: ~> foo, ~*"bar";
+ * Example: `field: ~> foo, ~*"bar";`
  *
- * To mark the pattern case insensitive add an 'i' directly after the '~'.
+ * To mark the pattern case insensitive add an `i` directly after the '~':
  *
- * Example: field: ~i> foo, ~i!* "bar";
+ * Example: `field: ~i> foo, ~i!* "bar";`
+ *
+ * Caution: Spaces are not allowed within the operator.
+ * Invalid: `~ >`
+ *
+ * A PatternMatch does not allow a custom value-lexer and requires
+ * quoting of special characters.
+ *
+ * Ordering
+ * ========
+ *
+ * An ordering field can only be used at the root of the condition,
+ * either as the first or last of the condition.
+ *
+ * Example: `@id: asc; @name: desc; id: 12, 50;`, `@id: asc; id: 12, 50; @name: desc;`
  */
 abstract class StringInput extends AbstractInput
 {
