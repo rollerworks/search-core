@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Input;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
+use Rollerworks\Component\Search\ErrorList;
 use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\Exception\OrderStructureException;
 use Rollerworks\Component\Search\Exception\StringLexerException;
@@ -23,6 +24,7 @@ use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\StringLexer;
 use Rollerworks\Component\Search\Input\StringQueryInput;
+use Rollerworks\Component\Search\Input\Validator;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
@@ -83,6 +85,79 @@ final class StringQueryInputTest extends InputProcessorTestCase
         $fieldSet->set($field);
 
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
+    }
+
+    /**
+     * @test
+     */
+    public function it_validates_values(): void
+    {
+        $validator = new class implements Validator {
+            private ?string $currentField = null;
+
+            /** @var array<string, mixed> */
+            public array $calls = [];
+
+            public function initialize(ProcessorConfig $config): void
+            {
+                $this->calls = [];
+                $this->calls['initialize'] = $config;
+            }
+
+            public function initializeContext(FieldConfig $field, ErrorList $errorList): void
+            {
+                $this->currentField = $field->getName();
+                $this->calls[$this->currentField] = [];
+            }
+
+            public function validate($value, string $type, $originalValue, string $path): bool
+            {
+                if ($value instanceof \DateTimeImmutable) {
+                    $value = '{DateTime}' . $value->format('Y-m-d');
+                }
+
+                $this->calls[$this->currentField][] = [$value, $type, $originalValue, $path];
+
+                return false;
+            }
+        };
+
+        $processor = new StringQueryInput($validator, null);
+        $config = new ProcessorConfig($this->getFieldSet(order: true));
+
+        $processor->process($config, 'name: value, value2; (date: "12-16-2014", "12-16-2014" ~ "12-16-2015"); @id: asc;');
+        self::assertSame([
+            'initialize' => $config,
+            'name' => [
+                ['value', 'simple', 'value', '[name][0]'],
+                ['value2', 'simple', 'value2', '[name][1]'],
+            ],
+            'date' => [
+                ['{DateTime}2014-12-16', 'simple', '12-16-2014', '[0][date][0]'],
+                ['{DateTime}2014-12-16', Range::class, '12-16-2014', '[0][date][1][lower]'],
+                ['{DateTime}2015-12-16', Range::class, '12-16-2015', '[0][date][1][upper]'],
+            ],
+            '@id' => [
+                ['ASC', 'simple', 'asc', '[@id]'],
+            ],
+        ], $validator->calls);
+
+        $processor->process($config, 'name: value4, value3; (date: "12-16-2014", "12-16-2014" ~ "12-16-2015"); @id: asc;');
+        self::assertSame([
+            'initialize' => $config,
+            'name' => [
+                ['value4', 'simple', 'value4', '[name][0]'],
+                ['value3', 'simple', 'value3', '[name][1]'],
+            ],
+            'date' => [
+                ['{DateTime}2014-12-16', 'simple', '12-16-2014', '[0][date][0]'],
+                ['{DateTime}2014-12-16', Range::class, '12-16-2014', '[0][date][1][lower]'],
+                ['{DateTime}2015-12-16', Range::class, '12-16-2015', '[0][date][1][upper]'],
+            ],
+            '@id' => [
+                ['ASC', 'simple', 'asc', '[@id]'],
+            ],
+        ], $validator->calls);
     }
 
     /**

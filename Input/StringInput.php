@@ -267,8 +267,8 @@ abstract class StringInput extends AbstractInput
             /** @var FieldConfig $field */
             foreach ($fieldSet->all() as $name => $field) {
                 if (OrderField::isOrder($name) && null !== $direction = $field->getOption('default')) {
-                    $this->orderStructureBuilder->field($name, '[order][%s]');
-                    $this->orderStructureBuilder->simpleValue($direction, '');
+                    $this->orderStructureBuilder->field($name, '');
+                    $this->orderStructureBuilder->simpleValue($direction, '[order][{pos}]');
                     $this->orderStructureBuilder->endValues();
                 }
             }

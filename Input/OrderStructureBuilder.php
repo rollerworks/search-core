@@ -48,6 +48,11 @@ final class OrderStructureBuilder implements StructureBuilder
     ) {
         $this->fieldSet = $config->getFieldSet();
         $this->valuesGroup = new ValuesGroup();
+
+        // Future compatible, this is not part of the current API.
+        if (method_exists($validator, 'initialize')) {
+            $validator->initialize($config);
+        }
     }
 
     public function getErrors(): ErrorList

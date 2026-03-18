@@ -81,6 +81,11 @@ class ConditionStructureBuilder implements StructureBuilder
         $this->maxGroups = $config->getMaxGroups();
         $this->valuesGroupLevels[0] = new ValuesGroup();
         $this->path[] = $path;
+
+        // Future compatible, this is not part of the current API.
+        if (method_exists($validator, 'initialize')) {
+            $validator->initialize($config);
+        }
     }
 
     public function getErrors(): ErrorList

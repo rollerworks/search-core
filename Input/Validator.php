@@ -17,22 +17,47 @@ use Rollerworks\Component\Search\ErrorList;
 use Rollerworks\Component\Search\Field\FieldConfig;
 
 /**
- * The Validator validates input values according to a set of
- * rules (constraints).
+ * The Validator validates field values.
+ *
+ * The validator is first initialized with the FieldConfig using the
+ * `initializeConfig()` method (when present).
+ *
+ * For each field the validator is then initialized with `initializeContext()`.
+ * Then for each value in the current field the `validate()` method is called.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
+ *
+ * @method void initialize(ProcessorConfig $config)
  */
 interface Validator
 {
     /**
      * Initialize the validator context for the field.
      *
-     * Whenever calling validate(), this context needs to be used.
+     * This method is called prior to the first call to validate().
+     * Errors need to be added to the ErrorList.
      */
     public function initializeContext(FieldConfig $field, ErrorList $errorList): void;
 
     /**
      * Validates and returns whether the value is valid.
+     *
+     * Any error (or violation) should be added to the ErrorList with the
+     * corresponding path. Multiple errors can be added for the same path.
+     *
+     * Example:
+     * ```
+     * // ErrorList was initialized in initializeContext()
+     *
+     * $this->errorList->append(new \Rollerworks\Component\Search\ConditionErrorMessage(
+     *      $path,
+     *      $violation->getMessage(),
+     *      $violation->getMessageTemplate(),
+     *      $violation->getParameters(),
+     *      $violation->getPlural(),
+     *      $violation, // Cause of the error (can be anything), optional used for debugging and profiling
+     * ));
+     * ```
      */
     public function validate($value, string $type, $originalValue, string $path): bool;
 }

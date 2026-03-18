@@ -14,9 +14,12 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Input;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
+use Rollerworks\Component\Search\ErrorList;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Input\JsonInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
+use Rollerworks\Component\Search\Input\Validator;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -177,6 +180,131 @@ final class JsonInputTest extends InputProcessorTestCase
             ],
             [new ConditionErrorMessage('[fields][name][pattern-matchers][0]', 'Expected value-structure to contain the following keys: "value", "type". But the following keys are missing: "type".')],
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function it_validates_values(): void
+    {
+        $validator = new class implements Validator {
+            private ?string $currentField = null;
+
+            /** @var array<string, mixed> */
+            public array $calls = [];
+
+            public function initialize(ProcessorConfig $config): void
+            {
+                $this->calls = [];
+                $this->calls['initialize'] = $config;
+            }
+
+            public function initializeContext(FieldConfig $field, ErrorList $errorList): void
+            {
+                $this->currentField = $field->getName();
+                $this->calls[$this->currentField] = [];
+            }
+
+            public function validate($value, string $type, $originalValue, string $path): bool
+            {
+                if ($value instanceof \DateTimeImmutable) {
+                    $value = '{DateTime}' . $value->format('Y-m-d');
+                }
+
+                $this->calls[$this->currentField][] = [$value, $type, $originalValue, $path];
+
+                return false;
+            }
+        };
+
+        $processor = new JsonInput($validator);
+        $config = new ProcessorConfig($this->getFieldSet(order: true));
+
+        $processor->process(
+            $config,
+            json_encode(
+                [
+                    'fields' => [
+                        'name' => ['simple-values' => ['value', 'value2']],
+                    ],
+                    'groups' => [
+                        [
+                            'fields' => [
+                                'date' => [
+                                    'simple-values' => ['2014-12-16'],
+                                    'ranges' => [
+                                        ['lower' => '2014-12-16', 'upper' => '2015-12-16'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'order' => [
+                        'id' => 'asc',
+                    ],
+                ],
+                \JSON_THROW_ON_ERROR,
+            ),
+        );
+
+        self::assertSame([
+            'initialize' => $config,
+            'name' => [
+                ['value', 'simple', 'value', '[fields][name][simple-values][0]'],
+                ['value2', 'simple', 'value2', '[fields][name][simple-values][1]'],
+            ],
+            'date' => [
+                ['{DateTime}2014-12-16', 'simple', '2014-12-16', '[groups][0][fields][date][simple-values][0]'],
+                ['{DateTime}2014-12-16', Range::class, '2014-12-16', '[groups][0][fields][date][ranges][0][lower]'],
+                ['{DateTime}2015-12-16', Range::class, '2015-12-16', '[groups][0][fields][date][ranges][0][upper]'],
+            ],
+            '@id' => [
+                ['ASC', 'simple', 'asc', '[order][@id]'],
+            ],
+        ], $validator->calls);
+
+        $processor->process(
+            $config,
+            json_encode(
+                [
+                    'fields' => [
+                        'name' => ['simple-values' => ['value3', 'value4']],
+                    ],
+                    'groups' => [
+                        [
+                            'fields' => [
+                                'date' => [
+                                    'simple-values' => ['2014-12-14'],
+                                    'ranges' => [
+                                        ['lower' => '2014-12-16', 'upper' => '2015-12-16'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'order' => [
+                        'id' => 'asc',
+                    ],
+                ],
+                \JSON_THROW_ON_ERROR,
+            ),
+        );
+
+        self::assertSame([
+            'initialize' => $config,
+            'name' => [
+                ['value3', 'simple', 'value3', '[fields][name][simple-values][0]'],
+                ['value4', 'simple', 'value4', '[fields][name][simple-values][1]'],
+            ],
+            'date' => [
+                ['{DateTime}2014-12-14', 'simple', '2014-12-14', '[groups][0][fields][date][simple-values][0]'],
+                ['{DateTime}2014-12-16', Range::class, '2014-12-16', '[groups][0][fields][date][ranges][0][lower]'],
+                ['{DateTime}2015-12-16', Range::class, '2015-12-16', '[groups][0][fields][date][ranges][0][upper]'],
+            ],
+            '@id' => [
+                ['ASC', 'simple', 'asc', '[order][@id]'],
+            ],
+        ], $validator->calls);
     }
 
     public static function provideEmptyInputTests(): iterable
