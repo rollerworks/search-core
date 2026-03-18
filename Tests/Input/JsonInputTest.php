@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Input;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
+use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Input\JsonInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\InputProcessor;
@@ -44,6 +45,138 @@ final class JsonInputTest extends InputProcessorTestCase
         );
 
         $this->assertConditionContainsErrorsWithoutCause('{]', $config, [$error]);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider provide_invalid_structures
+     */
+    public function it_validates_structure(array $structure, array $errors): void
+    {
+        $this->assertConditionContainsErrorsWithoutCause(
+            json_encode($structure, \JSON_THROW_ON_ERROR),
+            new ProcessorConfig($this->getFieldSet(order: true)),
+            $errors
+        );
+    }
+
+    public static function provide_invalid_structures(): iterable
+    {
+        yield 'Unknown key at root level' => [
+            [
+                'date' => [],
+            ],
+            [new ConditionErrorMessage('', 'Unexpected key "date" found in structure, expected only: "fields", "groups", "order", "logical-case".')],
+        ];
+
+        yield 'Unknown key at field level' => [
+            [
+                'fields' => [
+                    'date' => [
+                        'values' => ['1'],
+                    ],
+                ],
+            ],
+            [new ConditionErrorMessage('[fields][date]', 'Unexpected key "values" found in structure, expected only: "simple-values", "excluded-simple-values", "ranges", "excluded-ranges", "comparisons", "pattern-matchers".')],
+        ];
+
+        yield 'Wrong key at field level' => [
+            [
+                'fields' => [
+                    'date' => [
+                        '1',
+                    ],
+                ],
+            ],
+            [new ConditionErrorMessage('[fields][date]', 'Expected structure to be an array.')],
+        ];
+
+        yield 'Unknown key at nested level' => [
+            [
+                'groups' => [
+                    'date' => [],
+                ],
+            ],
+            [new ConditionErrorMessage('[groups]', 'Expected structure to be an array, got "object" instead.')],
+        ];
+
+        yield 'Unexpected value for single-values' => [
+            [
+                'fields' => [
+                    'date' => [
+                        'simple-values' => ['first' => '2014-12-16'],
+                    ],
+                ],
+            ],
+            [new ConditionErrorMessage('[fields][date][simple-values]', 'Expected structure to be an array, got "object" instead.')],
+        ];
+
+        yield 'Unexpected value for excluded-single-values' => [
+            [
+                'fields' => [
+                    'date' => [
+                        'excluded-simple-values' => ['first' => '2014-12-16'],
+                    ],
+                ],
+            ],
+            [new ConditionErrorMessage('[fields][date][excluded-simple-values]', 'Expected structure to be an array, got "object" instead.')],
+        ];
+
+        yield 'Unexpected value for ranges' => [
+            [
+                'fields' => [
+                    'date' => [
+                        'ranges' => [['lower' => '2014-12-16', 'upper' => '2014-12-18', 'bounded' => 'first']],
+                    ],
+                ],
+            ],
+            [new ConditionErrorMessage('[fields][date][ranges][0]', 'Unexpected key "bounded" found in structure, expected only: "lower", "upper", "inclusive-lower", "inclusive-upper".')],
+        ];
+
+        yield 'Unexpected bound-type for ranges' => [
+            [
+                'fields' => [
+                    'date' => [
+                        'ranges' => [['lower' => '2014-12-16', 'upper' => '2014-12-18', 'inclusive-lower' => 'no']],
+                    ],
+                ],
+            ],
+            [new ConditionErrorMessage('[fields][date][ranges][0][inclusive-lower]', 'Expected value to be a bool, got "string" instead.')],
+        ];
+
+        yield 'Missing lower-bound for ranges' => [
+            [
+                'fields' => [
+                    'date' => [
+                        'ranges' => [['upper' => '2014-12-18']],
+                    ],
+                ],
+            ],
+            [new ConditionErrorMessage('[fields][date][ranges][0]', 'Expected value-structure to contain the following keys: "lower", "upper". But the following keys are missing: "lower".')],
+        ];
+
+        yield 'Missing type for comparison' => [
+            [
+                'fields' => [
+                    'date' => [
+                        'comparisons' => [['upper' => '2014-12-18']],
+                    ],
+                ],
+            ],
+            [new ConditionErrorMessage('[fields][date][comparisons][0]', 'Expected value-structure to contain the following keys: "value", "operator". But the following keys are missing: "value", "operator".')],
+        ];
+
+        yield 'Missing type for pattern-matchers' => [
+            [
+                'fields' => [
+                    'name' => [
+                        'pattern-matchers' => [['value' => '2014-12-18']],
+                    ],
+                ],
+            ],
+            [new ConditionErrorMessage('[fields][name][pattern-matchers][0]', 'Expected value-structure to contain the following keys: "value", "type". But the following keys are missing: "type".')],
+        ];
     }
 
     public static function provideEmptyInputTests(): iterable
@@ -767,5 +900,24 @@ final class JsonInputTest extends InputProcessorTestCase
                 ],
             ],
         ];
+    }
+
+    protected function onNotSuccessfulTest(\Throwable $t): never
+    {
+        if ($t instanceof InvalidSearchConditionException) {
+            echo 'Error: ' . $t->getMessage() . \PHP_EOL;
+
+            foreach ($t->getErrors() as $error) {
+                echo \sprintf('- %s: %s', $error->path, $error->message);
+
+                if ($error->cause instanceof \Exception) {
+                    echo ' Cause: ' . $error->cause->getMessage();
+                }
+
+                echo \PHP_EOL;
+            }
+        }
+
+        parent::onNotSuccessfulTest($t);
     }
 }
