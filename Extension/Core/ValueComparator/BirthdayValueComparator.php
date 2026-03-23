@@ -43,7 +43,7 @@ final class BirthdayValueComparator implements ValueComparator
             return false;
         }
 
-        return $higher < $lower;
+        return $lower < $higher;
     }
 
     /**
@@ -56,6 +56,11 @@ final class BirthdayValueComparator implements ValueComparator
             return false;
         }
 
-        return $value == $nextValue;
+        if ($value instanceof \DateTimeImmutable) {
+            $value = $value->getTimestamp();
+            $nextValue = $nextValue->getTimestamp();
+        }
+
+        return $value === $nextValue;
     }
 }

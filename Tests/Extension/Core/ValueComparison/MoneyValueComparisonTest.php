@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Extension\Core\ValueComparison;
 
-use Money\Currency;
 use Money\Money;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\Model\MoneyValue;
